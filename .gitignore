@@ -31,6 +31,9 @@
 *.out
 *.app
 
-# CMAKE
+# Cmake
 /cmake-build-*
 *.idea
+
+# Testing
+/test

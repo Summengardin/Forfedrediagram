@@ -1,0 +1,8 @@
+//
+// Created by Martin on 15.03.2022.
+//
+
+#ifndef FORFEDREDIAGRAM_NODE_HPP
+#define FORFEDREDIAGRAM_NODE_HPP
+
+#endif //FORFEDREDIAGRAM_NODE_HPP
