@@ -9,4 +9,5 @@ add_executable(forfedrediagram
         src/Node.hpp)
 
 add_executable(test
-        test/testMain.cpp)
+        test/test_main.cpp
+        test/test_person.cpp)
