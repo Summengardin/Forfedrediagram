@@ -3,14 +3,13 @@
 #include <utility>
 #include <memory>
 #include <functional>
-#include <queue>
 
 #define GLOBAL_SPACE 10
 struct basicPerson{
     std::string name;
-    
-    basicPerson(std::string _name): name(_name){};
-    
+
+    basicPerson(std::string _name): name(std::move(_name)){};
+
     friend std::ostream& operator << (std::ostream& os, basicPerson& pers);
 };
 
@@ -20,21 +19,21 @@ std::ostream& operator << (std::ostream& os, basicPerson& pers){
 }
 
 struct Node{
-    basicPerson* data = nullptr;  
-    Node* left = nullptr;
-    Node* right = nullptr;
-    
-    Node(basicPerson* _data): data(_data){};
-    
+    std::unique_ptr<basicPerson> data;
+    std::unique_ptr<Node> left;
+    std::unique_ptr<Node> right;
+
+    Node(std::unique_ptr<basicPerson> _data): data(std::move(_data)){};
+    Node(std::string _name): data(std::make_unique<basicPerson>(basicPerson(std::move(_name)))){};
+
     ~Node(){
-        delete data;
         std::cout << "Node with " << *data << ", is deleted" << std::endl;
     }
 };
 
-void traverseDFS(Node* n, int depth, std::function<void (Node*, int)> func){
+void traverseDFS(const std::unique_ptr<Node>& n, int depth, const std::function<void (const std::unique_ptr<Node>&, int)>& func){
     // Depth-First search - PreOrder
-    if(n == nullptr){
+    if(!n){
         return;
     }
     func(n, depth);
@@ -45,20 +44,20 @@ void traverseDFS(Node* n, int depth, std::function<void (Node*, int)> func){
 void traverseBFS(Node* n, int depth, std::function<void (Node*, int)> func){
     // Breadth-First search
     // TODO BFS
-    
+
 }
 
 
 int main(){
-    
-    Node* n1 = new Node(new basicPerson("Martin Simengård"));
-    Node* n2 = new Node(new basicPerson("Astrid Simengård"));
-    Node* n3 = new Node(new basicPerson("Per Kristian Simengård"));
-    Node* n4 = new Node(new basicPerson("Else Marie Simengård"));
-    Node* n5 = new Node(new basicPerson("Sigurd Simengård"));
-    Node* n6 = new Node(new basicPerson("Liv"));
-    Node* n7 = new Node(new basicPerson("Per Tollersrud"));
-    
+
+    std::unique_ptr<Node> n1(new Node("Martin Simengård"));
+    std::unique_ptr<Node> n2(new Node("Astrid Simengård"));
+    std::unique_ptr<Node> n3(new Node("Per Kristian Simengård"));
+    std::unique_ptr<Node> n4(new Node("Else Marie Simengård"));
+    std::unique_ptr<Node> n5(new Node("Sigurd Simengård"));
+    std::unique_ptr<Node> n6(new Node("Liv"));
+    std::unique_ptr<Node> n7(new Node("Per Tollersrud"));
+
     std::cout << *n1->data << std::endl;
     std::cout << *n2->data << std::endl;
     std::cout << *n3->data << std::endl;
@@ -66,33 +65,32 @@ int main(){
     std::cout << *n5->data << std::endl;
     std::cout << *n6->data << std::endl;
     std::cout << *n7->data << std::endl;
-    
-    n1->left = n2;
-    n1->right = n3;
-    n2->left = n4;
-    n2->right = n5;
-    n3->left = n6;
-    n3->right = n7;
-    
-    
+
+    n3->left = std::move(n6);
+    n3->right = std::move(n7);
+    n2->left = std::move(n4);
+    n2->right = std::move(n5);
+    n1->left = std::move(n2);
+    n1->right = std::move(n3);
+
     std::cout << "\nStarting traversal...\n" << std::endl;
-    
-    traverseDFS(n1, 0, [](Node* n, int depth){
+
+    traverseDFS(n1, 0, [](const std::unique_ptr<Node>& n, int depth){
         for (int i = 0; i < depth-1; ++i){
             for (int space = 0; space < GLOBAL_SPACE ; ++space){
             std::cout << " ";
             }
         }
         if (depth != 0){
-            for (int space = 0; space < GLOBAL_SPACE ; ++space){
+            for (int space = 0; space < GLOBAL_SPACE - 4 ; ++space){
                 std::cout << " ";
             }
-            std::cout << "";
+            std::cout << "----";
         }
-        std::cout << *n->data << std::endl; 
+        std::cout << *n->data << std::endl;
     });
-    
-    std::cout << "\n...Finished traversal" << std::endl;
-    
+
+    std::cout << "\n...Finished traversal\n" << std::endl;
+
     return 0;
 }
