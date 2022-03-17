@@ -1,0 +1,194 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector> 
+#include <unordered_map>
+
+
+template < class T >
+std::ostream& operator << (std::ostream& os, const std::vector<T>& v) 
+{
+//    os << "[";
+    for (typename std::vector<T>::const_iterator ii = v.begin(); ii != v.end(); ++ii)
+    {
+        os << ", " << *ii;
+    }
+//    os << "]";
+    return os;
+}
+
+
+template < class T >
+class Node{
+public:
+    T* data;
+    Node* left;
+    Node* right;
+    
+    void loadFromMap(std::unordered_map<std::string, std::string> pairs){
+
+    }
+}
+
+
+class basicPerson{
+    
+public:
+    basicPerson()=default;
+    
+    basicPerson& loadFromMap(std::unordered_map<std::string, std::string> pairs){
+        for (auto const &pair: pairs) {
+            data[pair.first] = pair.second;   
+        }
+        
+        return *this;
+    }
+    
+    std::string& getData(const std::string& key){
+        return this->data[key];
+    }
+    
+    basicPerson& setData(const std::string& key, const std::string& value){
+        data[key] = value;
+        
+        return *this;
+    }
+    
+private:    
+    std::unordered_map<std::string, std::string> data;  
+    
+};
+
+
+
+template<typename T, typename G>
+void printMap(std::unordered_map<T, G> pairs){
+    for (auto const &pair: pairs) {
+            std::cout << "[unordered_map] {" << pair.first << ": " << pair.second << "}" << std::endl;
+        }
+}
+
+std::vector<std::string> splitString(std::string& str, std::string delimit){
+    
+    std::vector<std::string> splittedString;
+    
+    if (str.size() != 0){
+        
+        int prevIdx = 0;
+        int curIdx = 0;
+        std::string buffer;
+        
+        while (curIdx != std::string::npos){
+            curIdx = str.find(delimit, prevIdx);
+            buffer = str.substr(prevIdx, curIdx-prevIdx);
+            prevIdx = curIdx + delimit.size();
+            splittedString.push_back(buffer);
+        }
+    }
+
+    return splittedString;
+}
+
+
+
+
+std::vector<std::vector<std::string>> parseFile(std::string filename){
+    
+    std::fstream file;
+    file.open(filename, std::ios::in);
+    
+    std::vector<std::vector<std::string>> linesToVectors;
+    std::string line;
+    
+    while (std::getline(file, line)){
+        std::cout << line << std::endl;
+        std::vector<std::string> lineSplitted = splitString(line, ";");
+        linesToVectors.push_back(lineSplitted);
+    }
+    
+    
+    return linesToVectors;
+}
+
+
+
+std::unordered_map<std::string, std::vector<std::string>> allPeopleIDSorted(std::vector<std::vector<std::string>> parsedFile){
+
+    std::unordered_map<std::string, std::vector<std::string>> result;
+    
+    for(auto& vec : parsedFile){
+        std::string idx = vec[0];
+        vec.erase(vec.begin());
+        result[idx] = vec;
+    }
+    
+    return result;
+}
+
+
+
+std::unordered_map<std::string, std::string> twoVectorsToUMap(std::vector<std::string> keys, std::vector<std::string> values){
+    std::unordered_map<std::string, std::string> result;
+    
+    if(keys.size() != values.size()){
+        std::cout << "Vector's are not of same size" << std::endl;
+    } else
+    {
+        for (size_t i = 0; i < keys.size(); ++i){
+            result[keys[i]] = values[i];
+        }
+    }
+    
+    return result;
+}
+
+
+
+int main()
+{
+    std::string filename = "text.txt";
+    std::vector<std::vector<std::string>> allData = parseFile(filename);
+    
+    for(auto const& vec : allData){
+        std::cout << vec << std::endl;
+    }
+    
+    int peopleIndex = -1;
+    for (int i = 0; i < allData.size(); ++i){
+        if (allData[i][0] == "People"){
+            peopleIndex = i+1;
+            break;
+        }
+    }
+    
+    
+    
+    std::unordered_map<std::string, std::string> MartinData = twoVectorsToUMap(allData[10], allData[11]);
+    printMap(MartinData);
+    
+    std::vector<std::vector<std::string>> peopleRawVector;
+    copy(allData.begin()+peopleIndex, allData.end(), peopleRawVector.begin());
+    std::unordered_map<std::string, std::vector<std::string>> people = allPeopleIDSorted(peopleRawVector);
+    
+    basicPerson* Martin = new basicPerson();
+    
+    Node<basicPerson>* n1 = new Node<basicPerson>();
+    
+    n1->data = new basicPerson().loadFromMap(people["1"]);
+    
+    Martin.loadFromMap(MartinData);
+    std::cout << "firstName of Martin is: " << *Martin.getData("firstName") << std::endl;
+    std::cout << "birth of Martin is: " << *Martin.getData("birth") << std::endl;
+    std::cout << "new name of Martin is: " << *Martin.setData("firstName", "Martinsen").getData("firstName") << std::endl;
+
+    return 0;
+}
