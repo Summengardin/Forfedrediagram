@@ -12,8 +12,7 @@
 
 
 class Data{
-public:
-    virtual void print(){};
+
 };
 
 template <class T>
@@ -21,13 +20,24 @@ class Node {
 public:
     Node(std::shared_ptr<T> data): _data(std::move(data)){};
 
-    [[nodiscard]] std::shared_ptr<T> getData() const{
+    [[nodiscard]] std::shared_ptr<T> &getData() const{
         return _data;
-    };
+    }
 
-    bool isLeaf(){
+    const std::unique_ptr<Node> &getLeft() const
+    {
+        return _left;
+    }
+
+    const std::unique_ptr<Node> &getRight() const
+    {
+        return _right;
+    }
+
+    [[nodiscard]] bool isLeaf() const{
         return !_left and !_right;
     }
+
 
 
 
