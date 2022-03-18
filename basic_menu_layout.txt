@@ -1,0 +1,112 @@
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+
+int getUserInputINT(std::string prompt = "Input: "){
+    
+    std::cout << prompt << std::endl;
+    
+    int userInput;
+    std::cin >> userInput;
+ 
+    return userInput;
+}
+
+class Menu{
+public:
+  
+void show(){
+     for (auto const& item : _menuItems){
+         std::cout << item << std::endl;
+     }
+    handleInput();
+ }
+ 
+ void handleInput(){
+     menuAction(getUserInputINT("Select menu"));
+ }
+
+private:
+    int lastMenuChoice = 0; // 3 will exit program;
+
+    std::vector<std::string> _menuItems{
+        "1: View full tree",
+        "2: Detailed view of a person",
+        "3: Add person",
+        "4: Edit/remove person",
+        "0, Exit"
+    };
+    
+    void menuAction(int choice){
+        switch(choice){
+            case 0: 
+                std::cout << "Exiting program..." << std::endl;
+                exit(0);
+                break;
+            case 1:
+                std::cout   << "Martin Simengård\n" 
+                            << "    Astrid Simengård\n" 
+                            << "        Else Marie Simengård\n" 
+                            << "        Sigurd Simengård\n" 
+                            << "    Per Krsitian Simengård\n" 
+                            << "        Liv Tollersrud\n"
+                            << "        Per Tollersrud\n" 
+                            << std::endl;
+                break;
+            case 2:
+                std::cout   << "[Person] Martin Simengård\n"
+                            << "Born on 22/06/1999\n"
+                            << "SSNumber is 22069912345\n"
+                            << "His parents are [Node.left] Astrid Simengård and [Node.right] Per Kristian Simengård\n"
+                            << "Martin.isDeath() ? He sadly died on xx/xx/xxxx\n"
+                            << std::endl;
+                break;
+            case 3:
+                std::cout   << "\nFirst name*: \n"
+                            << "Last name*: \n"
+                            << "Birthday [DD-MM-YYYY]: \n"
+                            << "Coninue adsing data? [y/n]\n"
+                            << "Name of parent 1:\n"
+                            << "Name of parent 2:\n"
+                            << "Birthday: \n"
+                            << "Death: \n"
+                            << std::endl;
+                break;
+            
+            case 4:
+                std::cout   << "\nName or SSNumber of person to edit/remove \n"
+                            << "[Tree.contains(input)] ? Do you want to edit or remove this person? [e/r] \n"
+                            << "Enter parameter to edit, or [a] for all: \n"
+                            << "New ** of Martin is 22-06-1999" 
+                            << std::endl;
+                break;
+            default:
+                std::cout << "Sorry, no valid menu choice" << std::endl;
+        }
+        lastMenuChoice = choice;
+    }   
+  
+};
+
+int main()
+{
+    Menu menu;
+    
+    while(true){
+        menu.show();
+    }
+    
+    return 0;
+}
+
+
+
