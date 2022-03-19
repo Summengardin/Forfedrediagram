@@ -8,6 +8,7 @@
             "lastName": "Simengård",
             "parentOne": 2,
             "parentTwo": 3,
+            "age" : 22,
             "isDead" : false
         },
         {

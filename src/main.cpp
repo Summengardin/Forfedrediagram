@@ -20,10 +20,17 @@ int main(){
    // std::cout << Martin << std::endl;
     std::string fromFile{"../test/FirstTree.json"};
     std::string toFile{"../test/NewTree.json"};
+    std::string MartinFile{"../test/MartinPerson.json"};
 
     Tree tree;
     tree.fromJson(fromFile);
     tree.toJson(toFile);
+
+    Person Martin(tree.getAllData()["nodes"][0]);
+    std::cout << Martin << std::endl;
+
+    std::ofstream MartinStream(MartinFile);
+    MartinStream << Martin.toJson();
 
     json chacalaca = tree.getAllData() ;
     for(auto& peep : chacalaca["nodes"]){

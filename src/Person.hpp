@@ -17,31 +17,63 @@ class Person
 public:
     Person(std::string& firstName, std::string& lastName)
     {
-        _data["firstName"] = firstName;
-        _data["lastName"] = lastName;
+        setFirstName(firstName);
+        setLastName(lastName);
     };
 
+    Person(json& j){
+        fromJson(j);
+    }
+
+    [[nodiscard]] json toJson() const {
+       json j = json{
+            {"firstName", getFirstName()},
+            {"lastName", getLastName()},
+            {"age", getAge()}
+        };
+       return j;
+    }
+
+    void fromJson(const json& j) {
+        setFirstName(j.at("firstName"));
+        setLastName(j.at("lastName"));
+        setAge(j.at("age"));
+    }
 
     // TODO - Person(std::string parsedLine)
-    // Gjør det mulig å lage person fra en lang tekststreng med data
+    // Gjør det mulig å lage person fra en lang JSON-fil
 
     [[nodiscard]] std::string getFirstName () const {
-        return _data["firstName"];
+        return _firstName;
     }
 
     [[nodiscard]] std::string getLastName () const {
-        return _data["lastName"];
+        return _lastName;
     }
 
     [[nodiscard]] int getAge () const {
-        return _data["getAge"];
+        return _age;
+    }
+
+    void setFirstName(const std::string& firstName){
+        _firstName = firstName;
+    }
+
+    void setLastName(const std::string& lastName){
+        _lastName = lastName;
+    }
+
+    void setAge(int age){
+        _age = age;
     }
 
     friend std::ostream& operator <<(std::ostream& os, const Person& p);
 
 private:
-    int treeID;
-    json _data;
+    int _treeID;
+    std::string _firstName;
+    std::string _lastName;
+    int _age;
 };
 
  std::ostream& operator<<(std::ostream& os, const Person& p){
