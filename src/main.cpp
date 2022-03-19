@@ -13,11 +13,10 @@
 #include "Tree.hpp"
 
 int main(){
-    std::cout << "Hello their family tree!" << std::endl;
+    std::cout << "\n|-------------------------------|" << std::endl;
+    std::cout <<   "|   Hello their family tree!    |" << std::endl;
+    std::cout <<   "|-------------------------------|\n" << std::endl;
 
- //   Person Martin = Person("Martin", "Simengard");
-
-   // std::cout << Martin << std::endl;
     std::string fromFile{"../test/FirstTree.json"};
     std::string toFile{"../test/NewTree.json"};
     std::string MartinFile{"../test/MartinPerson.json"};
