@@ -19,6 +19,8 @@ template <class T>
 class Node {
 public:
     Node(std::shared_ptr<T> data): _data(std::move(data)){};
+    // TODO - Node(std::string& parseNode)
+    // Make Node from a string of relations
 
     [[nodiscard]] std::shared_ptr<T> &getData() const{
         return _data;

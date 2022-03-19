@@ -11,12 +11,27 @@
 #include <memory>
 #include <functional>
 #include <unordered_map>
+#include <vector>
+#include <fstream>
 
 #include "Node.hpp"
 #include "Person.hpp"
+#include "../nlohmann/json.hpp"
+
+using json = nlohmann::json;
 
 class Tree{
 public:
+    void toJson(std::string filepath){
+        std::ofstream file(filepath);
+        file << _data;
+    }
+
+    void fromJson(std::string filepath){
+        std::ifstream file(filepath);
+        file >> _data;
+    }
+
     void traverseDFS(const std::unique_ptr<Node<Person>>& n, const std::function< void(const std::unique_ptr<Node<Person>>&, int ) >& func, int depth = 0 ){
         // Depth-First Search - PreOrder
         if(!n){
@@ -45,15 +60,16 @@ public:
     }
 
 
-    int getSettingGlobalSpace() {
-        return stoi(_settings["GLOBAL_SPACE"]);
+    int getSettingGlobalSpace() const {
+        return _data["GLOBAL_SPACE"];
     }
 
 private:
     std::unique_ptr<Node<Person>> _root;
-    std::unordered_map<std::string, std::string> _settings{
-            {"GLOBAL_SPACE",  "50"}
+    json _data{
+            {"GLOBAL_SPACE",  50}
     };
+
 };
 
 

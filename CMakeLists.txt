@@ -10,4 +10,4 @@ add_executable(forfedrediagram
 
 add_executable(test
         test/test_main.cpp
-        test/test_person.cpp)
+        test/test_person.cpp test/test_tree.cpp)

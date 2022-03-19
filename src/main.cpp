@@ -5,10 +5,12 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <ctime>
+#include <fstream>
+
 
 #include "Node.hpp"
 #include "Person.hpp"
+#include "Tree.hpp"
 
 int main(){
     std::cout << "Hello their family tree!" << std::endl;
@@ -18,18 +20,14 @@ int main(){
    // std::cout << Martin << std::endl;
 
 
-    // current date/time based on current system
-    time_t now = time(0);
+    std::ifstream i("../test/FirstTree.json");
+    json j;
+    i >> j;
 
-    // convert now to string form
-    char* dt = ctime(&now);
+    std::cout << j << std::endl;
 
-    std::cout << "The local date and time is: " << dt << std::endl;
-
-    // convert now to tm struct for UTC
-    tm *gmtm = gmtime(&now);
-    dt = asctime(gmtm);
-    std::cout << "The UTC date and time is:"<< dt << std::endl;
+    std::ofstream o("../test/FirstTree.json");
+    o << std::setw(4) << j << std::endl;
 
     return EXIT_SUCCESS;
 }
