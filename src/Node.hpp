@@ -10,6 +10,8 @@
 #include <utility>
 #include <memory>
 
+#include "../nlohmann/json.hpp"
+using json = nlohmann::json;
 
 class Data{
 
@@ -22,9 +24,6 @@ public:
     // TODO - Node(std::string& parseNode)
     // Make Node from a string of relations
 
-    [[nodiscard]] std::shared_ptr<T> &getData() const{
-        return _data;
-    }
 
     const std::unique_ptr<Node> &getLeft() const
     {
@@ -44,7 +43,7 @@ public:
 
 
 private:
-    std::shared_ptr<T> _data;
+    json _data;
     std::unique_ptr<Node> _left;
     std::unique_ptr<Node> _right;
 };

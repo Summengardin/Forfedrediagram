@@ -1,24 +1,34 @@
 {
     "nodes": [
         {
+            "treeID" : 1,
             "birthDate": "22-06-1999",
             "deathDate": null,
             "firstName": "Martin",
             "lastName": "Simengård",
-            "parentOne": {
-                "birthDate": "11-03-1968",
-                "deathDate": null,
-                "firstName": "Astrid",
-                "lastName": "Simengård",
-                "parentOne": null
-            },
-            "parentTwo": {
-                "birthDate": "08-02-1965",
-                "deathDate": null,
-                "firstName": "Per Kristian",
-                "lastName": "Simengård",
-                "parentOne": null
-            }
+            "parentOne": 2,
+            "parentTwo": 3,
+            "isDead" : false
+        },
+        {
+            "treeID" : 2,
+            "birthDate": "11-03-1968",
+            "deathDate": null,
+            "firstName": "Astrid",
+            "lastName": "Simengård",
+            "parentOne": null,
+            "parentTwo": null,
+            "isDead" : false
+        },
+        {
+            "treeID" : 3,
+            "birthDate": "08-02-1965",
+            "deathDate": null,
+            "firstName": "Per Kristian",
+            "lastName":  "Simengård",
+            "parentOne": null,
+            "parentTwo": null,
+            "isDead" : false
         }
     ],
     "tree": {

@@ -24,12 +24,19 @@ class Tree{
 public:
     void toJson(std::string filepath){
         std::ofstream file(filepath);
-        file << _data;
+        if(_settings["globalIndent"] != nullptr)
+            file << _settings.dump(_settings["globalIndent"]);
+        else
+            file << _settings.dump(2);
     }
 
     void fromJson(std::string filepath){
         std::ifstream file(filepath);
-        file >> _data;
+        file >> _settings;
+    }
+
+    json getAllData() const{
+        return _settings;
     }
 
     void traverseDFS(const std::unique_ptr<Node<Person>>& n, const std::function< void(const std::unique_ptr<Node<Person>>&, int ) >& func, int depth = 0 ){
@@ -55,20 +62,18 @@ public:
                 }
                 std::cout << "----";
             }
-            std::cout << n->getData() << std::endl;
-        })
+            //std::cout << n->getData() << std::endl;
+        });
     }
 
 
     int getSettingGlobalSpace() const {
-        return _data["GLOBAL_SPACE"];
+        return _settings["GLOBAL_SPACE"];
     }
 
 private:
     std::unique_ptr<Node<Person>> _root;
-    json _data{
-            {"GLOBAL_SPACE",  50}
-    };
+    json _settings;
 
 };
 

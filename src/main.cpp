@@ -18,16 +18,18 @@ int main(){
  //   Person Martin = Person("Martin", "Simengard");
 
    // std::cout << Martin << std::endl;
+    std::string fromFile{"../test/FirstTree.json"};
+    std::string toFile{"../test/NewTree.json"};
 
+    Tree tree;
+    tree.fromJson(fromFile);
+    tree.toJson(toFile);
 
-    std::ifstream i("../test/FirstTree.json");
-    json j;
-    i >> j;
+    json chacalaca = tree.getAllData() ;
+    for(auto& peep : chacalaca["nodes"]){
+        std::cout << "ID: " << peep["treeID"] << ", is " << peep["firstName"].get<std::string>() << " " << peep["lastName"].get<std::string>() << std::endl;
+    }
 
-    std::cout << j << std::endl;
-
-    std::ofstream o("../test/FirstTree.json");
-    o << std::setw(4) << j << std::endl;
 
     return EXIT_SUCCESS;
 }
