@@ -1,15 +1,17 @@
 {
     "nodes": [
         {
-            "treeID" : 1,
-            "birthDate": "22-06-1999",
-            "deathDate": null,
-            "firstName": "Martin",
-            "lastName": "Simengård",
-            "parentOne": 2,
-            "parentTwo": 3,
-            "age" : 22,
-            "isDead" : false
+            "data": {
+                "birthDate": "22-06-1999",
+                "deathDate": null,
+                "firstName": "Martin",
+                "lastName": "Simengård",
+                "age" : 22,
+                "isDead" : false
+            },
+            "treeIdx" : 1,
+            "leftIdx": 2,
+            "rightIdx": 3
         },
         {
             "treeID" : 2,

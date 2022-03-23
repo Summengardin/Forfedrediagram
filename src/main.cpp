@@ -14,27 +14,23 @@
 
 int main(){
     std::cout << "\n|-------------------------------|" << std::endl;
-    std::cout <<   "|   Hello their family tree!    |" << std::endl;
+    std::cout <<   "|   Hello there family tree!    |" << std::endl;
     std::cout <<   "|-------------------------------|\n" << std::endl;
 
     std::string fromFile{"../test/FirstTree.json"};
     std::string toFile{"../test/NewTree.json"};
     std::string MartinFile{"../test/MartinPerson.json"};
 
-    Tree tree;
-    tree.fromJson(fromFile);
-    tree.toJson(toFile);
+    std::ifstream jsonFile(fromFile);
 
-    Person Martin(tree.getAllData()["nodes"][0]);
-    std::cout << Martin << std::endl;
 
-    std::ofstream MartinStream(MartinFile);
-    MartinStream << Martin.toJson();
+    Tree<Person> tree;
+    json treeData;
+    jsonFile >> treeData;
+    tree.addNode(treeData["nodes"][0]);
+    tree.at(2).
 
-    json chacalaca = tree.getAllData() ;
-    for(auto& peep : chacalaca["nodes"]){
-        std::cout << "ID: " << peep["treeID"] << ", is " << peep["firstName"].get<std::string>() << " " << peep["lastName"].get<std::string>() << std::endl;
-    }
+    std::cout << tree.at(1) << std::endl;
 
 
     return EXIT_SUCCESS;
