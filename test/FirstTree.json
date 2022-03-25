@@ -5,7 +5,7 @@
                 "birthDate": "22-06-1999",
                 "deathDate": null,
                 "firstName": "Martin",
-                "lastName": "Simengård",
+                "lastName": "Simengard",
                 "age" : 22,
                 "isDead" : false
             },
@@ -14,24 +14,56 @@
             "rightIdx": 3
         },
         {
-            "treeID" : 2,
-            "birthDate": "11-03-1968",
-            "deathDate": null,
-            "firstName": "Astrid",
-            "lastName": "Simengård",
-            "parentOne": null,
-            "parentTwo": null,
-            "isDead" : false
+            "data": {
+                "birthDate": "11-03-1968",
+                "deathDate": null,
+                "firstName": "Astrid",
+                "lastName": "Simengard",
+                "age" : null,
+                "isDead" : false
+            },
+            "treeIdx" : 2,
+            "leftIdx": 5,
+            "rightIdx": 4
         },
         {
-            "treeID" : 3,
-            "birthDate": "08-02-1965",
-            "deathDate": null,
-            "firstName": "Per Kristian",
-            "lastName":  "Simengård",
-            "parentOne": null,
-            "parentTwo": null,
-            "isDead" : false
+            "data": {
+                "birthDate": "08-02-1965",
+                "deathDate": null,
+                "firstName": "Per Kristian",
+                "lastName": "Simengard",
+                "age" : null,
+                "isDead" : false
+            },
+            "treeIdx" : 3,
+            "leftIdx": null,
+            "rightIdx": null
+        },
+        {
+            "data": {
+                "birthDate": null,
+                "deathDate": null,
+                "firstName": "Sigurd T.",
+                "lastName": "Simengard",
+                "age" : null,
+                "isDead" : false
+            },
+            "treeIdx" : 4,
+            "leftIdx": null,
+            "rightIdx": null
+        },
+        {
+            "data": {
+                "birthDate": null,
+                "deathDate": null,
+                "firstName": "Else Marie",
+                "lastName": "Simengard",
+                "age" : null,
+                "isDead" : false
+            },
+            "treeIdx" : 5,
+            "leftIdx": null,
+            "rightIdx": null
         }
     ],
     "tree": {
