@@ -55,18 +55,18 @@ public:
         }
     }
 
-    void traverseDFS(const std::function<void(std::shared_ptr<Node>)>& f){
+    void traverseDFS(const std::function<void(Node*)>& f){
         // DepthFirst - PreOrder
-        f(std::shared_ptr<Node>(this));
+        f(this);
         if(_left)
             _left->traverseDFS(f);
         if(_right)
             _right->traverseDFS(f);
     }
 
-    void traverseDFSPrint(const std::function<void(std::shared_ptr<Node>, int)>& f, int depth = 0){
+    void traverseDFSPrint(const std::function<void(Node*, int)>& f, int depth = 0){
         // DepthFirst - PreOrder. Used for printing with depth information
-        f(std::shared_ptr<Node>(this), depth);
+        f(this, depth);
         if(_left)
             _left->traverseDFSPrint(f, depth+1);
         if(_right)

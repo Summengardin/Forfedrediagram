@@ -122,7 +122,7 @@ public:
         if(!_root)
             return;
         int turns = 0;
-        _root->traverseDFS([&turns](const std::shared_ptr<Node>& node){
+        _root->traverseDFS([&turns](Node* node){
             std::cout << node->viewData() << std::endl;
             turns++;
         });
@@ -134,7 +134,7 @@ public:
             return;
         int depth = 0;
         int indent = globalIndent;
-        _root->traverseDFSPrint([indent](std::shared_ptr<Node> node, int depth){
+        _root->traverseDFSPrint([indent](Node* node, int depth){
             for (int i = 0; i < depth-1; ++i){
                 for (int space = 0; space < indent ; ++space){
                     std::cout << " ";
@@ -156,9 +156,9 @@ public:
             return _root;
         }
        std::shared_ptr<Node> found;
-        _root->traverseDFS([found, index](const std::shared_ptr<Node>& node){
+        _root->traverseDFS([&found, index](Node* node){
             if(node->getIdx() == index){}
-                //found = node;
+                found = std::shared_ptr<Node>(node);
         });
 
         return found;
