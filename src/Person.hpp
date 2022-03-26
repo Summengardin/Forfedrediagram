@@ -106,11 +106,18 @@ public:
         _age = age;
     }
 
+    void viewDetails(){
+        std::cout << "[Person]:\n"
+        << "Full name: " << _firstName << " " << _lastName;
+
+    }
+
 
     friend std::ostream &operator<<(std::ostream &os, const Person &p);
 
 private:
     std::string _firstName;
+    std::string _middleName;
     std::string _lastName;
     int _age = -1;
     //MM::Date _birthday;

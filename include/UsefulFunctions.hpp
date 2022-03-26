@@ -7,12 +7,15 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <sstream>
+#include <regex>
 
 namespace MM{
     // Mahammed og Martin = MM
 
     template<class T>
-    T& getUserInput(const std::string& prompt){
+    T getUserInput(const std::string& prompt){
         std::cout << prompt << std::endl;
 
         T input;
@@ -21,6 +24,18 @@ namespace MM{
         return input;
     }
 
+    std::vector<std::string> splitString(const std::string& str, char delimiter){
+        std::vector<std::string> split;
+
+        std::string token;
+        std::stringstream s(str);
+
+        while(std::getline(s, token, delimiter)){
+            split.push_back(token);
+        }
+
+        return split;
+    }
 
 
     void debug(const std::string& prompt){
@@ -37,7 +52,8 @@ namespace MM{
         year(y)
         {};
 
-        explicit Date(std::string dateAsString){
+        explicit Date(std::string dateAsString)
+        {
             setDate(dateAsString);
         }
 
@@ -62,9 +78,20 @@ namespace MM{
         }
 
         void setDate(std::string& dateAsString){
-            day = (int)(dateAsString[0]) * 10 + (int)(dateAsString[1]);
-            month = static_cast<int>(dateAsString[3]) * 10 + static_cast<int>(dateAsString[4]);
-            month = static_cast<int>(dateAsString[6]) * 1000 + static_cast<int>(dateAsString[7]) * 100 + static_cast<int>(dateAsString[8]) * 10 + static_cast<int>(dateAsString[9]);
+            if (checkStringFormat(dateAsString)){
+                std::vector<std::string> numbers = splitString(dateAsString, '-');
+                day = std::stoi(numbers[0]);
+                month = std::stoi(numbers[1]);
+                year = std::stoi(numbers[2]);
+            } else {
+                std::cout << "Invalid date format, Fuck You!" << std::endl;
+            }
+        }
+
+        [[nodiscard]]static bool checkStringFormat(const std::string& dateAsString) {
+            std::regex format{R"(\d{2}\-\d{2}\-\d{4})"};
+            std::smatch match;
+            return std::regex_match(dateAsString, match, format);
         }
 
         int day = -1;

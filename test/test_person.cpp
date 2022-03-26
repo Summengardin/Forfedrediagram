@@ -10,16 +10,15 @@
 TEST_CASE("Getters Person"){
     std::string fName = "Martin";
     std::string lName = "Simengard";
-    int age = 22;
+
     enum gender{
         unknown,
         male,
         female
     };
-    Person Martin = Person(fName, lName, age);
+    Person Martin = Person(fName, lName);
 
     REQUIRE(fName == Martin.getFirstName());
     REQUIRE(lName == Martin.getLastName());
-    REQUIRE(age == Martin.getAge());
 }
 

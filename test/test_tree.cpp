@@ -3,7 +3,7 @@
 //
 
 #include "catch.hpp"
-#include "../src/Tree.hpp"
+#include "../src/newTree.hpp"
 
 TEST_CASE("Print data picked up from file"){
 

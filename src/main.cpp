@@ -91,6 +91,11 @@ int main(){
     betterTree.show();
 
 
+    MM::debug("Find by index");
+    std::cout << anotherTree.findNodeByIdx(3) << std::endl;
+
+
+
 
     return EXIT_SUCCESS;
 }

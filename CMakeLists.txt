@@ -6,8 +6,24 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(forfedrediagram
         src/main.cpp
         src/Person.hpp
-        src/Node.hpp src/Tree.hpp include/UsefulFunctions.hpp src/newTree.hpp)
+        src/Node.hpp
+        src/Tree.hpp
+        src/newTree.hpp)
 
-add_executable(test
+
+add_executable(TestTree
         test/test_main.cpp
-        test/test_person.cpp test/test_tree.cpp)
+        test/test_tree.cpp
+        #test/test_usefulFunctions.cpp
+        )
+
+add_executable(TestPerson
+        test/test_main.cpp
+        test/test_person.cpp
+        #test/test_usefulFunctions.cpp
+        )
+
+add_executable(TestUsefulFunctions
+        test/test_main.cpp
+        test/test_usefulFunctions.cpp
+        )

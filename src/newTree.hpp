@@ -151,17 +151,17 @@ public:
         });
     }
 
-    std::shared_ptr<Node> findByIdx(unsigned int index){
+    Node& findNodeByIdx(unsigned int index) {
         if(_root->getIdx() == index){
-            return _root;
+            return *_root;
         }
-       std::shared_ptr<Node> found;
+       Node* found;
         _root->traverseDFS([&found, index](Node* node){
             if(node->getIdx() == index){}
-                found = std::shared_ptr<Node>(node);
+                found = node;
         });
 
-        return found;
+        return *found;
     }
 
     void traverse(){
