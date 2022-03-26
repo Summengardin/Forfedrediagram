@@ -34,7 +34,7 @@ int main(){
     jsonFile >> treeData;
 
     // Generere tre
-    Tree<Person> tree;
+//    Tree<Person> tree;
     NewTree betterTree;
     NewTree anotherTree;
 
@@ -46,30 +46,30 @@ int main(){
     Node Martin(treeData["nodes"][0]);
     Node Astrid = Node(treeData["nodes"][1]);
 
-    std::cout << Martin.getData() << std::endl;
+    std::cout << Martin.viewData() << std::endl;
     Martin.getData().setFirstName("Martin");
     Martin.getData().setLastName("Simengard");
     Martin.setIdx(treeData["nodes"][0]["treeIdx"]);
 
-    std::unique_ptr<Node> MartinPtr = std::make_unique<Node>(Martin);
+    std::shared_ptr<Node> MartinPtr = std::make_shared<Node>(Martin);
     betterTree.setRoot(MartinPtr);
     betterTree.getDataAt(1).setFirstName("MartinSen");
 
-    Martin.addParent(&Astrid);
+    Martin.addParent(std::make_shared<Node>(Astrid));
 
     {
         Node PK(treeData["nodes"][2]);
-        Martin.addParent(&PK);
+        Martin.addParent(std::make_shared<Node>(PK));
 
     }
 
     {
         Node Sigurd(treeData["nodes"][3]);
-        Astrid.addParent(&Sigurd);
+        Astrid.addParent(std::make_shared<Node>(Sigurd));
     }
 
     Node ElseMarie = Node(treeData["nodes"][4]);
-    Astrid.addParent(&ElseMarie);
+    Astrid.addParent(std::make_shared<Node>(ElseMarie));
 
 
     std::cout << Martin << std::endl;
@@ -78,10 +78,16 @@ int main(){
     std::cout << Astrid << std::endl;
 
     std::cout << Martin.getLeft() << std::endl;
-    std::cout << betterTree.getRoot().getRight() << std::endl;
+
+    MM::debug("Get root");
+    std::cout << betterTree.viewRoot() << std::endl;
 
     std::cout << "\n";
+    MM::debug("List nodes");
+    anotherTree.listNodes();
     betterTree.listNodes();
+    MM::debug("Tree show");
+    anotherTree.show();
     betterTree.show();
 
 

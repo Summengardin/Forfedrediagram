@@ -5,4 +5,6 @@
 #include "catch.hpp"
 #include "../src/Tree.hpp"
 
-TEST_CASE("Print data picked up from file")
+TEST_CASE("Print data picked up from file"){
+
+}

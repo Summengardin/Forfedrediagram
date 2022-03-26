@@ -22,18 +22,21 @@
 
 using json = nlohmann::json;
 
-
 class NewTree{
 
 public:
 
     void fillFromJson(const json& treeJson){
         MM::debug("Start filling");
-        std::unordered_map<int, Node> nodes;
+        std::unordered_map<int, std::shared_ptr<Node>> nodes;
         std::unordered_map<int, std::pair<int, int>> parentIdxs; // pair.first = leftIdx, pair.second = rightIdx
         for(auto& nodeData : treeJson["nodes"]){
-            std::unique_ptr<Node> newNode = std::make_unique<Node>(nodeData);
-            nodes[nodeData["treeIdx"]] = Node(nodeData);
+            std::unique_ptr<Node> newNode(std::make_unique<Node>(nodeData));
+
+            nodes[nodeData["treeIdx"]] = std::move(newNode);
+
+            MM::debug("Node created");
+            // Store index of parents. If no parent, index is -1
             if(nodeData["leftIdx"] != nullptr){
                 parentIdxs[nodeData["treeIdx"]].first = nodeData["leftIdx"];
             } else
@@ -41,56 +44,77 @@ public:
                 parentIdxs[nodeData["treeIdx"]].first = -1;
             }
 
-            // Store index of parents. If no parent, index is -1
             if(nodeData["rightIdx"] != nullptr){
                 parentIdxs[nodeData["treeIdx"]].second = nodeData["rightIdx"];
             } else
             {
                 parentIdxs[nodeData["treeIdx"]].second = -1;
             }
-            std::cout << nodeData["treeIdx"] << std::endl;
         }
-        MM::debug("Done with filling map");
+        MM::debug("Done with filling map\n");
 
-        std::unique_ptr<Node> newRoot = std::make_unique<Node>(nodes[1]);
-        setRoot(newRoot);
+        // Setting root node - index 1 from tree;
+        _root = nodes[1];
 
-        for(const auto& [key, value] : nodes){
-            // Add parents if they exist
+        for(auto [key, value] : nodes){
 
-            MM::debug("Add");
+            MM::debug("Adding node to tree");
+            std::cout << *value << std::endl;
 
+            // Get index of parents
             int leftIdx = parentIdxs[key].first;
             int rightIdx = parentIdxs[key].second;
 
+            // Add parents if they exist
             if(leftIdx != -1){
-                value.setLeft(&nodes.at(leftIdx));
+                value->setLeft(nodes.at(leftIdx));
             }
             if(rightIdx != -1){
-                value.setRight(&nodes.at(rightIdx));
+                value->setRight(nodes.at(rightIdx));
             }
         }
-
-        std::cout << *_root << std::endl;
-
         MM::debug("Done with filling tree");
 
-        show();
+        std::cout << "Root is " << *_root << std::endl;
+
+        MM::debug("Before show\n");
+ //       show();
+        MM::debug("\nAfter show");
     }
 
-    void setRoot(std::unique_ptr<Node>& n){
+    void setRoot(std::shared_ptr<Node> n){
         _root = std::move(n);
     }
 
-    Node& getNode(unsigned int index){
+    [[nodiscard]]Node& getNode(unsigned int index) {
+        //TODO
         return *_root;
     }
 
-    Person& getDataAt(unsigned int index){
+    [[nodiscard]]const Node& viewNode(unsigned int index) const {
+        //TODO
+        return *_root;
+    }
+
+    [[nodiscard]] Person& getDataAt(unsigned int index) {
+        //TODO
         return _root->getData();
     }
 
-    Node& getRoot(){
+    [[nodiscard]] const Person& viewDataAt(unsigned int index) const {
+        //TODO
+        return _root->getData();
+    }
+
+    [[nodiscard]] Node& viewRoot() {
+        return *_root;
+    }
+
+    [[nodiscard]] Node& getRoot() {
+        return *_root;
+    }
+
+    [[nodiscard]] const Node& viewRoot() const{
         return *_root;
     }
 
@@ -98,8 +122,8 @@ public:
         if(!_root)
             return;
         int turns = 0;
-        _root->traverseDFS([&turns](Node* node){
-            std::cout << *node << std::endl;
+        _root->traverseDFS([&turns](const std::shared_ptr<Node>& node){
+            std::cout << node->viewData() << std::endl;
             turns++;
         });
         std::cout << "Turns: " << turns << std::endl;
@@ -110,7 +134,7 @@ public:
             return;
         int depth = 0;
         int indent = globalIndent;
-        _root->traverseDFSPrint([indent](Node* node, int depth){
+        _root->traverseDFSPrint([indent](std::shared_ptr<Node> node, int depth){
             for (int i = 0; i < depth-1; ++i){
                 for (int space = 0; space < indent ; ++space){
                     std::cout << " ";
@@ -122,19 +146,19 @@ public:
                 }
                 std::cout << "----";
             }
-            std::cout << node->getData() << std::endl;
+            std::cout << node->viewData() << std::endl;
             depth++;
         });
     }
 
-   Node* findByIdx(unsigned int index){
+    std::shared_ptr<Node> findByIdx(unsigned int index){
         if(_root->getIdx() == index){
-            return _root.get();
+            return _root;
         }
-        Node* found;
-        _root->traverseDFS([&found, index](Node* node){
-            if(node->getIdx() == index)
-                found = node;
+       std::shared_ptr<Node> found;
+        _root->traverseDFS([found, index](const std::shared_ptr<Node>& node){
+            if(node->getIdx() == index){}
+                //found = node;
         });
 
         return found;
@@ -148,7 +172,7 @@ public:
 
     }
 private:
-    std::unique_ptr<Node> _root;
+    std::shared_ptr<Node> _root;
     std::size_t _size = 0;
 
     //settings

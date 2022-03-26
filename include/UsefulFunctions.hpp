@@ -24,7 +24,7 @@ namespace MM{
 
 
     void debug(const std::string& prompt){
-        std::cout << "DEBUG: " << prompt << std::endl;
+        std::cout << "\n" << "DEBUG: " << prompt << std::endl;
     }
 
 
@@ -57,7 +57,7 @@ namespace MM{
             } else if(year == -1){
                 return std::to_string(day) + "-" + std::to_string(month);
             } else{
-                std::to_string(day) + "-" + std::to_string(month) + "-" + std::to_string(year);
+                return std::to_string(day) + "-" + std::to_string(month) + "-" + std::to_string(year);
             }
         }
 

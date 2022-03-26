@@ -19,25 +19,26 @@ public:
     Node() = default;
 
     explicit Node(const json& j){
-        data.fromJson(j["data"]);
+        data = std::make_shared<Person>(j["data"]);
+        data->fromJson(j["data"]);
         if(j["treeIdx"] != nullptr)
             treeIdx = j["treeIdx"];
     }
 
 
     explicit Node(const Person& p){
-        data = p;
+        data = std::make_shared<Person>(p);
     }
 
-    void addData(Person& p){
-        data = p;
+    void addData(const Person& p){
+        data = std::make_shared<Person>(p);
     }
 
-    void addParent(Node* n){
+    void addParent(const std::shared_ptr<Node>& n){
         if(!_left){
-            _left = std::unique_ptr<Node>(n);
+            _left = n; //std::move(n);
         } else if(!_right){
-            _right = std::unique_ptr<Node>(n);
+            _right = n; //std::move(n);
         } else{
             std::cout << "Person har allerede to foreldre" << std::endl;
         }
@@ -54,18 +55,18 @@ public:
         }
     }
 
-    void traverseDFS(const std::function<void(Node*)>& f){
+    void traverseDFS(const std::function<void(std::shared_ptr<Node>)>& f){
         // DepthFirst - PreOrder
-        f(this);
+        f(std::shared_ptr<Node>(this));
         if(_left)
             _left->traverseDFS(f);
         if(_right)
             _right->traverseDFS(f);
     }
 
-    void traverseDFSPrint(const std::function<void(Node*, int)>& f, int depth = 0){
+    void traverseDFSPrint(const std::function<void(std::shared_ptr<Node>, int)>& f, int depth = 0){
         // DepthFirst - PreOrder. Used for printing with depth information
-        f(this, depth);
+        f(std::shared_ptr<Node>(this), depth);
         if(_left)
             _left->traverseDFSPrint(f, depth+1);
         if(_right)
@@ -73,12 +74,12 @@ public:
     }
 
 
-    void setLeft(Node* node){
-        _left = std::unique_ptr<Node>(node);
+    void setLeft(std::shared_ptr<Node>& node){
+        _left = node;
     }
 
-    void setRight(Node* node){
-        _right = std::unique_ptr<Node>(node);
+    void setRight(std::shared_ptr<Node>& node){
+        _right = node;
     }
 
     void setIdx(unsigned int index){
@@ -89,15 +90,27 @@ public:
         return treeIdx;
     }
 
-    Person& getData() {
-        return data;
+    [[nodiscard]]const Person& viewData() const{
+        return *data;
     }
 
-    Node& getLeft(){
+    [[nodiscard]]Person& getData(){
+        return *data;
+    }
+
+    [[nodiscard]]Node& getLeft(){
         return *_left;
     }
 
-    Node& getRight(){
+    [[nodiscard]]const Node& viewLeft() const {
+        return *_left;
+    }
+
+    [[nodiscard]] Node& getRight(){
+        return *_right;
+    }
+
+    [[nodiscard]]const Node& viewRight() const{
         return *_right;
     }
 
@@ -109,14 +122,14 @@ public:
 
 private:
     unsigned int treeIdx = -1;
-    Person data;
+    std::shared_ptr<Person> data;
     std::shared_ptr<Node> _left;
     std::shared_ptr<Node> _right;
 };
 
 std::ostream &operator<<(std::ostream &os, Node &n)
 {
-    os << "[Node] Idx: " << n.getIdx() << ", contains: " << n.getData();
+    os << "[Node] Idx: " << n.getIdx() << ", contains: " << n.viewData();
 
     return os;
 }

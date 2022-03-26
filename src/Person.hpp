@@ -24,9 +24,14 @@ public:
         setLastName(lastName);
     }
 
-    Person(json &j)
+    Person(const json &j)
     {
-        fromJson(j);
+        if(j.at("firstName") != nullptr)
+            setFirstName(j.at("firstName"));
+        if(j.at("lastName") != nullptr)
+            setLastName(j.at("lastName"));
+        if(j.at("age") != nullptr)
+            setAge(j.at("age"));
     }
 
 
@@ -49,15 +54,17 @@ public:
         return j;
     }
 
-    void fromJson(const json &j)
+    static Person fromJson(const json &j)
     {
+        Person p;
         if(j.at("firstName") != nullptr)
-            setFirstName(j.at("firstName"));
+            p.setFirstName(j.at("firstName"));
         if(j.at("lastName") != nullptr)
-            setLastName(j.at("lastName"));
+            p.setLastName(j.at("lastName"));
         if(j.at("age") != nullptr)
-            setAge(j.at("age"));
+            p.setAge(j.at("age"));
 
+        return p;
     }
 
     // TODO - Person(std::string parsedLine)
