@@ -30,20 +30,22 @@
             "data": {
                 "birthDate": "08-02-1965",
                 "deathDate": null,
-                "firstName": "Per Kristian",
+                "firstName": "Per",
+                "middleName": "Kristian",
                 "lastName": "Simengard",
                 "age" : null,
                 "isDead" : false
             },
             "treeIdx" : 3,
-            "leftIdx": null,
-            "rightIdx": null
+            "leftIdx": 6,
+            "rightIdx": 7
         },
         {
             "data": {
                 "birthDate": null,
                 "deathDate": null,
-                "firstName": "Sigurd T.",
+                "firstName": "Sigurd",
+                "middleName": "T.",
                 "lastName": "Simengard",
                 "age" : null,
                 "isDead" : false
@@ -56,15 +58,69 @@
             "data": {
                 "birthDate": null,
                 "deathDate": null,
-                "firstName": "Else Marie",
+                "firstName": "Else",
+                "middleName": "Marie",
                 "lastName": "Simengard",
                 "age" : null,
                 "isDead" : false
             },
             "treeIdx" : 5,
+            "leftIdx": 8,
+            "rightIdx": 9
+        },
+        {
+            "data": {
+                "birthDate": null,
+                "deathDate": null,
+                "firstName": "Per",
+                "lastName": "Tollersrud",
+                "age" : null,
+                "isDead" : true
+            },
+            "treeIdx" : 6,
+            "leftIdx": null,
+            "rightIdx": null
+        },
+        {
+            "data": {
+                "birthDate": null,
+                "deathDate": null,
+                "firstName": "Liv",
+                "lastName": "Tollersrud",
+                "age" : null,
+                "isDead" : true
+            },
+            "treeIdx" : 7,
+            "leftIdx": null,
+            "rightIdx": null
+        },
+        {
+            "data": {
+                "birthDate": null,
+                "deathDate": null,
+                "firstName": "Borghild",
+                "lastName": "Egge",
+                "age" : null,
+                "isDead" : true
+            },
+            "treeIdx" : 8,
+            "leftIdx": null,
+            "rightIdx": null
+        },
+        {
+            "data": {
+                "birthDate": null,
+                "deathDate": null,
+                "firstName": "Torstein",
+                "lastName": null,
+                "age" : null,
+                "isDead" : true
+            },
+            "treeIdx" : 9,
             "leftIdx": null,
             "rightIdx": null
         }
+
     ],
     "tree": {
         "settings": {

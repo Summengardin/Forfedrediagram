@@ -1,11 +1,8 @@
-//
-// Created by Martin on 17.03.2022.
-//
-
 #ifndef FORFEDREDIAGRAM_TREE_HPP
 #define FORFEDREDIAGRAM_TREE_HPP
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <utility>
 #include <memory>
@@ -17,142 +14,195 @@
 #include "Node.hpp"
 #include "Person.hpp"
 #include "../include/json.hpp"
+#include "../include/commonFunctions.hpp"
 
 using json = nlohmann::json;
 
-template<class T>
-class Tree{
+class NewTree{
+
 public:
 
+    void fillFromJson(const json& treeJson){
+        // Fill tree from json-file. Must be compatible, preferably exported from tree
 
-    T& at(unsigned int index){
-        if(index > _size){
-            throw std::runtime_error("Function ´.at()`, index out of range");
+        // Tree settings
+        if (treeJson["tree"]["settings"]["globalIndent"] != nullptr)
+            globalIndent = treeJson["tree"]["settings"]["globalIndent"];
+
+
+        COM::debug("Start filling");
+
+        std::unordered_map<int, std::shared_ptr<Node>> nodes;
+        std::unordered_map<int, std::pair<int, int>> parentIdxs; // pair.first = leftIdx, pair.second = rightIdx
+        for(auto& nodeData : treeJson["nodes"]){
+            std::unique_ptr<Node> newNode(std::make_unique<Node>(nodeData));
+
+            nodes[nodeData["treeIdx"]] = std::move(newNode);
+
+            COM::debug("Node created");
+            // Store index of parents. If no parent, index is -1
+            if(nodeData["leftIdx"] != nullptr){
+                parentIdxs[nodeData["treeIdx"]].first = nodeData["leftIdx"];
+            } else
+            {
+                parentIdxs[nodeData["treeIdx"]].first = -1;
+            }
+
+            if(nodeData["rightIdx"] != nullptr){
+                parentIdxs[nodeData["treeIdx"]].second = nodeData["rightIdx"];
+            } else
+            {
+                parentIdxs[nodeData["treeIdx"]].second = -1;
+            }
+        }
+        COM::debug("Done with filling map\n");
+
+        // Setting root node - index 1 from tree;
+        _root = nodes[1];
+        ++_size;
+
+        for(auto [key, value] : nodes){
+
+            COM::debug("Adding node to tree");
+            std::cout << *value << std::endl;
+
+            // Get index of parents
+            int leftIdx = parentIdxs[key].first;
+            int rightIdx = parentIdxs[key].second;
+
+            // Add parents if they exist
+            if(leftIdx != -1){
+                value->setLeft(nodes.at(leftIdx));
+                ++_size;
+            }
+            if(rightIdx != -1){
+                value->setRight(nodes.at(rightIdx));
+                ++_size;
+            }
         }
 
+        COM::debug("Done with filling tree");
 
-        std::unique_ptr<Node>& currentNode = _root;
-        // Depth-First Search - PreOrder
-        findNode(index, _root, currentNode);
+        std::cout << "Root is " << *_root << std::endl;
 
-        return currentNode->_data;
+        COM::debug("Before show\n");
+        show();
+        COM::debug("\nAfter show");
+
+
     }
 
-    json toJSON(std::string& filepath){
-        //TODO toJSON
-        std::ofstream file(filepath);
-
-        json j = json{"tree", {
-                {"globalIndent", 4},
-        }};
-
-        file << j << std::endl;
+    void setRoot(std::shared_ptr<Node> n){
+        _root = std::move(n);
     }
 
-    void fromJSON(std::string& filepath){
-        //TODO fromJSON()
-        std::ifstream file(filepath);
-        json import;
-        file >> import;
-
-        // Set tree settings
-        _globalIndent = import["tree"]["settings"]["globalIndent"];
-
-        // Generate people
-        std::vector<size_t> treeIdxs;
-        treeIdxs.reserve(import["nodes"].size());
-
-        for(auto& nodeData : import["nodes"]){
-            addNode(nodeData);
-        }
+    [[nodiscard]]Node& getNode(unsigned int index) {
+        //TODO
+        return *_root;
     }
 
+    [[nodiscard]]const Node& viewNode(unsigned int index) const {
+        //TODO
+        return *_root;
+    }
 
-    void addNode(json& nodeData){
-        //TODO addNode()
-        std::unique_ptr<Node> newNode = std::unique_ptr<Node>(new Node(this, nodeData));
+    [[nodiscard]] Person& getDataAt(unsigned int index) {
+        //TODO
+        return _root->getData();
+    }
+
+    [[nodiscard]] const Person& viewDataAt(unsigned int index) const {
+        //TODO
+        return _root->getData();
+    }
+
+    [[nodiscard]] Node& viewRoot() {
+        return *_root;
+    }
+
+    [[nodiscard]] Node& getRoot() {
+        return *_root;
+    }
+
+    [[nodiscard]] const Node& viewRoot() const{
+        return *_root;
+    }
+
+    void listNodes(){
         if(!_root)
-            _root = std::move(newNode);
-        else{
-
-        }
-
-
-
-        _size++;
+            return;
+        _root->traverseDFS([](Node* node){
+            std::cout << node->viewData() << std::endl;
+        });
     }
-
-    void removeNode(unsigned int index){
-        //TODO removeNode()
-    }
-
-
-//    void traverseDFS(const std::unique_ptr<Node>& n, const std::function< void(const std::unique_ptr<Node>&, int ) >& func, int depth = 0 ){
-//        // Depth-First Search - PreOrder
-//        if(!n){
-//            return;
-//        }
-//        func(n, depth);
-//        traverseDFS(n->getLeft(), func, depth + 1);
-//        traverseDFS(n->getRight(), func, depth + 1);
-//    }
 
     void show(){
-
+        if(!_root)
+            return;
+        int depth = 0;
+        int indent = globalIndent;
+        _root->traverseDFSPrint([indent](Node* node, int depth){
+            for (int i = 0; i < depth-1; ++i){
+                for (int space = 0; space < indent ; ++space){
+                    std::cout << " ";
+                }
+            }
+            if (depth != 0){
+                for (int space = 0; space < indent - 4 ; ++space){
+                    std::cout << " ";
+                }
+                std::cout << "----";
+            }
+            std::cout << node->viewData() << std::endl;
+            depth++;
+        });
     }
 
+    Node& findNodeByIdx(unsigned int index) {
+        if(_root->getIdx() == index){
+            return *_root;
+        }
+       Node* found = nullptr;
+        _root->traverseDFS([&found, index](Node* node){
+            if(node->getIdx() == index)
+                found = node;
+        });
+
+        if(found == nullptr){
+            throw std::runtime_error("In function 'findByIndex': could not find index " + std::to_string(index));
+        }
+        return *found;
+    }
+
+    std::vector<Node*> findNodeByString(const std::string& name) {
+        std::vector<Node*> nodes;
+        if(!_root){
+            return nodes;
+        }
+
+        Node* found = nullptr;
+        _root->traverseDFS([&found, name, &nodes](Node* node){
+            if(node->getData().contains(name))
+                nodes.push_back(node);
+        });
+
+        return nodes;
+    }
+
+
+    void addParent(int childIndex,  Node* node){
+        Node& childNode = findNodeByIdx(childIndex);
+        if(childNode.addParent(std::shared_ptr<Node>(node)))
+            ++_size;
+    }
 
 private:
-    struct Node {
-        Node(Tree* t, json& nodeData):
-            _data(T(nodeData["data"])),
-            _treeIdx(nodeData["treeIdx"])
-        {
-            //_left = t->at(nodeData["left"]);
-            //_right = t->at(nodeData["right"]);
-        };
-        // TODO - Node(std::string& parseNode)
-        // Make Node from a string of relations
+    std::shared_ptr<Node> _root;
+    std::size_t _size = 0;
 
-        friend std::ostream& operator<<(std::ostream& os, Node& n);
-
-        size_t _treeIdx = 0;
-        T _data;
-        std::unique_ptr<Node> _left;
-        std::unique_ptr<Node> _right;
-    };
-
-    friend std::ostream& operator<<(std::ostream& os, Node& n){
-       os << "[Node] idx: " << n._treeIdx << "constains data: " << n._data;
-       return os;
-    }
-
-    bool findNode(unsigned int index, std::unique_ptr<Node>& node, std::unique_ptr<Node>& foundNode){
-        if (!node){
-            return false;
-        }
-
-        if(index == node->_treeIdx) {
-            foundNode = std::move(node);
-            return true;
-        }
-        else if (findNode(index, node->_left, foundNode))
-            return true;
-        else if (findNode(index, node->_right, foundNode))
-            return true;
-        else
-            return false;
-
-    }
-
-    std::unique_ptr<Node> _root;
-
-    // Settings
-    int _globalIndent = 50;
-    size_t _size = 0;
-    size_t nextFreeIdx = 1;
+    //settings
+    int globalIndent = 5;
 };
-
 
 
 #endif //FORFEDREDIAGRAM_TREE_HPP

@@ -1,7 +1,3 @@
-//
-// Created by Martin on 15.03.2022.
-//
-
 #ifndef FORFEDREDIAGRAM_NODE_HPP
 #define FORFEDREDIAGRAM_NODE_HPP
 
@@ -20,7 +16,7 @@ public:
 
     explicit Node(const json& j){
         data = std::make_shared<Person>(j["data"]);
-        data->fromJson(j["data"]);
+        //data->fromJson(j["data"]);
         if(j["treeIdx"] != nullptr)
             treeIdx = j["treeIdx"];
     }
@@ -34,14 +30,17 @@ public:
         data = std::make_shared<Person>(p);
     }
 
-    void addParent(const std::shared_ptr<Node>& n){
+    bool addParent(const std::shared_ptr<Node>& n){
+        // Returns true if successfully added parent, false if not.
         if(!_left){
             _left = n; //std::move(n);
         } else if(!_right){
             _right = n; //std::move(n);
         } else{
-            std::cout << "Person har allerede to foreldre" << std::endl;
+            std::cout << "Node already has to links" << std::endl;
+            return false;
         }
+        return true;
     }
 
     void addParent(const Person& p){

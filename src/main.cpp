@@ -1,20 +1,20 @@
-//
-// Created by Martin on 3/3/2022.
-//
-
 #include <iostream>
 #include <memory>
 #include <vector>
 #include <fstream>
+#include <ctime>
+#include <chrono>
 
 
 #include "Node.hpp"
 #include "Person.hpp"
 #include "Tree.hpp"
-#include "newTree.hpp"
-#include "../include/UsefulFunctions.hpp"
+#include "../include/date.hpp"
+#include "../include/commonFunctions.hpp"
 
 int main(){
+    Today today;
+    std::cout << "Today it is " << today() << std::endl;
 
     // Overskrift
     std::cout << "\n--------------------------------" << std::endl;
@@ -23,7 +23,7 @@ int main(){
 
 
     // Henter filer å lese fra og skrive til
-    std::string fromFile{"../test/FirstTree.json"};
+    std::string fromFile{"../test/AnonymTestData.json"};
     std::ifstream jsonFile(fromFile);
 
  //   std::string toFile{"../test/NewTree.json"};
@@ -35,13 +35,12 @@ int main(){
 
     // Generere tre
 //    Tree<Person> tree;
-    NewTree betterTree;
     NewTree anotherTree;
 
     anotherTree.fillFromJson(treeData);
     //anotherTree.listNodes();
 
-    MM::debug("Next Tree");
+    COM::debug("Next Tree");
 
     Node Martin(treeData["nodes"][0]);
     Node Astrid = Node(treeData["nodes"][1]);
@@ -52,8 +51,6 @@ int main(){
     Martin.setIdx(treeData["nodes"][0]["treeIdx"]);
 
     std::shared_ptr<Node> MartinPtr = std::make_shared<Node>(Martin);
-    betterTree.setRoot(MartinPtr);
-    betterTree.getDataAt(1).setFirstName("MartinSen");
 
     Martin.addParent(std::make_shared<Node>(Astrid));
 
@@ -73,29 +70,31 @@ int main(){
 
 
     std::cout << Martin << std::endl;
-    std::cout << betterTree.getNode(1) << std::endl;
     std::cout << *Martin.getParents().first << ", " << *Martin.getParents().second<< std::endl;
     std::cout << Astrid << std::endl;
 
     std::cout << Martin.getLeft() << std::endl;
 
-    MM::debug("Get root");
-    std::cout << betterTree.viewRoot() << std::endl;
+    COM::debug("Get root");
 
     std::cout << "\n";
-    MM::debug("List nodes");
+    COM::debug("List nodes");
     anotherTree.listNodes();
-    betterTree.listNodes();
-    MM::debug("Tree show");
+    COM::debug("Tree show");
     anotherTree.show();
-    betterTree.show();
 
 
-    MM::debug("Find by index");
-    std::cout << anotherTree.findNodeByIdx(3) << std::endl;
+    COM::debug("Find by index");
+    int indexToFind = 6;
+    std::cout << "Finding index: " << indexToFind << "\n";
+    std::cout << anotherTree.findNodeByIdx(indexToFind) << std::endl;
 
+    COM::debug("Find by name");
+    std::string nameToFind = "Tollersrud";
+    std::cout << "Finding index: " << nameToFind << "\n";
+    for (const auto& node : anotherTree.findNodeByString(nameToFind))
 
-
+        std::cout << *node << std::endl;
 
     return EXIT_SUCCESS;
 }

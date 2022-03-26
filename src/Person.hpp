@@ -1,15 +1,13 @@
-//
-// Created by simen on 3/3/2022.
-//
-
 #ifndef FORFEDREDIAGRAM_PERSON_HPP
 #define FORFEDREDIAGRAM_PERSON_HPP
 
 #include <iostream>
 #include <utility>
+#include <variant>
+#include <optional>
 
 #include "../include/json.hpp"
-#include "../include/UsefulFunctions.hpp"
+#include "../include/commonFunctions.hpp"
 
 using json = nlohmann::json;
 
@@ -24,68 +22,78 @@ public:
         setLastName(lastName);
     }
 
-    Person(const json &j)
+    explicit Person(const json &j)
     {
-        if(j.at("firstName") != nullptr)
-            setFirstName(j.at("firstName"));
-        if(j.at("lastName") != nullptr)
-            setLastName(j.at("lastName"));
-        if(j.at("age") != nullptr)
-            setAge(j.at("age"));
+        if(j.contains("firstName") and j.at("firstName").is_string())
+            _firstName = j.at("firstName");
+        if(j.contains("middleName") and j.at("middleName").is_string())
+            _middleName = j.at("middleName");
+        if(j.contains("lastName") and j.at("lastName").is_string())
+            _lastName = j.at("lastName");
+        if(j.contains("birth") and j.at("birth").is_string())
+            _birth = j.at("birth");
+        if(j.contains("death") and j.at("death").is_string())
+            _death = j.at("death");
+        if(j.contains("isDead") and j.at("isDead").is_boolean())
+            _isDead = j.at("isDead");
     }
 
 
     static Person generate()
     {
         std::cout << "Opprett ny person: " << std::endl;
-        auto fName = MM::getUserInput<std::string>("Fornavn: ");
-        auto lName = MM::getUserInput<std::string>("Fornavn: ");
-        auto bday = MM::getUserInput<std::string>("Birthday [dd-mm-yyyy]: ");
+        auto fName = COM::getUserInput<std::string>("Fornavn: ");
+        auto lName = COM::getUserInput<std::string>("Fornavn: ");
+        auto bday = COM::getUserInput<std::string>("Birthday [DD-MM-YYYY]: ");
         return Person{fName, lName};
     }
 
     [[nodiscard]] json toJson() const
     {
         json j = json{
-                {"firstName", getFirstName()},
-                {"lastName",  getLastName()},
-                {"age",       getAge()}
+                {"firstName", _firstName},
+                {"lastName",  _lastName},
+                {"birth",     _birth},
+                {"death",     nullptr},
+                {"isDeath",   _isDead}
+
         };
         return j;
     }
 
-    static Person fromJson(const json &j)
-    {
-        Person p;
-        if(j.at("firstName") != nullptr)
-            p.setFirstName(j.at("firstName"));
-        if(j.at("lastName") != nullptr)
-            p.setLastName(j.at("lastName"));
-        if(j.at("age") != nullptr)
-            p.setAge(j.at("age"));
 
-        return p;
-    }
-
-    // TODO - Person(std::string parsedLine)
-    // Gjør det mulig å lage person fra en lang JSON-fil
-
-
-    [[nodiscard]] std::string getFirstName() const
+    [[nodiscard]] const std::string& getFirstName() const
     {
         return _firstName;
     }
 
 
-    [[nodiscard]] std::string getLastName() const
+    [[nodiscard]] const std::string& getMiddleName() const
+    {
+        return _middleName;
+    }
+
+
+    [[nodiscard]] const std::string& getLastName() const
     {
         return _lastName;
     }
 
-
-    [[nodiscard]] int getAge() const
+    [[nodiscard]] std::string getFullName() const
     {
-        return _age;
+        return _firstName + " " + (_middleName.empty() ? "" : (_middleName + " ")) + _lastName;
+    }
+
+
+    [[nodiscard]] bool contains (const std::string& str) const{
+        std::vector<std::string> nameSplitted = COM::splitString(getFullName(), ' ');
+        return (std::find( nameSplitted.begin(), nameSplitted.end(), str) != nameSplitted.end());
+    }
+
+
+    [[nodiscard]] const std::string& getBirth() const
+    {
+        return _birth;
     }
 
 
@@ -101,15 +109,15 @@ public:
     }
 
 
-    void setAge(int age)
+    void setBirth(const std::string& birth)
     {
-        _age = age;
+        _birth = birth;
     }
 
     void viewDetails(){
         std::cout << "[Person]:\n"
-        << "Full name: " << _firstName << " " << _lastName;
-
+        << "Full name: " << getFullName() <<  "\n"
+        << "Was born on " << _birth << std::endl;
     }
 
 
@@ -119,18 +127,20 @@ private:
     std::string _firstName;
     std::string _middleName;
     std::string _lastName;
-    int _age = -1;
-    //MM::Date _birthday;
+    std::string _birth;
+    std::string _death;
+    bool _isDead{false};
+    //COM::Date _birthday;
 };
 
 std::ostream &operator<<(std::ostream &os, const Person &p)
 {
-    if (p.getFirstName().empty() and p.getLastName().empty())
+    if (p.getFullName().empty())
     {
         os << "Empty person";
     } else
     {
-        os << "[Person] Name: " << p.getFirstName() << " " << p.getLastName();
+        os << "[Person] Name: " << p.getFullName() << (p._isDead ?  " \u2620" : " \u2665");
     }
     return os;
 }

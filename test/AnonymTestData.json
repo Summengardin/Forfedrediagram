@@ -1,0 +1,131 @@
+{
+  "nodes": [
+    {
+      "data": {
+        "birthDate": "22-06-1999",
+        "deathDate": null,
+        "firstName": "Rot",
+        "lastName": "Rotesen",
+        "age" : 22,
+        "isDead" : false
+      },
+      "treeIdx" : 1,
+      "leftIdx": 2,
+      "rightIdx": 3
+    },
+    {
+      "data": {
+        "birthDate": "11-03-1968",
+        "deathDate": null,
+        "firstName": "Mor",
+        "lastName": "Morsen",
+        "age" : null,
+        "isDead" : false
+      },
+      "treeIdx" : 2,
+      "leftIdx": 5,
+      "rightIdx": 4
+    },
+    {
+      "data": {
+        "birthDate": "08-02-1965",
+        "deathDate": null,
+        "firstName": "Far",
+        "middleName": "Faren",
+        "lastName": "Farsen",
+        "age" : null,
+        "isDead" : false
+      },
+      "treeIdx" : 3,
+      "leftIdx": 6,
+      "rightIdx": 7
+    },
+    {
+      "data": {
+        "birthDate": null,
+        "deathDate": null,
+        "firstName": "Bestefar",
+        "middleName": "",
+        "lastName": "Bestefarsen",
+        "age" : null,
+        "isDead" : false
+      },
+      "treeIdx" : 4,
+      "leftIdx": null,
+      "rightIdx": null
+    },
+    {
+      "data": {
+        "birthDate": null,
+        "deathDate": null,
+        "firstName": "Mormor",
+        "middleName": "Besta",
+        "lastName": "Bestemorsen",
+        "age" : null,
+        "isDead" : false
+      },
+      "treeIdx" : 5,
+      "leftIdx": 8,
+      "rightIdx": 9
+    },
+    {
+      "data": {
+        "birthDate": null,
+        "deathDate": null,
+        "firstName": "Farfar",
+        "lastName": "Farfarsen",
+        "age" : null,
+        "isDead" : true
+      },
+      "treeIdx" : 6,
+      "leftIdx": null,
+      "rightIdx": null
+    },
+    {
+      "data": {
+        "birthDate": null,
+        "deathDate": null,
+        "firstName": "Farmor",
+        "lastName": "Farmorsen",
+        "age" : null,
+        "isDead" : true
+      },
+      "treeIdx" : 7,
+      "leftIdx": null,
+      "rightIdx": null
+    },
+    {
+      "data": {
+        "birthDate": null,
+        "deathDate": null,
+        "firstName": "Oldemor",
+        "lastName": "Oldemorsen",
+        "age" : null,
+        "isDead" : true
+      },
+      "treeIdx" : 8,
+      "leftIdx": null,
+      "rightIdx": null
+    },
+    {
+      "data": {
+        "birthDate": null,
+        "deathDate": null,
+        "firstName": "Oldefar",
+        "middleName": "Oldingen",
+        "lastName": "Oldefarsen",
+        "age" : null,
+        "isDead" : true
+      },
+      "treeIdx" : 9,
+      "leftIdx": null,
+      "rightIdx": null
+    }
+
+  ],
+  "tree": {
+    "settings": {
+      "globalIndent": 4
+    }
+  }
+}
