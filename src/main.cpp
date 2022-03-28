@@ -22,7 +22,7 @@ int main(){
 
 
     // Henter filer å lese fra og skrive til
-    std::string fromFile{"../test/FirstTree.json"};
+    std::string fromFile{"../test/test_files/FirstTree.json"};
     std::ifstream jsonFile(fromFile);
 
 
@@ -52,6 +52,13 @@ int main(){
     std::cout << "Finding index: " << indexToFind << "\n";
     std::cout << anotherTree.findNodeByIdx(indexToFind) << std::endl;
 
+
+    // Genereate new person:
+    Person newPerson = Person::generate();
+    newPerson.viewDetails();
+    std::shared_ptr<Node> newNode = std::make_shared<Node>(newPerson);
+    anotherTree.findNodeByIdx(indexToFind).addParent(newNode);
+
     COM::debug("Find by name");
     std::string nameToFind = "Simengard";
     std::cout << "Finding index: " << nameToFind << "\n";
@@ -63,7 +70,7 @@ int main(){
 
 
     COM::debug("Write to file");
-    std::string outputFile{"../test/Tree.json"};
+    std::string outputFile{"../test/test_files/Tree.json"};
     std::ofstream saveToFile(outputFile);
     saveToFile << anotherTree.toJson().dump(4);
 

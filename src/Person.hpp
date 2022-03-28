@@ -48,11 +48,12 @@ public:
 
     static Person generate()
     {
+        Person p;
         std::cout << "Opprett ny person: " << std::endl;
-        auto fName = COM::getUserInput<std::string>("Fornavn: ");
-        auto lName = COM::getUserInput<std::string>("Etternavn: ");
-        auto bday = COM::getUserInput<std::string>("Bursdag [DD-MM-YYYY]: ");
-        return Person{fName, lName};
+        p._firstName = COM::getUserInput<std::string>("Fornavn: ");
+        p._lastName = COM::getUserInput<std::string>("Etternavn: ");
+        p._birth = Date(COM::getUserInput<std::string>("Bursdag [DD-MM-YYYY]: "));
+        return p;
     }
 
 

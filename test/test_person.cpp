@@ -22,3 +22,13 @@ TEST_CASE("Getters Person"){
     REQUIRE(lName == Martin.getLastName());
 }
 
+TEST_CASE("Get age"){
+    std::string date = "22-06-1999";
+    int actualAge = 22;
+
+    Person person;
+    person.setBirth(date);
+
+    REQUIRE(person.getAge() == actualAge);
+}
+

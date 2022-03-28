@@ -1,6 +1,0 @@
-Node
-1;2;3;4
-2;2;3;4
-3;2;5;4
-Person
-Martin;Simengård;22-06-1999

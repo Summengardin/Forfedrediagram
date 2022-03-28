@@ -37,3 +37,4 @@
 
 # Testing - uncomment /test for ignoring the test system
 #/test
+/test/test_files
