@@ -8,6 +8,7 @@
 
 #include "../include/json.hpp"
 #include "../include/commonFunctions.hpp"
+#include "globals.hpp"
 
 using json = nlohmann::json;
 
@@ -30,8 +31,14 @@ public:
             _middleName = j.at("middleName");
         if(j.contains("lastName") and j.at("lastName").is_string())
             _lastName = j.at("lastName");
-        if(j.contains("birth") and j.at("birth").is_string())
-            _birth = j.at("birth");
+        if(j.contains("birth") and j.at("birth").is_string()){
+            std::string birthStr = j["birth"];
+            _birth = Date(birthStr);
+            std::cout << _birth.to_string() << std::endl;
+        } else
+        {
+            _birth = Date();
+        }
         if(j.contains("death") and j.at("death").is_string())
             _death = j.at("death");
         if(j.contains("isDead") and j.at("isDead").is_boolean())
@@ -43,20 +50,21 @@ public:
     {
         std::cout << "Opprett ny person: " << std::endl;
         auto fName = COM::getUserInput<std::string>("Fornavn: ");
-        auto lName = COM::getUserInput<std::string>("Fornavn: ");
-        auto bday = COM::getUserInput<std::string>("Birthday [DD-MM-YYYY]: ");
+        auto lName = COM::getUserInput<std::string>("Etternavn: ");
+        auto bday = COM::getUserInput<std::string>("Bursdag [DD-MM-YYYY]: ");
         return Person{fName, lName};
     }
+
 
     [[nodiscard]] json toJson() const
     {
         json j = json{
                 {"firstName", _firstName},
-                {"lastName",  _lastName},
-                {"birth",     _birth},
-                {"death",     nullptr},
-                {"isDeath",   _isDead}
-
+                {"lastName", _lastName},
+                {"middleName", _middleName},
+                {"birth", _birth.to_string()},
+                {"death", nullptr},
+                {"isDeath", _isDead}
         };
         return j;
     }
@@ -91,11 +99,15 @@ public:
     }
 
 
-    [[nodiscard]] const std::string& getBirth() const
+    [[nodiscard]] const Date& getBirth() const
     {
         return _birth;
     }
 
+
+    [[nodiscard]] int getAge() const{
+        return Date::yearsBetween(today(), _birth);
+    }
 
     void setFirstName(const std::string &firstName)
     {
@@ -111,13 +123,13 @@ public:
 
     void setBirth(const std::string& birth)
     {
-        _birth = birth;
+        _birth = Date(birth);
     }
 
     void viewDetails(){
         std::cout << "[Person]:\n"
         << "Full name: " << getFullName() <<  "\n"
-        << "Was born on " << _birth << std::endl;
+        << "Was born on " << _birth.to_string() << std::endl;
     }
 
 
@@ -127,7 +139,7 @@ private:
     std::string _firstName;
     std::string _middleName;
     std::string _lastName;
-    std::string _birth;
+    Date _birth;
     std::string _death;
     bool _isDead{false};
     //COM::Date _birthday;

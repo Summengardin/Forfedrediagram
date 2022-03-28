@@ -18,7 +18,7 @@
 
 using json = nlohmann::json;
 
-class NewTree{
+class Tree{
 
 public:
 
@@ -41,7 +41,7 @@ public:
 
             COM::debug("Node created");
             // Store index of parents. If no parent, index is -1
-            if(nodeData["leftIdx"] != nullptr){
+            if(nodeData.contains("leftIdx") and nodeData["leftIdx"].is_number_integer()){
                 parentIdxs[nodeData["treeIdx"]].first = nodeData["leftIdx"];
             } else
             {
@@ -89,8 +89,30 @@ public:
         show();
         COM::debug("\nAfter show");
 
-
     }
+
+
+    [[nodiscard]] json toJson() const
+    {
+        json nodes;
+        _root->traverseDFS([&nodes](Node* node){
+            nodes.push_back(node->toJson());
+        });
+
+        json j = json{
+                {"nodes", nodes,},
+                {
+                    "tree", {
+                        {"settings",{
+                            {"globalIndent", globalIndent}
+                            }
+                        }
+                    }
+                }
+        };
+        return j;
+    }
+
 
     void setRoot(std::shared_ptr<Node> n){
         _root = std::move(n);
@@ -174,15 +196,17 @@ public:
         return *found;
     }
 
-    std::vector<Node*> findNodeByString(const std::string& name) {
+
+    std::vector<Node*> findNodeByString(const std::string& str) {
+        // Will return a vector with pointers to all nodes containing a string = str
         std::vector<Node*> nodes;
         if(!_root){
             return nodes;
         }
 
         Node* found = nullptr;
-        _root->traverseDFS([&found, name, &nodes](Node* node){
-            if(node->getData().contains(name))
+        _root->traverseDFS([&found, str, &nodes](Node* node){
+            if(node->getData().contains(str))
                 nodes.push_back(node);
         });
 

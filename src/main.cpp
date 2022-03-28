@@ -13,8 +13,7 @@
 #include "../include/commonFunctions.hpp"
 
 int main(){
-    Today today;
-    std::cout << "Today it is " << today() << std::endl;
+    std::cout << "Today it is " << today().to_string() << std::endl;
 
     // Overskrift
     std::cout << "\n--------------------------------" << std::endl;
@@ -23,10 +22,10 @@ int main(){
 
 
     // Henter filer å lese fra og skrive til
-    std::string fromFile{"../test/AnonymTestData.json"};
+    std::string fromFile{"../test/FirstTree.json"};
     std::ifstream jsonFile(fromFile);
 
- //   std::string toFile{"../test/NewTree.json"};
+
  //   std::string MartinFile{"../test/MartinPerson.json"};
 
     // Henter ut filen som et JSON-objekt
@@ -35,47 +34,11 @@ int main(){
 
     // Generere tre
 //    Tree<Person> tree;
-    NewTree anotherTree;
+    Tree anotherTree;
 
     anotherTree.fillFromJson(treeData);
     //anotherTree.listNodes();
 
-    COM::debug("Next Tree");
-
-    Node Martin(treeData["nodes"][0]);
-    Node Astrid = Node(treeData["nodes"][1]);
-
-    std::cout << Martin.viewData() << std::endl;
-    Martin.getData().setFirstName("Martin");
-    Martin.getData().setLastName("Simengard");
-    Martin.setIdx(treeData["nodes"][0]["treeIdx"]);
-
-    std::shared_ptr<Node> MartinPtr = std::make_shared<Node>(Martin);
-
-    Martin.addParent(std::make_shared<Node>(Astrid));
-
-    {
-        Node PK(treeData["nodes"][2]);
-        Martin.addParent(std::make_shared<Node>(PK));
-
-    }
-
-    {
-        Node Sigurd(treeData["nodes"][3]);
-        Astrid.addParent(std::make_shared<Node>(Sigurd));
-    }
-
-    Node ElseMarie = Node(treeData["nodes"][4]);
-    Astrid.addParent(std::make_shared<Node>(ElseMarie));
-
-
-    std::cout << Martin << std::endl;
-    std::cout << *Martin.getParents().first << ", " << *Martin.getParents().second<< std::endl;
-    std::cout << Astrid << std::endl;
-
-    std::cout << Martin.getLeft() << std::endl;
-
-    COM::debug("Get root");
 
     std::cout << "\n";
     COM::debug("List nodes");
@@ -90,11 +53,19 @@ int main(){
     std::cout << anotherTree.findNodeByIdx(indexToFind) << std::endl;
 
     COM::debug("Find by name");
-    std::string nameToFind = "Tollersrud";
+    std::string nameToFind = "Simengard";
     std::cout << "Finding index: " << nameToFind << "\n";
-    for (const auto& node : anotherTree.findNodeByString(nameToFind))
+    for (const auto& node : anotherTree.findNodeByString(nameToFind)){
+        std::cout << *node << ". ";
+        std::cout << "Age is :" << node->getData().getAge() << std::endl;
+    }
 
-        std::cout << *node << std::endl;
+
+
+    COM::debug("Write to file");
+    std::string outputFile{"../test/Tree.json"};
+    std::ofstream saveToFile(outputFile);
+    saveToFile << anotherTree.toJson().dump(4);
 
     return EXIT_SUCCESS;
 }

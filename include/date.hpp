@@ -8,7 +8,7 @@
 #include <regex>
 #include <chrono>
 
-//#include "commonFunctions.hpp"
+#include "commonFunctions.hpp"
 
 class Date{
 public:
@@ -26,12 +26,16 @@ public:
     }
 
 
-    [[nodiscard]] std::string getDate() const{
+    [[nodiscard]] Date getDate() const{
+        //TODO
+        return *this;
+    }
+
+    [[nodiscard]] std::string to_string() const{
         return (_day < 10 ? "0" : "") + std::to_string(_day)
                + "-" + (_month < 10 ? "0" : "") + std::to_string(_month)
                + "-" + std::to_string(_year);
     }
-
 
     [[nodiscard]] int getDay() const {
         return _day;
@@ -63,6 +67,14 @@ public:
         return std::regex_match(dateAsString, match, format);
     }
 
+    [[nodiscard]]static int yearsBetween(const Date& date1, const Date& date2){
+        if(date1._year > 0 and date2._year > 0)
+        {
+            return date1._year - date2._year;
+        }
+        else return 0;
+    }
+
 
 protected:
     int _day = 0;
@@ -76,7 +88,7 @@ protected:
 class Today : public Date{
 public:
 
-    std::string operator()(){
+    Date operator()(){
         update();
         return getDate();
     }
@@ -90,6 +102,8 @@ public:
         _day = localTime.tm_mday;
         _month = localTime.tm_mon + 1;
         _year = localTime.tm_year + 1900;
+
+
     }
 };
 

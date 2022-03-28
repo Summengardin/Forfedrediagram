@@ -6,29 +6,62 @@
 #include <utility>
 #include <memory>
 
+#include "globals.hpp"
 #include "Person.hpp"
 #include "../include/json.hpp"
 using json = nlohmann::json;
 
 class Node{
 public:
-    Node() = default;
-
     explicit Node(const json& j){
         data = std::make_shared<Person>(j["data"]);
         //data->fromJson(j["data"]);
-        if(j["treeIdx"] != nullptr)
-            treeIdx = j["treeIdx"];
+//        if(j.contains("treeIdx") and j["treeIdx"] != nullptr)
+//            _treeIdx = j["treeIdx"];
+        if(j.contains("treeIndex") and j["treeIndex"].is_string())
+        {
+            _treeIdx = j["treeIndex"];
+            TreeId.update(_treeIdx);
+        }
+        else
+            _treeIdx = TreeId();
     }
 
 
     explicit Node(const Person& p){
         data = std::make_shared<Person>(p);
+        _treeIdx = TreeId();
     }
 
-    void addData(const Person& p){
+
+    [[nodiscard]] json toJson() const
+    {
+        int leftIndex, rightIndex;
+        if(_left)
+            leftIndex = _left->_treeIdx;
+        else
+            leftIndex = -1;
+
+        if(_right)
+            rightIndex = _right->_treeIdx;
+        else
+            rightIndex = -1;
+
+
+        json j = json{
+                {"data",     data->toJson()},
+                {"treeIdx", _treeIdx},
+                {"leftIdx",  leftIndex},
+                {"rightIdx",  rightIndex},
+        };
+        return j;
+    }
+
+
+    void setData(const Person& p){
         data = std::make_shared<Person>(p);
     }
+
 
     bool addParent(const std::shared_ptr<Node>& n){
         // Returns true if successfully added parent, false if not.
@@ -43,6 +76,7 @@ public:
         return true;
     }
 
+
     void addParent(const Person& p){
 
         if(!_left){
@@ -54,6 +88,7 @@ public:
         }
     }
 
+
     void traverseDFS(const std::function<void(Node*)>& f){
         // DepthFirst - PreOrder
         f(this);
@@ -62,6 +97,7 @@ public:
         if(_right)
             _right->traverseDFS(f);
     }
+
 
     void traverseDFSPrint(const std::function<void(Node*, int)>& f, int depth = 0){
         // DepthFirst - PreOrder. Used for printing with depth information
@@ -77,16 +113,19 @@ public:
         _left = node;
     }
 
+
     void setRight(std::shared_ptr<Node>& node){
         _right = node;
     }
 
+
     void setIdx(unsigned int index){
-        treeIdx = index;
+        _treeIdx = index;
     }
 
+
     [[nodiscard]] unsigned int getIdx() const{
-        return treeIdx;
+        return _treeIdx;
     }
 
     [[nodiscard]]const Person& viewData() const{
@@ -120,16 +159,17 @@ public:
     friend std::ostream &operator<<(std::ostream &os, Node &n);
 
 private:
-    unsigned int treeIdx = -1;
+    unsigned int _treeIdx;
+    unsigned int id;
     std::shared_ptr<Person> data;
     std::shared_ptr<Node> _left;
     std::shared_ptr<Node> _right;
 };
 
+
 std::ostream &operator<<(std::ostream &os, Node &n)
 {
     os << "[Node] Idx: " << n.getIdx() << ", contains: " << n.viewData();
-
     return os;
 }
 

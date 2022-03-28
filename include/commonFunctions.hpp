@@ -43,7 +43,7 @@ namespace COM{
 
 
     void debug(const std::string& prompt){
-        if(false)
+        if(true)
             std::cout << "\n" << "DEBUG: " << prompt << std::endl;
     }
 
