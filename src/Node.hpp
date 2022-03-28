@@ -89,23 +89,32 @@ public:
     }
 
 
-    void traverseDFS(const std::function<void(Node*)>& f){
+    void traverseDFS(const std::function<void(Node*)>& f) {
         // DepthFirst - PreOrder
         f(this);
-        if(_left)
+        
+        if (_left)
             _left->traverseDFS(f);
-        if(_right)
+
+        if (_right)
             _right->traverseDFS(f);
     }
 
 
     void traverseDFSPrint(const std::function<void(Node*, int)>& f, int depth = 0){
-        // DepthFirst - PreOrder. Used for printing with depth information
-        f(this, depth);
+        // DepthFirst - InOrder. Used for printing with depth information
+
         if(_left)
             _left->traverseDFSPrint(f, depth+1);
+        f(this, depth);
         if(_right)
             _right->traverseDFSPrint(f, depth+1);
+    }
+
+
+    void traverseBFS(const std::function<void(Node*)>& f){
+
+
     }
 
 
@@ -144,12 +153,21 @@ public:
         return *_left;
     }
 
+    [[nodiscard]] Node* leftPtr() const {
+        return _left.get();
+    }
+
+
     [[nodiscard]] Node& getRight(){
         return *_right;
     }
 
     [[nodiscard]]const Node& viewRight() const{
         return *_right;
+    }
+
+    [[nodiscard]] Node* rightPtr() const {
+        return _right.get();
     }
 
     std::pair<std::shared_ptr<Node>, std::shared_ptr<Node>> getParents(){

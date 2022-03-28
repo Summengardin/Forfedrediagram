@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <vector>
 #include <fstream>
+#include <queue>
 
 #include "Node.hpp"
 #include "Person.hpp"
@@ -150,6 +151,28 @@ public:
         return *_root;
     }
 
+
+    void traverserBFS(){
+        std::queue<Node*> Q;
+
+        if(_root)
+            Q.push(_root.get());
+
+        while(!Q.empty()){
+            Node* currentNode = Q.front();
+
+            if(currentNode->leftPtr())
+                Q.push(currentNode->leftPtr());
+            if(currentNode->rightPtr())
+                Q.push(currentNode->rightPtr());
+
+            std::cout << *currentNode << std::endl;
+            Q.pop();
+        }
+
+    }
+
+
     void listNodes(){
         if(!_root)
             return;
@@ -162,7 +185,7 @@ public:
         if(!_root)
             return;
         int depth = 0;
-        int indent = globalIndent;
+        int indent = 30;
         _root->traverseDFSPrint([indent](Node* node, int depth){
             for (int i = 0; i < depth-1; ++i){
                 for (int space = 0; space < indent ; ++space){

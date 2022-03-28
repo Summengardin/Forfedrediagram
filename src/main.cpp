@@ -68,6 +68,10 @@ int main(){
     }
 
 
+    COM::debug("Traverser BFS:");
+    anotherTree.traverserBFS();
+
+
 
     COM::debug("Write to file");
     std::string outputFile{"../test/test_files/Tree.json"};
