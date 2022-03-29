@@ -11,8 +11,17 @@
 #include "Tree.hpp"
 #include "../include/date.hpp"
 #include "../include/commonFunctions.hpp"
+#include "../include/simpleMenu.hpp"
+
+
 
 int main(){
+    Menu mainMenu = {"Hovedmeny",{"Show tree", } }
+
+
+
+
+
     std::cout << "Today it is " << today().to_string() << std::endl;
 
     // Overskrift

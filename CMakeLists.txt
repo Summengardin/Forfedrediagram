@@ -7,7 +7,7 @@ add_executable(forfedrediagram
         src/main.cpp
         src/Person.hpp
         src/Node.hpp
-        src/Tree.hpp src/globals.hpp)
+        src/Tree.hpp src/globals.hpp include/simpleMenu.hpp)
 
 
 add_executable(TestTree
