@@ -68,10 +68,7 @@ public:
     {
         Person p;
         std::cout << "Opprett ny person: " << std::endl;
-        p._firstName = COM::getString("Fornavn: ");
-        p._middleName = COM::getString("Mellomnavn: ");
-        p._lastName = COM::getString("Etternavn: ");
-        p._birth = Date(COM::getString("Bursdag [DD-MM-YYYY]: "));
+        p.edit();
         return p;
     }
 
@@ -153,7 +150,17 @@ public:
 
 
     void edit(){
-        std::cout << "Editing " << getFullName() << std::endl;
+        _firstName = COM::getString("Fornavn: ");
+        _middleName = COM::getString("Mellomnavn: ");
+        _lastName = COM::getString("Etternavn: ");
+        _birth = Date(COM::getString("Når ble " + _firstName + " " + _middleName + " født? [DD-MM-YYYY]: "));
+        auto aliveAnswer = COM::getString("Er personen " + _firstName + " " + _middleName + " i live? (y/n)");
+        if(aliveAnswer == "y" or aliveAnswer == "Y")
+            _isDead = false;
+        else if (aliveAnswer == "n" or aliveAnswer == "N")
+            _isDead = true;
+        if(_isDead)
+            _birth = Date(COM::getString("Når døde personen? [DD-MM-YYYY]: "));
     }
 
 

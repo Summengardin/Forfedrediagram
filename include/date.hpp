@@ -32,15 +32,18 @@ public:
     }
 
 
-    [[nodiscard]] bool isValid(){
+    [[nodiscard]] bool isValid() const{
         return !(_day == 0 or _month == 0 or _year == 0);
     }
 
 
     [[nodiscard]] std::string toString() const{
-        return (_day < 10 ? "0" : "") + std::to_string(_day)
-               + "-" + (_month < 10 ? "0" : "") + std::to_string(_month)
-               + "-" + std::to_string(_year);
+        if(isValid()) {
+            return (_day < 10 ? "0" : "") + std::to_string(_day)
+                   + "-" + (_month < 10 ? "0" : "") + std::to_string(_month)
+                   + "-" + std::to_string(_year);
+        }
+        return "Unknown date";
     }
 
     [[nodiscard]] int getDay() const {

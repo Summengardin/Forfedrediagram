@@ -21,7 +21,7 @@ int main(){
                      }
     };
     //Menu
-    Menu mainMenu{"Hovedmeny",
+    Menu mainMenu{"HOVEDMENY",
                   {
                 {"Vis tre", [&familyTree](){ familyTree.show(); } },
 
@@ -45,7 +45,9 @@ int main(){
                         Menu editPerson;
                         for (auto &node: familyTree.findNodeByString(name)) {
                             Person& person = node->getData();
-                            editPerson.append({person.getFullName() + " " + person.getBirth().toString(), [&person]() {
+                            editPerson.append({
+                                person.getFullName() + " " + (person.getBirth().isValid() ? person.getBirth().toString() : "")
+                                , [&person]() {
                                 person.edit();
                             }});
                         }

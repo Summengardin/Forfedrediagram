@@ -20,6 +20,7 @@ namespace COM{
         std::cout << prompt << std::endl;
 
         std::string input;
+
         std::getline(std::cin >> std::ws, input);
 
         return input;
