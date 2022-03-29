@@ -16,12 +16,28 @@ namespace COM{
     // Common functions
 
 
+    std::string getString(const std::string& prompt){
+        std::cout << prompt << std::endl;
+
+        std::string input;
+        std::getline(std::cin >> std::ws, input);
+
+        return input;
+    }
+
     template<class T>
-    T getUserInput(const std::string& prompt){
+    T getNum(const std::string& prompt){
         std::cout << prompt << std::endl;
 
         T input;
         std::cin >> input;
+        while(!std::cin.good()){
+            std::cout << "Det der var ingen gyldig verdi, prøv igjen." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(100000, '\n');
+            std::cin >> input;
+
+        }
 
         return input;
     }
@@ -43,7 +59,7 @@ namespace COM{
 
 
     void debug(const std::string& prompt){
-        if(true)
+        if(false)
             std::cout << "\n" << "DEBUG: " << prompt << std::endl;
     }
 

@@ -53,7 +53,7 @@ SOFTWARE.
 #include <iterator> // random_access_iterator_tag
 #include <memory> // unique_ptr
 #include <numeric> // accumulate
-#include <string> // string, stoi, to_string
+#include <string> // string, stoi, toString
 #include <utility> // declval, forward, move, pair, swap
 #include <vector> // vector
 
@@ -83,7 +83,7 @@ SOFTWARE.
 
 #include <exception> // exception
 #include <stdexcept> // runtime_error
-#include <string> // to_string
+#include <string> // toString
 #include <vector> // vector
 
 // #include <nlohmann/detail/value_t.hpp>
@@ -4303,7 +4303,7 @@ constexpr const auto& from_json = detail::static_const<detail::from_json_fn>::va
 
 #include <cstddef> // size_t
 #include <iterator> // input_iterator_tag
-#include <string> // string, to_string
+#include <string> // string, toString
 #include <tuple> // tuple_size, get, tuple_element
 #include <utility> // move
 
@@ -12270,7 +12270,7 @@ class json_pointer
     {}
 
     /// @brief return a string representation of the JSON pointer
-    /// @sa https://json.nlohmann.me/api/json_pointer/to_string/
+    /// @sa https://json.nlohmann.me/api/json_pointer/toString/
     std::string to_string() const
     {
         return std::accumulate(reference_tokens.begin(), reference_tokens.end(),
@@ -21832,8 +21832,8 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /// @}
 };
 
-/// @brief user-defined to_string function for JSON values
-/// @sa https://json.nlohmann.me/api/basic_json/to_string/
+/// @brief user-defined toString function for JSON values
+/// @sa https://json.nlohmann.me/api/basic_json/toString/
 NLOHMANN_BASIC_JSON_TPL_DECLARATION
 std::string to_string(const NLOHMANN_BASIC_JSON_TPL& j)
 {

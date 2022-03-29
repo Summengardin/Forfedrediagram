@@ -80,9 +80,9 @@ public:
     void addParent(const Person& p){
 
         if(!_left){
-            *_left = Node(p);
+            _left = std::make_shared<Node>(Node(p));
         } else if(!_right){
-            _right = std::make_unique<Node>(Node(p));
+            _right = std::make_shared<Node>(Node(p));
         } else{
             std::cout << "Person har allerede to foreldre" << std::endl;
         }
@@ -102,11 +102,12 @@ public:
 
 
     void traverseDFSPrint(const std::function<void(Node*, int)>& f, int depth = 0){
-        // DepthFirst - InOrder. Used for printing with depth information
+        // DepthFirst - PreOrder. Used for printing with depth information
+        f(this, depth);
 
         if(_left)
             _left->traverseDFSPrint(f, depth+1);
-        f(this, depth);
+
         if(_right)
             _right->traverseDFSPrint(f, depth+1);
     }

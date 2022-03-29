@@ -11,6 +11,7 @@
 #include <vector>
 #include <fstream>
 #include <queue>
+#include <any>
 
 #include "Node.hpp"
 #include "Person.hpp"
@@ -30,8 +31,6 @@ public:
         if (treeJson["tree"]["settings"]["globalIndent"] != nullptr)
             globalIndent = treeJson["tree"]["settings"]["globalIndent"];
 
-
-        COM::debug("Start filling");
 
         std::unordered_map<int, std::shared_ptr<Node>> nodes;
         std::unordered_map<int, std::pair<int, int>> parentIdxs; // pair.first = leftIdx, pair.second = rightIdx
@@ -56,16 +55,12 @@ public:
                 parentIdxs[nodeData["treeIdx"]].second = -1;
             }
         }
-        COM::debug("Done with filling map\n");
 
         // Setting root node - index 1 from tree;
         _root = nodes[1];
         ++_size;
 
         for(auto [key, value] : nodes){
-
-            COM::debug("Adding node to tree");
-            std::cout << *value << std::endl;
 
             // Get index of parents
             int leftIdx = parentIdxs[key].first;
@@ -81,15 +76,6 @@ public:
                 ++_size;
             }
         }
-
-        COM::debug("Done with filling tree");
-
-        std::cout << "Root is " << *_root << std::endl;
-
-        COM::debug("Before show\n");
-        show();
-        COM::debug("\nAfter show");
-
     }
 
 
@@ -119,40 +105,66 @@ public:
         _root = std::move(n);
     }
 
+
     [[nodiscard]]Node& getNode(unsigned int index) {
         //TODO
         return *_root;
     }
+
 
     [[nodiscard]]const Node& viewNode(unsigned int index) const {
         //TODO
         return *_root;
     }
 
+
     [[nodiscard]] Person& getDataAt(unsigned int index) {
         //TODO
         return _root->getData();
     }
+
 
     [[nodiscard]] const Person& viewDataAt(unsigned int index) const {
         //TODO
         return _root->getData();
     }
 
+
     [[nodiscard]] Node& viewRoot() {
         return *_root;
     }
 
+
     [[nodiscard]] Node& getRoot() {
         return *_root;
     }
+
 
     [[nodiscard]] const Node& viewRoot() const{
         return *_root;
     }
 
 
-    void traverserBFS(){
+    void traverseDFS(Node* nextNode, const std::function<void(Node*)>& func){
+
+        if(!_root)
+            return;
+
+
+        Node* currentNode = _root.get();
+
+        func(currentNode);
+
+        if(_root->leftPtr())
+            traverseDFS(_root->leftPtr(), func);
+
+        if(_root->rightPtr())
+            traverseDFS(_root->rightPtr(), func);
+
+    }
+
+
+    void traverseBFS(const std::function<void(Node*)>& func){
         std::queue<Node*> Q;
 
         if(_root)
@@ -166,7 +178,8 @@ public:
             if(currentNode->rightPtr())
                 Q.push(currentNode->rightPtr());
 
-            std::cout << *currentNode << std::endl;
+            func(currentNode);
+
             Q.pop();
         }
 
@@ -176,39 +189,45 @@ public:
     void listNodes(){
         if(!_root)
             return;
-        _root->traverseDFS([](Node* node){
+        traverseDFS(_root.get(), [](Node* node){
             std::cout << node->viewData() << std::endl;
         });
     }
 
+
     void show(){
         if(!_root)
+        {
+            std::cout << "Treet er tomt :/" << std::endl;
             return;
+        }
         int depth = 0;
-        int indent = 30;
+        int indent = globalIndent;
         _root->traverseDFSPrint([indent](Node* node, int depth){
+
             for (int i = 0; i < depth-1; ++i){
                 for (int space = 0; space < indent ; ++space){
                     std::cout << " ";
                 }
             }
             if (depth != 0){
-                for (int space = 0; space < indent - 4 ; ++space){
+                for (int space = 0; space < indent ; ++space){
                     std::cout << " ";
                 }
-                std::cout << "----";
+                std::cout << "";
             }
             std::cout << node->viewData() << std::endl;
             depth++;
         });
     }
 
+
     Node& findNodeByIdx(unsigned int index) {
         if(_root->getIdx() == index){
             return *_root;
         }
        Node* found = nullptr;
-        _root->traverseDFS([&found, index](Node* node){
+        traverseDFS(_root.get(), [&found, index](Node* node){
             if(node->getIdx() == index)
                 found = node;
         });
@@ -242,6 +261,7 @@ public:
         if(childNode.addParent(std::shared_ptr<Node>(node)))
             ++_size;
     }
+
 
 private:
     std::shared_ptr<Node> _root;

@@ -5,6 +5,7 @@
 #include <utility>
 #include <variant>
 #include <optional>
+#include <regex>
 
 #include "../include/json.hpp"
 #include "../include/commonFunctions.hpp"
@@ -14,8 +15,17 @@ using json = nlohmann::json;
 
 class Person
 {
+private:
+    enum GenderType{
+        male,
+        female,
+        trans
+    };
+
+
 public:
     Person() = default;
+
 
     Person(std::string &firstName, std::string &lastName)
     {
@@ -23,24 +33,32 @@ public:
         setLastName(lastName);
     }
 
+
     explicit Person(const json &j)
     {
         if(j.contains("firstName") and j.at("firstName").is_string())
             _firstName = j.at("firstName");
+
         if(j.contains("middleName") and j.at("middleName").is_string())
             _middleName = j.at("middleName");
+
         if(j.contains("lastName") and j.at("lastName").is_string())
             _lastName = j.at("lastName");
+
         if(j.contains("birth") and j.at("birth").is_string()){
             std::string birthStr = j["birth"];
             _birth = Date(birthStr);
-            std::cout << _birth.to_string() << std::endl;
-        } else
-        {
+        } else{
             _birth = Date();
         }
-        if(j.contains("death") and j.at("death").is_string())
-            _death = j.at("death");
+
+        if(j.contains("death") and j.at("death").is_string()){
+            std::string birthStr = j["death"];
+            _death = Date(birthStr);
+        } else{
+            _death = Date();
+        }
+
         if(j.contains("isDead") and j.at("isDead").is_boolean())
             _isDead = j.at("isDead");
     }
@@ -50,9 +68,10 @@ public:
     {
         Person p;
         std::cout << "Opprett ny person: " << std::endl;
-        p._firstName = COM::getUserInput<std::string>("Fornavn: ");
-        p._lastName = COM::getUserInput<std::string>("Etternavn: ");
-        p._birth = Date(COM::getUserInput<std::string>("Bursdag [DD-MM-YYYY]: "));
+        p._firstName = COM::getString("Fornavn: ");
+        p._middleName = COM::getString("Mellomnavn: ");
+        p._lastName = COM::getString("Etternavn: ");
+        p._birth = Date(COM::getString("Bursdag [DD-MM-YYYY]: "));
         return p;
     }
 
@@ -63,8 +82,8 @@ public:
                 {"firstName", _firstName},
                 {"lastName", _lastName},
                 {"middleName", _middleName},
-                {"birth", _birth.to_string()},
-                {"death", nullptr},
+                {"birth", _birth.toString()},
+                {"death", _death.toString()},
                 {"isDeath", _isDead}
         };
         return j;
@@ -88,6 +107,7 @@ public:
         return _lastName;
     }
 
+
     [[nodiscard]] std::string getFullName() const
     {
         return _firstName + " " + (_middleName.empty() ? "" : (_middleName + " ")) + _lastName;
@@ -95,8 +115,11 @@ public:
 
 
     [[nodiscard]] bool contains (const std::string& str) const{
-        std::vector<std::string> nameSplitted = COM::splitString(getFullName(), ' ');
-        return (std::find( nameSplitted.begin(), nameSplitted.end(), str) != nameSplitted.end());
+      //  std::vector<std::string> nameSplitted = COM::splitString(getFullName(), ' ');
+      //  return (std::find( nameSplitted.begin(), nameSplitted.end(), str) != nameSplitted.end());
+
+        return ( getFullName().find(str) != std::string::npos );
+
     }
 
 
@@ -109,6 +132,7 @@ public:
     [[nodiscard]] int getAge() const{
         return Date::yearsBetween(today(), _birth);
     }
+
 
     void setFirstName(const std::string &firstName)
     {
@@ -127,24 +151,33 @@ public:
         _birth = Date(birth);
     }
 
+
     void viewDetails(){
         std::cout << "[Person]:\n"
-        << "Full name: " << getFullName() <<  "\n"
-        << "Was born on " << _birth.to_string() << std::endl;
+        <<  getFullName() <<  ",\n"
+        << (_birth.isValid() ? ("F: " + _birth.toString()) : "Bursdag ligger ikke i systemet.")
+        << ((_isDead) ? ( _death.isValid() ? "  -  D: " + _death.toString() : "\nDødsdato ligger ikke i systemet.") : "")
+        << std::endl;
     }
 
 
     friend std::ostream &operator<<(std::ostream &os, const Person &p);
 
+
 private:
+
+
+
     std::string _firstName;
     std::string _middleName;
     std::string _lastName;
     Date _birth;
-    std::string _death;
+    Date _death;
+    GenderType gender;
     bool _isDead{false};
     //COM::Date _birthday;
 };
+
 
 std::ostream &operator<<(std::ostream &os, const Person &p)
 {
