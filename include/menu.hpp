@@ -57,6 +57,17 @@ public:
         show(*this);
     }
 
+
+    [[nodiscard]] bool isEmpty() const{
+        return !_menuItems.empty();
+    }
+
+
+    [[nodiscard]] size_t size() const{
+        return _menuItems.size();
+    }
+
+
     bool erase(size_t indx)
     {
         if (indx < _menuItems.size()) {
@@ -102,8 +113,10 @@ private:
         for (size_t opt = 0U; (opt = menuChoice(m)) > 0;)
             if (const auto& menuItem = m._menuItems[opt - 1]; std::holds_alternative<std::function<void()>>(menuItem.func))
                 std::get<std::function<void()>>(menuItem.func)();
-            else
-                menuChoice(*std::get<Menu *>(menuItem.func));
+            else {
+                std::cout << "Going to another menu" << std::endl;
+                show(*std::get<Menu *>(menuItem.func));
+            }
     }
 
     std::string _title;

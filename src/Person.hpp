@@ -152,6 +152,11 @@ public:
     }
 
 
+    void edit(){
+        std::cout << "Editing " << getFullName() << std::endl;
+    }
+
+
     void viewDetails(){
         std::cout << "[Person]:\n"
         <<  getFullName() <<  ",\n"
