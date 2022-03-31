@@ -1,6 +1,6 @@
 name: Build
 
-on: [push, workflow_dispatch]
+on: [workflow_dispatch] #For now we only want to test build manually
 
 jobs:
   build-on-linux:
