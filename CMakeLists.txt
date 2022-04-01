@@ -12,18 +12,15 @@ add_executable(forfedrediagram
 
 
 add_executable(TestTree
-        test/test_main.cpp
         test/test_tree.cpp
         #test/test_usefulFunctions.cpp
         )
 
 add_executable(TestPerson
-        test/test_main.cpp
         test/test_person.cpp
         #test/test_usefulFunctions.cpp
         )
 
 add_executable(TestUsefulFunctions
-        test/test_main.cpp
         test/test_usefulFunctions.cpp
         )

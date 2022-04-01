@@ -29,7 +29,7 @@ int main(){
 
                 {"Rediger person", [&familyTree](){
                     auto name = COM::getString("Skriv navnet på personen du ønsker å redigere");
-                    std::vector<Node*> people = familyTree.findNodeByString(name);
+                    std::vector<Node<Person>*> people = familyTree.findNodeByString(name);
 
                     if(people.empty()){
                         std::cout << "\nFant ingen person med navn " << name << std::endl;

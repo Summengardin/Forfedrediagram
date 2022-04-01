@@ -2,6 +2,8 @@
 // Created by Martin on 15.03.2022.
 //
 
+#define CATCH_CONFIG_MAIN
+
 #include <iostream>
 
 #include "catch.hpp"

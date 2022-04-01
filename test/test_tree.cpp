@@ -1,6 +1,4 @@
-//
-// Created by Martin Simengård on 19/03/2022.
-//
+#define CATCH_CONFIG_MAIN
 
 #include "catch.hpp"
 #include "../src/Tree.hpp"
