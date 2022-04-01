@@ -11,10 +11,11 @@
 #include "../include/json.hpp"
 using json = nlohmann::json;
 
+template <class T>
 class Node{
 public:
     explicit Node(const json& j){
-        data = std::make_shared<Person>(j["data"]);
+        data = std::make_shared<T>(j["data"]);
         //data->fromJson(j["data"]);
 //        if(j.contains("treeIdx") and j["treeIdx"] != nullptr)
 //            _treeIdx = j["treeIdx"];
@@ -28,8 +29,8 @@ public:
     }
 
 
-    explicit Node(const Person& p){
-        data = std::make_shared<Person>(p);
+    explicit Node(const T& p){
+        data = std::make_shared<T>(p);
         _treeIdx = TreeId();
     }
 
@@ -58,8 +59,8 @@ public:
     }
 
 
-    void setData(const Person& p){
-        data = std::make_shared<Person>(p);
+    void setData(const T& p){
+        data = std::make_shared<T>(p);
     }
 
 
@@ -77,14 +78,14 @@ public:
     }
 
 
-    void addParent(const Person& p){
+    void addParent(const T& p){
 
         if(!_left){
             _left = std::make_shared<Node>(Node(p));
         } else if(!_right){
             _right = std::make_shared<Node>(Node(p));
         } else{
-            std::cout << "Person har allerede to foreldre" << std::endl;
+            std::cout << "T har allerede to foreldre" << std::endl;
         }
     }
 
@@ -138,11 +139,11 @@ public:
         return _treeIdx;
     }
 
-    [[nodiscard]]const Person& viewData() const{
+    [[nodiscard]]const T& viewData() const{
         return *data;
     }
 
-    [[nodiscard]]Person& getData(){
+    [[nodiscard]]T& getData(){
         return *data;
     }
 
@@ -175,22 +176,19 @@ public:
         return {_left, _right};
     };
 
-    friend std::ostream &operator<<(std::ostream &os, Node &n);
+    friend std::ostream &operator<<(std::ostream &os, Node &n){
+        os << "[Node] Idx: " << n.getIdx() << ", contains: " << n.viewData();
+        return os;
+    }
 
 private:
     unsigned int _treeIdx;
     unsigned int id;
-    std::shared_ptr<Person> data;
+    std::shared_ptr<T> data;
     std::shared_ptr<Node> _left;
     std::shared_ptr<Node> _right;
 };
 
-
-std::ostream &operator<<(std::ostream &os, Node &n)
-{
-    os << "[Node] Idx: " << n.getIdx() << ", contains: " << n.viewData();
-    return os;
-}
 
 
 

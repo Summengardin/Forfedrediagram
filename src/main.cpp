@@ -13,7 +13,7 @@
 
 int main(){
 
-    Tree familyTree;
+    Tree<Person> familyTree;
 
     //Menu
     Menu mainMenu{"Hovedmeny",
