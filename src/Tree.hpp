@@ -20,6 +20,8 @@
 
 using json = nlohmann::json;
 
+
+template <class T>
 class Tree{
 
 public:
@@ -32,10 +34,10 @@ public:
             globalIndent = treeJson["tree"]["settings"]["globalIndent"];
 
 
-        std::unordered_map<int, std::shared_ptr<Node>> nodes;
+        std::unordered_map<int, std::shared_ptr<Node<T>>> nodes;
         std::unordered_map<int, std::pair<int, int>> parentIdxs; // pair.first = leftIdx, pair.second = rightIdx
         for(auto& nodeData : treeJson["nodes"]){
-            std::unique_ptr<Node> newNode(std::make_unique<Node>(nodeData));
+            std::unique_ptr<Node<T>> newNode(std::make_unique<Node<T>>(nodeData));
 
             nodes[nodeData["treeIdx"]] = std::move(newNode);
 
@@ -82,7 +84,7 @@ public:
     [[nodiscard]] json toJson() const
     {
         json nodes;
-        _root->traverseDFS([&nodes](Node* node){
+        _root->traverseDFS([&nodes](Node<T>* node){
             nodes.push_back(node->toJson());
         });
 
@@ -101,18 +103,18 @@ public:
     }
 
 
-    void setRoot(std::shared_ptr<Node> n){
+    void setRoot(std::shared_ptr<Node<T>> n){
         _root = std::move(n);
     }
 
 
-    [[nodiscard]]Node& getNode(unsigned int index) {
+    [[nodiscard]]Node<T>& getNode(unsigned int index) {
         //TODO
         return *_root;
     }
 
 
-    [[nodiscard]]const Node& viewNode(unsigned int index) const {
+    [[nodiscard]]const Node<T>& viewNode(unsigned int index) const {
         //TODO
         return *_root;
     }
@@ -130,28 +132,28 @@ public:
     }
 
 
-    [[nodiscard]] Node& viewRoot() {
+    [[nodiscard]] Node<T>& viewRoot() {
         return *_root;
     }
 
 
-    [[nodiscard]] Node& getRoot() {
+    [[nodiscard]] Node<T>& getRoot() {
         return *_root;
     }
 
 
-    [[nodiscard]] const Node& viewRoot() const{
+    [[nodiscard]] const Node<T>& viewRoot() const{
         return *_root;
     }
 
 
-    void traverseDFS(Node* nextNode, const std::function<void(Node*)>& func){
+    void traverseDFS(Node<T>* nextNode, const std::function<void(Node<T>*)>& func){
 
         if(!_root)
             return;
 
 
-        Node* currentNode = _root.get();
+        Node<T>* currentNode = _root.get();
 
         func(currentNode);
 
@@ -164,14 +166,14 @@ public:
     }
 
 
-    void traverseBFS(const std::function<void(Node*)>& func){
-        std::queue<Node*> Q;
+    void traverseBFS(const std::function<void(Node<T>*)>& func){
+        std::queue<Node<T>*> Q;
 
         if(_root)
             Q.push(_root.get());
 
         while(!Q.empty()){
-            Node* currentNode = Q.front();
+            Node<T>* currentNode = Q.front();
 
             if(currentNode->leftPtr())
                 Q.push(currentNode->leftPtr());
@@ -189,7 +191,7 @@ public:
     void listNodes(){
         if(!_root)
             return;
-        traverseDFS(_root.get(), [](Node* node){
+        traverseDFS(_root.get(), [](Node<T>* node){
             std::cout << node->viewData() << std::endl;
         });
     }
@@ -203,7 +205,7 @@ public:
         }
         int depth = 0;
         int indent = globalIndent;
-        _root->traverseDFSPrint([indent](Node* node, int depth){
+        _root->traverseDFSPrint([indent](Node<T>* node, int depth){
 
             for (int i = 0; i < depth-1; ++i){
                 for (int space = 0; space < indent ; ++space){
@@ -222,12 +224,12 @@ public:
     }
 
 
-    Node& findNodeByIdx(unsigned int index) {
+    Node<T>& findNodeByIdx(unsigned int index) {
         if(_root->getIdx() == index){
             return *_root;
         }
-       Node* found = nullptr;
-        traverseDFS(_root.get(), [&found, index](Node* node){
+       Node<T>* found = nullptr;
+        traverseDFS(_root.get(), [&found, index](Node<T>* node){
             if(node->getIdx() == index)
                 found = node;
         });
@@ -239,15 +241,15 @@ public:
     }
 
 
-    std::vector<Node*> findNodeByString(const std::string& str) {
+    std::vector<Node<T>*> findNodeByString(const std::string& str) {
         // Will return a vector with pointers to all nodes containing a string = str
-        std::vector<Node*> nodes;
+        std::vector<Node<T>*> nodes;
         if(!_root){
             return nodes;
         }
 
-        Node* found = nullptr;
-        _root->traverseDFS([&found, str, &nodes](Node* node){
+        Node<T>* found = nullptr;
+        _root->traverseDFS([&found, str, &nodes](Node<T>* node){
             if(node->getData().contains(str))
                 nodes.push_back(node);
         });
@@ -256,15 +258,15 @@ public:
     }
 
 
-    void addParent(int childIndex,  Node* node){
-        Node& childNode = findNodeByIdx(childIndex);
-        if(childNode.addParent(std::shared_ptr<Node>(node)))
+    void addParent(int childIndex,  Node<T>* node){
+        Node<T>& childNode = findNodeByIdx(childIndex);
+        if(childNode.addParent(std::shared_ptr<Node<T>>(node)))
             ++_size;
     }
 
 
 private:
-    std::shared_ptr<Node> _root;
+    std::shared_ptr<Node<T>> _root;
     std::size_t _size = 0;
 
     //settings

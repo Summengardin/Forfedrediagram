@@ -13,13 +13,8 @@
 
 int main(){
 
-    Tree familyTree;
-    Menu editPerson{ "Rediger person",
-                     {
-        {"Martin Simengard", [](){std::cout << "Rediger han Martin" << std::endl;}},
-        {"Ho mor", [](){std::cout << "Rediger ho mor" << std::endl;}}
-                     }
-    };
+    Tree<Person> familyTree;
+
     //Menu
     Menu mainMenu{"HOVEDMENY",
                   {
