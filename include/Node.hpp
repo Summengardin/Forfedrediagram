@@ -1,5 +1,5 @@
-#ifndef FORFEDREDIAGRAM_NODE_HPP
-#define FORFEDREDIAGRAM_NODE_HPP
+#pragma once // FORFEDREDIAGRAM_NODE_HPP
+
 
 #include <iostream>
 #include <string>
@@ -8,7 +8,8 @@
 
 #include "globals.hpp"
 #include "Person.hpp"
-#include "../include/json.hpp"
+#include "json.hpp"
+
 using json = nlohmann::json;
 
 template <class T>
@@ -93,7 +94,7 @@ public:
     void traverseDFS(const std::function<void(Node*)>& f) {
         // DepthFirst - PreOrder
         f(this);
-        
+
         if (_left)
             _left->traverseDFS(f);
 
@@ -102,15 +103,15 @@ public:
     }
 
 
-    void traverseDFSPrint(const std::function<void(Node*, int)>& f, int depth = 0){
+    void traverseDFSWithDepth(const std::function<void(Node*, int)>& f, int depth = 0){
         // DepthFirst - PreOrder. Used for printing with depth information
         f(this, depth);
 
         if(_left)
-            _left->traverseDFSPrint(f, depth+1);
+            _left->traverseDFSWithDepth(f, depth + 1);
 
         if(_right)
-            _right->traverseDFSPrint(f, depth+1);
+            _right->traverseDFSWithDepth(f, depth + 1);
     }
 
 
@@ -139,16 +140,16 @@ public:
         return _treeIdx;
     }
 
-    [[nodiscard]]const T& viewData() const{
-        return *data;
+    [[nodiscard]]const T* viewData() const{
+        return data.get();
     }
 
-    [[nodiscard]]T& getData(){
-        return *data;
+    [[nodiscard]]T* getData(){
+        return data.get();
     }
 
     [[nodiscard]]Node& getLeft(){
-        return *_left;
+        return *_left();
     }
 
     [[nodiscard]]const Node& viewLeft() const {
@@ -192,4 +193,4 @@ private:
 
 
 
-#endif //FORFEDREDIAGRAM_NODE_HPP
+//FORFEDREDIAGRAM_NODE_HPP

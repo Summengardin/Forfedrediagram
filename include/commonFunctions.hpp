@@ -1,9 +1,4 @@
-//
-// Created by Martin on 24.03.2022.
-//
-
-#ifndef FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP
-#define FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP
+#pragma once // FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP
 
 #include <iostream>
 #include <string>
@@ -16,7 +11,7 @@ namespace COM{
     // Common functions
 
 
-    std::string getString(const std::string& prompt){
+    inline std::string getString(const std::string& prompt){
         std::cout << prompt << std::endl;
 
         std::string input;
@@ -27,7 +22,7 @@ namespace COM{
     }
 
     template<class T>
-    T getNum(const std::string& prompt){
+    inline T getNum(const std::string& prompt){
         std::cout << prompt << std::endl;
 
         T input;
@@ -44,7 +39,7 @@ namespace COM{
     }
 
 
-    std::vector<std::string> splitString(const std::string& str, char delimiter){
+    inline std::vector<std::string> splitString(const std::string& str, char delimiter){
         // Split a string by a delimiter. Return a vector of all the elements
         std::vector<std::string> split;
 
@@ -59,7 +54,7 @@ namespace COM{
     }
 
 
-    void debug(const std::string& prompt){
+    inline void debug(const std::string& prompt){
         if(false)
             std::cout << "\n" << "DEBUG: " << prompt << std::endl;
     }
@@ -68,6 +63,4 @@ namespace COM{
 
 }
 
-
-
-#endif //FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP
+//FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP

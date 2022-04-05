@@ -1,6 +1,6 @@
 
-#ifndef FORFEDREDIAGRAM_DATE_HPP
-#define FORFEDREDIAGRAM_DATE_HPP
+#pragma once //FORFEDREDIAGRAM_DATE_HPP
+
 
 #include <iostream>
 #include <vector>
@@ -117,4 +117,4 @@ public:
 };
 
 
-#endif //FORFEDREDIAGRAM_DATE_HPP
+//FORFEDREDIAGRAM_DATE_HPP

@@ -6,9 +6,9 @@
 #include "Node.hpp"
 #include "Person.hpp"
 #include "Tree.hpp"
-#include "../include/date.hpp"
-#include "../include/commonFunctions.hpp"
-#include "../include/menu.hpp"
+#include "date.hpp"
+#include "commonFunctions.hpp"
+#include "Menu.hpp"
 
 
 int main(){
@@ -23,7 +23,7 @@ int main(){
                 {"Vis person(er)", [&familyTree](){
                     auto name = COM::getString("Skriv navnet på personen du ønsker å vise");
                     for (auto& node : familyTree.findNodeByString(name)){
-                        node->getData().viewDetails();
+                        node->getData()->viewDetails();
                     }
                 }},
 
@@ -34,16 +34,16 @@ int main(){
                     if(people.empty()){
                         std::cout << "\nFant ingen person med navn " << name << std::endl;
                     } else if(people.size() == 1){
-                        people[0]->getData().edit();
+                        people[0]->getData()->edit();
                     } else {
                         // Creates new menu to choose between all people with name
                         Menu editPerson;
                         for (auto &node: familyTree.findNodeByString(name)) {
-                            Person& person = node->getData();
+                            Person* person = node->getData();
                             editPerson.append({
-                                person.getFullName() + " " + (person.getBirth().isValid() ? person.getBirth().toString() : "")
+                                person->getFullName() + " " + (person->getBirth().isValid() ? person->getBirth().toString() : "")
                                 , [&person]() {
-                                person.edit();
+                                person->edit();
                             }});
                         }
                         editPerson.show();
@@ -53,7 +53,8 @@ int main(){
 
                 {"Last tre fra fil", [&familyTree](){
                     // Henter fil å lese fra (Kan byttes ut med input fra bruker)
-                    std::string fromFile{"../test/test_files/FirstTree.json"};
+
+                    std::string fromFile{"C:\\Users\\simen\\Dev\\forfedrediagram\\tests\\test_files\\FirstTree.json"};
                     std::ifstream jsonFile(fromFile);
 
                     // Henter ut filen som et JSON-objekt
@@ -62,7 +63,7 @@ int main(){
 
                     familyTree.fillFromJson(treeData);
 
-                    std::cout << "Treet er fylt opp med data" << std::endl;
+                    std::cout << "Treet er fylt opp med _data" << std::endl;
                 }},
 
                 {"Lagre tre til fil", [&familyTree](){

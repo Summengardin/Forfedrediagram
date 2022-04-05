@@ -1,5 +1,4 @@
-#ifndef FORFEDREDIAGRAM_TREE_HPP
-#define FORFEDREDIAGRAM_TREE_HPP
+#pragma once //FORFEDREDIAGRAM_TREE_HPP
 
 #include <iostream>
 #include <memory>
@@ -11,12 +10,11 @@
 #include <vector>
 #include <fstream>
 #include <queue>
-#include <any>
 
 #include "Node.hpp"
 #include "Person.hpp"
-#include "../include/json.hpp"
-#include "../include/commonFunctions.hpp"
+#include "json.hpp"
+#include "commonFunctions.hpp"
 
 using json = nlohmann::json;
 
@@ -122,13 +120,13 @@ public:
 
     [[nodiscard]] Person& getDataAt(unsigned int index) {
         //TODO
-        return _root->getData();
+        return *_root->getData();
     }
 
 
     [[nodiscard]] const Person& viewDataAt(unsigned int index) const {
         //TODO
-        return _root->getData();
+        return *_root->getData();
     }
 
 
@@ -205,20 +203,20 @@ public:
         }
         int depth = 0;
         int indent = globalIndent;
-        _root->traverseDFSPrint([indent](Node<T>* node, int depth){
+        _root->traverseDFSWithDepth([indent](Node<T> *node, int depth) {
 
-            for (int i = 0; i < depth-1; ++i){
-                for (int space = 0; space < indent ; ++space){
+            for (int i = 0; i < depth - 1; ++i) {
+                for (int space = 0; space < indent; ++space) {
                     std::cout << " ";
                 }
             }
-            if (depth != 0){
-                for (int space = 0; space < indent ; ++space){
+            if (depth != 0) {
+                for (int space = 0; space < indent; ++space) {
                     std::cout << " ";
                 }
                 std::cout << "";
             }
-            std::cout << node->viewData() << std::endl;
+            std::cout << *node->viewData() << std::endl;
             depth++;
         });
     }
@@ -250,7 +248,7 @@ public:
 
         Node<T>* found = nullptr;
         _root->traverseDFS([&found, str, &nodes](Node<T>* node){
-            if(node->getData().contains(str))
+            if(node->getData()->contains(str))
                 nodes.push_back(node);
         });
 
@@ -274,4 +272,4 @@ private:
 };
 
 
-#endif //FORFEDREDIAGRAM_TREE_HPP
+//FORFEDREDIAGRAM_TREE_HPP

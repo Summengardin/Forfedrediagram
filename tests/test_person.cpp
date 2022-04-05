@@ -1,13 +1,9 @@
-//
-// Created by Martin on 15.03.2022.
-//
-
 #define CATCH_CONFIG_MAIN
 
 #include <iostream>
 
 #include "catch.hpp"
-#include "../src/Person.hpp"
+#include "../include/Person.hpp"
 
 TEST_CASE("Getters Person"){
     std::string fName = "Martin";

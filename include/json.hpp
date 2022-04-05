@@ -2441,7 +2441,7 @@ using is_detected_convertible =
     #define JSON_ASSERT(x) assert(x)
 #endif
 
-// allow to access some private functions (needed by the test suite)
+// allow to access some private functions (needed by the tests suite)
 #if defined(JSON_TESTS_PRIVATE)
     #define JSON_PRIVATE_UNLESS_TESTED public
 #else
@@ -8686,7 +8686,7 @@ class binary_reader
                         - static_cast<number_integer_t>(number));
             }
 
-            // Binary data (0x00..0x17 bytes follow)
+            // Binary _data (0x00..0x17 bytes follow)
             case 0x40:
             case 0x41:
             case 0x42:
@@ -8711,11 +8711,11 @@ class binary_reader
             case 0x55:
             case 0x56:
             case 0x57:
-            case 0x58: // Binary data (one-byte uint8_t for n follows)
-            case 0x59: // Binary data (two-byte uint16_t for n follow)
-            case 0x5A: // Binary data (four-byte uint32_t for n follow)
-            case 0x5B: // Binary data (eight-byte uint64_t for n follow)
-            case 0x5F: // Binary data (indefinite length)
+            case 0x58: // Binary _data (one-byte uint8_t for n follows)
+            case 0x59: // Binary _data (two-byte uint16_t for n follow)
+            case 0x5A: // Binary _data (four-byte uint32_t for n follow)
+            case 0x5B: // Binary _data (eight-byte uint64_t for n follow)
+            case 0x5F: // Binary _data (indefinite length)
             {
                 binary_t b;
                 return get_cbor_binary(b) && sax->binary(b);
@@ -8756,7 +8756,7 @@ class binary_reader
                 return get_cbor_string(s) && sax->string(s);
             }
 
-            // array (0x00..0x17 data items follow)
+            // array (0x00..0x17 _data items follow)
             case 0x80:
             case 0x81:
             case 0x82:
@@ -8810,7 +8810,7 @@ class binary_reader
             case 0x9F: // array (indefinite length)
                 return get_cbor_array(static_cast<std::size_t>(-1), tag_handler);
 
-            // map (0x00..0x17 pairs of data items follow)
+            // map (0x00..0x17 pairs of _data items follow)
             case 0xA0:
             case 0xA1:
             case 0xA2:
@@ -9166,7 +9166,7 @@ class binary_reader
 
         switch (current)
         {
-            // Binary data (0x00..0x17 bytes follow)
+            // Binary _data (0x00..0x17 bytes follow)
             case 0x40:
             case 0x41:
             case 0x42:
@@ -9195,35 +9195,35 @@ class binary_reader
                 return get_binary(input_format_t::cbor, static_cast<unsigned int>(current) & 0x1Fu, result);
             }
 
-            case 0x58: // Binary data (one-byte uint8_t for n follows)
+            case 0x58: // Binary _data (one-byte uint8_t for n follows)
             {
                 std::uint8_t len{};
                 return get_number(input_format_t::cbor, len) &&
                        get_binary(input_format_t::cbor, len, result);
             }
 
-            case 0x59: // Binary data (two-byte uint16_t for n follow)
+            case 0x59: // Binary _data (two-byte uint16_t for n follow)
             {
                 std::uint16_t len{};
                 return get_number(input_format_t::cbor, len) &&
                        get_binary(input_format_t::cbor, len, result);
             }
 
-            case 0x5A: // Binary data (four-byte uint32_t for n follow)
+            case 0x5A: // Binary _data (four-byte uint32_t for n follow)
             {
                 std::uint32_t len{};
                 return get_number(input_format_t::cbor, len) &&
                        get_binary(input_format_t::cbor, len, result);
             }
 
-            case 0x5B: // Binary data (eight-byte uint64_t for n follow)
+            case 0x5B: // Binary _data (eight-byte uint64_t for n follow)
             {
                 std::uint64_t len{};
                 return get_number(input_format_t::cbor, len) &&
                        get_binary(input_format_t::cbor, len, result);
             }
 
-            case 0x5F: // Binary data (indefinite length)
+            case 0x5F: // Binary _data (indefinite length)
             {
                 while (get() != 0xFF)
                 {
@@ -14818,7 +14818,7 @@ class binary_writer
     @brief write a number to output input
     @param[in] n number of type @a NumberType
     @tparam NumberType the type of the number
-    @tparam OutputIsLittleEndian Set to true if output data is
+    @tparam OutputIsLittleEndian Set to true if output _data is
                                  required to be little endian
 
     @note This function needs to respect the system's endianness, because bytes
@@ -16833,7 +16833,7 @@ class serializer
         // use the Grisu2 algorithm to produce short numbers which are
         // guaranteed to round-trip, using strtof and strtod, resp.
         //
-        // NB: The test below works if <long double> == <double>.
+        // NB: The tests below works if <long double> == <double>.
         static constexpr bool is_ieee_single_or_double
             = (std::numeric_limits<number_float_t>::is_iec559 && std::numeric_limits<number_float_t>::digits == 24 && std::numeric_limits<number_float_t>::max_exponent == 128) ||
               (std::numeric_limits<number_float_t>::is_iec559 && std::numeric_limits<number_float_t>::digits == 53 && std::numeric_limits<number_float_t>::max_exponent == 1024);
@@ -16863,7 +16863,7 @@ class serializer
         // check if buffer was large enough
         JSON_ASSERT(static_cast<std::size_t>(len) < number_buffer.size());
 
-        // erase thousands separator
+        // remove thousands separator
         if (thousands_sep != '\0')
         {
             // NOLINTNEXTLINE(readability-qualified-auto,llvm-qualified-auto): std::remove returns an iterator, see https://github.com/nlohmann/json/issues/3081
@@ -17482,11 +17482,11 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
 
     ///////////////////////////
-    // JSON value data types //
+    // JSON value _data types //
     ///////////////////////////
 
-    /// @name JSON value data types
-    /// The data types to store a JSON value. These types are derived from
+    /// @name JSON value _data types
+    /// The _data types to store a JSON value. These types are derived from
     /// the template arguments passed to class @ref basic_json.
     /// @{
 
@@ -19407,7 +19407,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     }
 
     /// @brief remove element given an iterator
-    /// @sa https://json.nlohmann.me/api/basic_json/erase/
+    /// @sa https://json.nlohmann.me/api/basic_json/remove/
     template < class IteratorType, typename std::enable_if <
                    std::is_same<IteratorType, typename basic_json_t::iterator>::value ||
                    std::is_same<IteratorType, typename basic_json_t::const_iterator>::value, int >::type
@@ -19471,14 +19471,14 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             case value_t::null:
             case value_t::discarded:
             default:
-                JSON_THROW(type_error::create(307, "cannot use erase() with " + std::string(type_name()), *this));
+                JSON_THROW(type_error::create(307, "cannot use remove() with " + std::string(type_name()), *this));
         }
 
         return result;
     }
 
     /// @brief remove elements given an iterator range
-    /// @sa https://json.nlohmann.me/api/basic_json/erase/
+    /// @sa https://json.nlohmann.me/api/basic_json/remove/
     template < class IteratorType, typename std::enable_if <
                    std::is_same<IteratorType, typename basic_json_t::iterator>::value ||
                    std::is_same<IteratorType, typename basic_json_t::const_iterator>::value, int >::type
@@ -19545,30 +19545,30 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             case value_t::null:
             case value_t::discarded:
             default:
-                JSON_THROW(type_error::create(307, "cannot use erase() with " + std::string(type_name()), *this));
+                JSON_THROW(type_error::create(307, "cannot use remove() with " + std::string(type_name()), *this));
         }
 
         return result;
     }
 
     /// @brief remove element from a JSON object given a key
-    /// @sa https://json.nlohmann.me/api/basic_json/erase/
+    /// @sa https://json.nlohmann.me/api/basic_json/remove/
     size_type erase(const typename object_t::key_type& key)
     {
-        // this erase only works for objects
+        // this remove only works for objects
         if (JSON_HEDLEY_LIKELY(is_object()))
         {
             return m_value.object->erase(key);
         }
 
-        JSON_THROW(type_error::create(307, "cannot use erase() with " + std::string(type_name()), *this));
+        JSON_THROW(type_error::create(307, "cannot use remove() with " + std::string(type_name()), *this));
     }
 
     /// @brief remove element from a JSON array given an index
-    /// @sa https://json.nlohmann.me/api/basic_json/erase/
+    /// @sa https://json.nlohmann.me/api/basic_json/remove/
     void erase(const size_type idx)
     {
-        // this erase only works for arrays
+        // this remove only works for arrays
         if (JSON_HEDLEY_LIKELY(is_array()))
         {
             if (JSON_HEDLEY_UNLIKELY(idx >= size()))
@@ -19580,7 +19580,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         }
         else
         {
-            JSON_THROW(type_error::create(307, "cannot use erase() with " + std::string(type_name()), *this));
+            JSON_THROW(type_error::create(307, "cannot use remove() with " + std::string(type_name()), *this));
         }
     }
 
@@ -21415,7 +21415,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             {
                 return patch_operations::copy;
             }
-            if (op == "test")
+            if (op == "tests")
             {
                 return patch_operations::test;
             }
@@ -21514,7 +21514,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             }
             else if (parent.is_array())
             {
-                // note erase performs range check
+                // note remove performs range check
                 parent.erase(json_pointer::array_index(last_path));
             }
         };
@@ -21628,14 +21628,14 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                     {
                         // check if "value" matches the one at "path"
                         // the "path" location must exist - use at()
-                        success = (result.at(ptr) == get_value("test", "value", false));
+                        success = (result.at(ptr) == get_value("tests", "value", false));
                     }
                     JSON_INTERNAL_CATCH (out_of_range&)
                     {
                         // ignore out of range errors: success remains false
                     }
 
-                    // throw an exception if test fails
+                    // throw an exception if tests fails
                     if (JSON_HEDLEY_UNLIKELY(!success))
                     {
                         JSON_THROW(other_error::create(501, "unsuccessful: " + val.dump(), val));
@@ -21648,7 +21648,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                 default:
                 {
                     // op must be "add", "remove", "replace", "move", "copy", or
-                    // "test"
+                    // "tests"
                     JSON_THROW(parse_error::create(105, 0, "operation value '" + op + "' is invalid", val));
                 }
             }
