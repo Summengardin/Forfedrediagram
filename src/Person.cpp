@@ -36,6 +36,9 @@ Person::Person(const json &j) {
         _birth = Date();
     }
 
+    if(j.contains("_age") and j.at("_age").is_string())
+        _age = j.at("_age");
+
     if(j.contains("death") and j.at("death").is_string()){
         std::string birthStr = j["death"];
         _death = Date(birthStr);
@@ -55,6 +58,7 @@ json Person::toJson() const {
             {"middleName", _middleName},
             {"birth", _birth.toString()},
             {"death", _death.toString()},
+            {"age", _age},
             {"isDeath", _isDead}
     };
     return j;
@@ -119,9 +123,13 @@ void Person::setBirth(const std::string &birth) {
 
 
 void Person::edit() {
+    //TODO - Er det mulig å la brukeren ikke skrive inn igjen den nåværende verdien om den skal beholdes
+    //TODO - Implementer sjekk av alle inputs
+    //TODO - Må være mulig å legge inn tom input
     _firstName = COM::getString("Fornavn: ");
     _middleName = COM::getString("Mellomnavn: ");
     _lastName = COM::getString("Etternavn: ");
+    _age = COM::getNum<unsigned int>("Alder?");
     _birth = Date(COM::getString("Når ble " + _firstName + " " + _middleName + " født? [DD-MM-YYYY]: "));
     auto aliveAnswer = COM::getString("Er personen " + _firstName + " " + _middleName + " i live? (y/n)");
     if(aliveAnswer == "y" or aliveAnswer == "Y")
@@ -136,6 +144,7 @@ void Person::edit() {
 void Person::viewDetails() {
     std::cout << "[Person]:\n"
               <<  getFullName() <<  ",\n"
+              << "Alder: " << _age << "år\n"
               << (_birth.isValid() ? ("F: " + _birth.toString()) : "Bursdag ligger ikke i systemet.")
               << ((_isDead) ? ( _death.isValid() ? "  -  D: " + _death.toString() : "\nDødsdato ligger ikke i systemet.") : "")
               << std::endl;

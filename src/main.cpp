@@ -36,8 +36,9 @@ int main(){
                 }},
 
                 {"Legg til person", [&familyTree](){
-                    std::cout << "Ups, dette er ikke implementert enda, beklager dette!";
-
+                    std::cout << "Ups, dette er ikke implementert enda. Beklager dette!\n";
+                    std::cout << "For nå må du bruke .json fil for å fylle treet.\n";
+                    std::cout << "Se \\test_files\\Tree.json for inspirasjon";
 
                 }},
 
@@ -52,6 +53,7 @@ int main(){
                     } else {
                         // Creates new menu to choose between all people with name
                         Menu editPerson;
+                        editPerson.setTitle("Velg person du ønsker å redigere");
                         for (auto &node: familyTree.findNodeByString(name)) {
                             Person* person = node->getData();
                             editPerson.append({
@@ -69,15 +71,24 @@ int main(){
 
                     // Henter fil å lese fra (Kan byttes ut med input fra bruker)
                     std::string fromFile = COM::getString("Skriv inn banen til filen (.json): ");
+                    std::optional<json> treeData;
+                    while (true){
 
-                    while(!COM::fileExists(fromFile)){
-                        fromFile = COM::getString("Beklager, kunne ikke finne filen.\nSkriv inn banen til filen (.json): ");
+                        if (!COM::fileExists(fromFile)){
+                            fromFile = COM::getString("Beklager, kunne ikke finne filen.\nSkriv inn banen til filen (.json): ");
+                            continue;
+                        }
+
+                        treeData = COM::openFileAsJson(fromFile);
+
+                        if(!treeData){
+                            fromFile = COM::getString("Filen må være av typen \".json\", prøv igjen:  ");
+                            continue;
+                        }
+                        break;
                     }
 
-                    // Henter ut filen som et JSON-objekt
-                    json treeData = COM::openFileAsJson(fromFile);
-
-                    familyTree.fillFromJson(treeData);
+                    familyTree.fillFromJson(treeData.value());
                     std::cout << "Treet er fylt opp med data" << std::endl;
                 }},
 

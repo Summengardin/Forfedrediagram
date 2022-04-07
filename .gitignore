@@ -35,6 +35,5 @@
 /cmake-build-*
 *.idea
 
-# Testing - uncomment /tests for ignoring the tests system
-#/tests
-/tests/test_files
+# Hidden
+/test_files/hidden

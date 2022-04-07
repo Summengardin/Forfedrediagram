@@ -39,11 +39,24 @@ public:
 
     [[nodiscard]] std::string toString() const{
         if(isValid()) {
+            std::ostringstream oSStream;
+
+            std::string dayString = std::to_string(_day);
+            std::string monthString = std::to_string(_month);
+            std::string yearString = std::to_string(_year);
+
+            oSStream << std::setw(2) << std::setfill('0') << dayString << "-";
+            oSStream << std::setw(2) << std::setfill('0') << monthString << "-";
+            oSStream << std::setw(4) << std::setfill('0') << yearString;
+
+            return oSStream.str();
             return (_day < 10 ? "0" : "") + std::to_string(_day)
                    + "-" + (_month < 10 ? "0" : "") + std::to_string(_month)
                    + "-" + std::to_string(_year);
         }
         return "Unknown date";
+
+
     }
 
     [[nodiscard]] int getDay() const {
@@ -58,15 +71,15 @@ public:
         return _year;
     }
 
-    void setDate(std::string& dateAsString){
+    bool setDate(std::string& dateAsString){
         if (checkStringFormat(dateAsString)){
             std::vector<std::string> numbers = COM::splitString(dateAsString, '-');
             _day = std::stoi(numbers[0]);
             _month = std::stoi(numbers[1]);
             _year = std::stoi(numbers[2]);
-        } else {
-            std::cout << "Invalid date format, Fuck You!" << std::endl;
+            return true;
         }
+        return false;
     }
 
 
@@ -90,7 +103,7 @@ protected:
     int _month = 0;
     int _year = 0;
 
-
+    std::array<unsigned int, 12> daysInMonth = {31,30,28,30,31,30,31,31,30,31,30,31};
 
 };
 
@@ -104,14 +117,13 @@ public:
 
     void update(){
         // Used for updating TODAY-date
-        auto nowPoint = std::chrono::system_clock::now();
-        std::time_t now = std::chrono::system_clock::to_time_t(nowPoint);
+        auto nowPtr = std::chrono::system_clock::now();
+        std::time_t now = std::chrono::system_clock::to_time_t(nowPtr);
 
         std::tm localTime = *std::localtime(&now);
         _day = localTime.tm_mday;
         _month = localTime.tm_mon + 1;
         _year = localTime.tm_year + 1900;
-
 
     }
 };

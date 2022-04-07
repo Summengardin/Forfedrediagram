@@ -17,10 +17,10 @@ using json = nlohmann::json;
 class Person
 {
 private:
+    //TODO Genders
     enum GenderType{
         male,
         female,
-        trans
     };
 
 
@@ -88,6 +88,7 @@ private:
     std::string _lastName;
     Date _birth;
     Date _death;
+    unsigned int _age = 0;
     GenderType gender;
     bool _isDead{false};
     //COM::Date _birthday;

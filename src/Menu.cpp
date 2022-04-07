@@ -69,7 +69,7 @@ void Menu::show(const Menu &m)
         for (size_t i = 0U; i < menuCount; ++i)
             oSStream << i + 1 << ")  " << menu._menuItems[i].name << std::endl;
 
-        oSStream << "0)  Avslutt program\n\nSkriv inn menyvalg:";
+        oSStream << "0)  Tilbake/Avslutt\n\nSkriv inn valg:";
 
         auto returnValue = COM::getNum<size_t>(oSStream.str());
         while (returnValue >= menuCount)

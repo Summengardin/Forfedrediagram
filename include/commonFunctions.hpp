@@ -7,6 +7,7 @@
 #include <vector>
 #include <chrono>
 #include <regex>
+#include <optional>
 
 #include "json.hpp"
 using json = nlohmann::json;
@@ -66,18 +67,36 @@ namespace COM{
             std::cout << "\n" << "DEBUG: " << prompt << std::endl;
     }
 
+
     inline bool fileExists(const std::string& filepath)
     {
         std::ifstream fileStream(filepath);
         return fileStream.is_open();
     }
 
-    inline json openFileAsJson(const std::string& str)
+
+    inline bool stringHasEnding(const std::string& mainStr, const std::string& ending)
     {
-        std::ifstream fileStream(str);
+        if(mainStr.size() >= ending.size() &&
+           mainStr.compare(mainStr.size() - ending.size(), ending.size(), ending) == 0)
+            return true;
+        else
+            return false;
+    }
+
+
+    inline std::optional<json> openFileAsJson(const std::string& filepath)
+    {
+        std::cout << filepath << std::endl;
+        // Sjekk at filen faktisk er ".json"-fil
+        if(!stringHasEnding(filepath, ".json")){
+            return std::nullopt;
+        }
+
+        std::ifstream fileStream(filepath);
         json jsonFile;
         fileStream >> jsonFile;
-        //TODO Sjekk at filen faktsik er av riktig format
+
         return jsonFile;
     }
 
