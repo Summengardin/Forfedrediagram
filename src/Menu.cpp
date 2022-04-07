@@ -63,20 +63,20 @@ void Menu::show(const Menu &m)
     const auto menuChoice = [menuCount = m._menuItems.size()](const Menu& menu) {
         std::ostringstream oSStream;
 
-        oSStream << "-----------------------------------\n";
+        oSStream << "\n-----------------------------------" << std::endl;
         oSStream << std::endl << menu.getTitle() << std::endl << std::endl;
 
         for (size_t i = 0U; i < menuCount; ++i)
             oSStream << i + 1 << ")  " << menu._menuItems[i].name << std::endl;
 
-        oSStream << "0)  Exit meny\n\nSkriv inn menyvalg";
+        oSStream << "0)  Avslutt program\n\nSkriv inn menyvalg:";
 
         auto returnValue = COM::getNum<size_t>(oSStream.str());
         while (returnValue >= menuCount)
         {
             returnValue = COM::getNum<size_t>("Å nei du, det valget fikk du ikke.\nPrøv igjen, skriv inn menyvalg:");
         }
-        return COM::getNum<size_t>(oSStream.str());
+        return returnValue;
     };
 
     for (size_t opt = 0U; (opt = menuChoice(m)) > 0;)

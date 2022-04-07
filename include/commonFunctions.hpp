@@ -1,11 +1,16 @@
 #pragma once // FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP
 
-#include <iostream>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
 #include <chrono>
-#include <sstream>
 #include <regex>
+
+#include "json.hpp"
+using json = nlohmann::json;
+
 
 namespace COM{
     // Common functions
@@ -15,14 +20,14 @@ namespace COM{
         std::cout << prompt << std::endl;
 
         std::string input;
-
         std::getline(std::cin >> std::ws, input);
 
         return input;
     }
 
     template<class T>
-    inline T getNum(const std::string& prompt){
+    inline T getNum(const std::string& prompt)
+    {
         std::cout << prompt << std::endl;
 
         T input;
@@ -39,7 +44,8 @@ namespace COM{
     }
 
 
-    inline std::vector<std::string> splitString(const std::string& str, char delimiter){
+    inline std::vector<std::string> splitString(const std::string& str, char delimiter)
+    {
         // Split a string by a delimiter. Return a vector of all the elements
         std::vector<std::string> split;
 
@@ -54,11 +60,26 @@ namespace COM{
     }
 
 
-    inline void debug(const std::string& prompt){
+    inline void debug(const std::string& prompt)
+    {
         if(false)
             std::cout << "\n" << "DEBUG: " << prompt << std::endl;
     }
 
+    inline bool fileExists(const std::string& filepath)
+    {
+        std::ifstream fileStream(filepath);
+        return fileStream.is_open();
+    }
+
+    inline json openFileAsJson(const std::string& str)
+    {
+        std::ifstream fileStream(str);
+        json jsonFile;
+        fileStream >> jsonFile;
+        //TODO Sjekk at filen faktsik er av riktig format
+        return jsonFile;
+    }
 
 
 }

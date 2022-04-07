@@ -17,7 +17,8 @@ int main(){
     //Menu
     Menu mainMenu{"HOVEDMENY",
                   {
-                {"Vis tre", [&familyTree](){ familyTree.show(); } },
+                {"Vis tre", [&familyTree](){
+                    familyTree.show(); } },
 
                 {"Vis person(er)", [&familyTree](){
                     auto name = COM::getString("Skriv navnet på personen du ønsker å vise");
@@ -32,6 +33,12 @@ int main(){
                             node->getData()->viewDetails();
                         }
                     }
+                }},
+
+                {"Legg til person", [&familyTree](){
+                    std::cout << "Ups, dette er ikke implementert enda, beklager dette!";
+
+
                 }},
 
                 {"Rediger person", [&familyTree](){
@@ -59,16 +66,18 @@ int main(){
                 }},
 
                 {"Last tre fra fil", [&familyTree](){
+
                     // Henter fil å lese fra (Kan byttes ut med input fra bruker)
-                    std::string fromFile{"../test/test_files/FirstTree.json"};
-                    std::ifstream jsonFile(fromFile);
+                    std::string fromFile = COM::getString("Skriv inn banen til filen (.json): ");
+
+                    while(!COM::fileExists(fromFile)){
+                        fromFile = COM::getString("Beklager, kunne ikke finne filen.\nSkriv inn banen til filen (.json): ");
+                    }
 
                     // Henter ut filen som et JSON-objekt
-                    json treeData;
-                    jsonFile >> treeData;
+                    json treeData = COM::openFileAsJson(fromFile);
 
                     familyTree.fillFromJson(treeData);
-
                     std::cout << "Treet er fylt opp med data" << std::endl;
                 }},
 
