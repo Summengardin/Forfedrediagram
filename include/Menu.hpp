@@ -1,10 +1,10 @@
-
+// --------------------------------------------------------------
 //
 //  Menu class
-//  Inspired by
+//  Inspired by "Menu Class - Example of Modern C++ STL features"
+//  https://www.cppstories.com/2018/07/menu-cpp17-example/
 //
-//
-//
+// --------------------------------------------------------------
 
 #pragma once //FORFEDREDIAGRAM_MENU_HPP
 

@@ -6,7 +6,6 @@
 #include "Node.hpp"
 #include "Person.hpp"
 #include "Tree.hpp"
-#include "date.hpp"
 #include "commonFunctions.hpp"
 #include "Menu.hpp"
 
@@ -22,8 +21,16 @@ int main(){
 
                 {"Vis person(er)", [&familyTree](){
                     auto name = COM::getString("Skriv navnet på personen du ønsker å vise");
-                    for (auto& node : familyTree.findNodeByString(name)){
-                        node->getData()->viewDetails();
+                    std::vector<Node<Person>*> people = familyTree.findNodeByString(name);
+                    if(people.empty())
+                    {
+                        std::cout << "Fant ingen personer med navn \"" << name << "\"" << std::endl;
+                    } else
+                    {
+                        for (auto &node: familyTree.findNodeByString(name))
+                        {
+                            node->getData()->viewDetails();
+                        }
                     }
                 }},
 
@@ -32,7 +39,7 @@ int main(){
                     std::vector<Node<Person>*> people = familyTree.findNodeByString(name);
 
                     if(people.empty()){
-                        std::cout << "\nFant ingen person med navn " << name << std::endl;
+                        std::cout << "\nFant ingen person med navn \"" << name << "\"" <<  std::endl;
                     } else if(people.size() == 1){
                         people[0]->getData()->edit();
                     } else {
@@ -53,8 +60,7 @@ int main(){
 
                 {"Last tre fra fil", [&familyTree](){
                     // Henter fil å lese fra (Kan byttes ut med input fra bruker)
-
-                    std::string fromFile{"C:\\Users\\simen\\Dev\\forfedrediagram\\tests\\test_files\\FirstTree.json"};
+                    std::string fromFile{"../test/test_files/FirstTree.json"};
                     std::ifstream jsonFile(fromFile);
 
                     // Henter ut filen som et JSON-objekt
@@ -63,7 +69,7 @@ int main(){
 
                     familyTree.fillFromJson(treeData);
 
-                    std::cout << "Treet er fylt opp med _data" << std::endl;
+                    std::cout << "Treet er fylt opp med data" << std::endl;
                 }},
 
                 {"Lagre tre til fil", [&familyTree](){
@@ -76,12 +82,14 @@ int main(){
     };
 
 
-    std::cout << "Today it is " << today().toString() << std::endl;
+
 
     // Overskrift
     std::cout << "\n--------------------------------" << std::endl;
     std::cout <<   "|   Hello there family tree!   |" << std::endl;
     std::cout <<   "--------------------------------\n" << std::endl;
+    std::cout << "\nI dag er det " << today().toString() << "," << std::endl;
+    std::cout <<   "gjør det til en flott en!" << std::endl;
 
     mainMenu.show();
 
