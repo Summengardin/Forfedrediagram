@@ -1,5 +1,69 @@
 # Forfedrediagram
-Mappeinnlevering AIS1002 - Forfedretre
+Mappeinnlevering AIS1002 - Forfedretre <br>
+
+## Description
+
+---
+Tool to build your family tree. Build up from scratch or load an existing tree stored in a .JSON-file. <br>
+
+Example .JSON-file:
+
+``` json
+ {
+    "nodes": [
+        {
+            "data": {
+                "birth": "22-06-1999",
+                "death": null,
+                "firstName": "Me",
+                "middleName": "Myself",
+                "lastName": "Fatherson",
+                "age" : 22,
+                "isDead" : false
+            },
+            "treeIdx" : 1,
+            "leftIdx": 2,
+            "rightIdx": 3
+        },
+        {
+            "data": {
+                "birth": "11-03-1968",
+                "death": null,
+                "firstName": "Mom",
+                "lastName": "Mother",
+                "age" : null,
+                "isDead" : false
+            },
+            "treeIdx" : 2,
+            "leftIdx": null,
+            "rightIdx": null
+        },
+        {
+            "data": {
+                "birth": "08-02-1965",
+                "death": null,
+                "firstName": "Dad",
+                "middleName": "Daddy",
+                "lastName": "Dadsen",
+                "age" : null,
+                "isDead" : false
+            },
+            "treeIdx" : 3,
+            "leftIdx": null,
+            "rightIdx": null
+        },
+        
+    ],
+    "tree": {
+        "settings": {
+            "globalIndent": 8
+        }
+    }
+}
+
+```
+
+
 
 
 ## Credits
@@ -18,4 +82,3 @@ https://github.com/nlohmann/json <br><br>
 The menu-class is self-written but highly inspired by: <br> 
 ["Menu Class - Example of Modern C++ STL features"](https://www.cppstories.com/2018/07/menu-cpp17-example/) <br>
 
----
