@@ -6,29 +6,30 @@
 //
 // --------------------------------------------------------------
 
-#pragma once //FORFEDREDIAGRAM_MENU_HPP
+#pragma once//FORFEDREDIAGRAM_MENU_HPP
 
 
+#include <cctype>
+#include <functional>
 #include <iostream>
+#include <limits>
+#include <optional>
+#include <sstream>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <variant>
 #include <vector>
-#include <type_traits>
-#include <optional>
-#include <sstream>
-#include <limits>
-#include <cctype>
-#include <functional>
 
 #include "commonFunctions.hpp"
 
 
-class Menu {
+class Menu
+{
 private:
-    struct MenuItem{
+    struct MenuItem {
         std::string name;
-        std::variant<std::function<void()>, Menu*> func;
+        std::variant<std::function<void()>, Menu *> func;
     };
 
 public:
@@ -37,7 +38,7 @@ public:
 
     [[nodiscard]] auto getTitle() const noexcept;
 
-    void setTitle(const std::string&);
+    void setTitle(const std::string &);
 
     void show();
 
@@ -47,19 +48,16 @@ public:
 
     bool remove(size_t index);
 
-    bool append(const MenuItem& menuItem);
+    bool append(const MenuItem &menuItem);
 
-    bool insert(size_t index, const MenuItem& menuItem);
+    bool insert(size_t index, const MenuItem &menuItem);
 
 private:
-    void show(const Menu& m);
+    void show(const Menu &m);
 
     std::string _title;
     std::vector<MenuItem> _menuItems;
 };
-
-
-
 
 
 //FORFEDREDIAGRAM_MENU_HPP

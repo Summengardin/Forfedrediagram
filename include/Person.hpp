@@ -1,15 +1,15 @@
-#pragma once // FORFEDREDIAGRAM_PERSON_HPP
+#pragma once// FORFEDREDIAGRAM_PERSON_HPP
 
 
 #include <iostream>
-#include <utility>
-#include <variant>
 #include <optional>
 #include <regex>
+#include <utility>
+#include <variant>
 
-#include "json.hpp"
 #include "commonFunctions.hpp"
 #include "globals.hpp"
+#include "json.hpp"
 
 
 using json = nlohmann::json;
@@ -18,7 +18,8 @@ class Person
 {
 private:
     //TODO Genders
-    enum GenderType{
+    enum GenderType
+    {
         male,
         female,
     };
@@ -40,22 +41,22 @@ public:
     [[nodiscard]] json toJson() const;
 
 
-    [[nodiscard]] const std::string& getFirstName() const;
+    [[nodiscard]] const std::string &getFirstName() const;
 
 
-    [[nodiscard]] const std::string& getMiddleName() const;
+    [[nodiscard]] const std::string &getMiddleName() const;
 
 
-    [[nodiscard]] const std::string& getLastName() const;
+    [[nodiscard]] const std::string &getLastName() const;
 
 
     [[nodiscard]] std::string getFullName() const;
 
 
-    [[nodiscard]] bool contains (const std::string& str) const;
+    [[nodiscard]] bool contains(const std::string &str) const;
 
 
-    [[nodiscard]] const Date& getBirth() const;
+    [[nodiscard]] const Date &getBirth() const;
 
 
     [[nodiscard]] int getAge() const;
@@ -67,7 +68,7 @@ public:
     void setLastName(const std::string &lastName);
 
 
-    void setBirth(const std::string& birth);
+    void setBirth(const std::string &birth);
 
 
     void edit();
@@ -80,9 +81,6 @@ public:
 
 
 private:
-
-
-
     std::string _firstName;
     std::string _middleName;
     std::string _lastName;

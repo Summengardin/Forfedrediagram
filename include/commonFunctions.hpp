@@ -1,23 +1,25 @@
-#pragma once // FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP
+#pragma once// FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
 #include <chrono>
-#include <regex>
+#include <fstream>
+#include <iostream>
 #include <optional>
+#include <regex>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #include "json.hpp"
 using json = nlohmann::json;
 
 
-namespace COM{
+namespace COM
+{
     // Common functions
 
 
-    inline std::string getString(const std::string& prompt){
+    inline std::string getString(const std::string &prompt)
+    {
         std::cout << prompt << std::endl;
 
         std::string input;
@@ -27,25 +29,25 @@ namespace COM{
     }
 
     template<class T>
-    inline T getNum(const std::string& prompt)
+    inline T getNum(const std::string &prompt)
     {
         std::cout << prompt << std::endl;
 
         T input;
         std::cin >> input;
-        while(!std::cin.good()){
+        while (!std::cin.good())
+        {
             std::cout << "Det der var ingen gyldig verdi, prøv igjen." << std::endl;
             std::cin.clear();
             std::cin.ignore(100000, '\n');
             std::cin >> input;
-
         }
 
         return input;
     }
 
 
-    inline std::vector<std::string> splitString(const std::string& str, char delimiter)
+    inline std::vector<std::string> splitString(const std::string &str, char delimiter)
     {
         // Split a string by a delimiter. Return a vector of all the elements
         std::vector<std::string> split;
@@ -53,7 +55,8 @@ namespace COM{
         std::string token;
         std::stringstream s(str);
 
-        while(std::getline(s, token, delimiter)){
+        while (std::getline(s, token, delimiter))
+        {
             split.push_back(token);
         }
 
@@ -61,35 +64,37 @@ namespace COM{
     }
 
 
-    inline void debug(const std::string& prompt)
+    inline void debug(const std::string &prompt)
     {
-        if(false)
-            std::cout << "\n" << "DEBUG: " << prompt << std::endl;
+        if (false)
+            std::cout << "\n"
+                      << "DEBUG: " << prompt << std::endl;
     }
 
 
-    inline bool fileExists(const std::string& filepath)
+    inline bool fileExists(const std::string &filepath)
     {
         std::ifstream fileStream(filepath);
         return fileStream.is_open();
     }
 
 
-    inline bool stringHasEnding(const std::string& mainStr, const std::string& ending)
+    inline bool stringHasEnding(const std::string &mainStr, const std::string &ending)
     {
-        if(mainStr.size() >= ending.size() &&
-           mainStr.compare(mainStr.size() - ending.size(), ending.size(), ending) == 0)
+        if (mainStr.size() >= ending.size() &&
+            mainStr.compare(mainStr.size() - ending.size(), ending.size(), ending) == 0)
             return true;
         else
             return false;
     }
 
 
-    inline std::optional<json> openFileAsJson(const std::string& filepath)
+    inline std::optional<json> openFileAsJson(const std::string &filepath)
     {
         std::cout << filepath << std::endl;
         // Sjekk at filen faktisk er ".json"-fil
-        if(!stringHasEnding(filepath, ".json")){
+        if (!stringHasEnding(filepath, ".json"))
+        {
             return std::nullopt;
         }
 
@@ -101,6 +106,6 @@ namespace COM{
     }
 
 
-}
+}// namespace COM
 
 //FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP

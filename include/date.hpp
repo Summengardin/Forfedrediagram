@@ -1,24 +1,24 @@
 
-#pragma once //FORFEDREDIAGRAM_DATE_HPP
+#pragma once//FORFEDREDIAGRAM_DATE_HPP
 
 
-#include <iostream>
-#include <vector>
-#include <sstream>
-#include <regex>
 #include <chrono>
+#include <iostream>
+#include <regex>
+#include <sstream>
+#include <vector>
 
 #include "commonFunctions.hpp"
 
-class Date{
+class Date
+{
 public:
     Date() = default;
 
-    Date(int d, int m, int y):
-            _day(d),
-            _month(m),
-            _year(y)
-    {};
+    Date(int d, int m, int y) :
+        _day(d),
+        _month(m),
+        _year(y){};
 
     explicit Date(std::string dateAsString)
     {
@@ -26,19 +26,23 @@ public:
     }
 
 
-    [[nodiscard]] Date getDate() const{
+    [[nodiscard]] Date getDate() const
+    {
         //TODO
         return *this;
     }
 
 
-    [[nodiscard]] bool isValid() const{
+    [[nodiscard]] bool isValid() const
+    {
         return !(_day == 0 or _month == 0 or _year == 0);
     }
 
 
-    [[nodiscard]] std::string toString() const{
-        if(isValid()) {
+    [[nodiscard]] std::string toString() const
+    {
+        if (isValid())
+        {
             std::ostringstream oSStream;
 
             std::string dayString = std::to_string(_day);
@@ -50,29 +54,30 @@ public:
             oSStream << std::setw(4) << std::setfill('0') << yearString;
 
             return oSStream.str();
-            return (_day < 10 ? "0" : "") + std::to_string(_day)
-                   + "-" + (_month < 10 ? "0" : "") + std::to_string(_month)
-                   + "-" + std::to_string(_year);
+            return (_day < 10 ? "0" : "") + std::to_string(_day) + "-" + (_month < 10 ? "0" : "") + std::to_string(_month) + "-" + std::to_string(_year);
         }
         return "Unknown date";
-
-
     }
 
-    [[nodiscard]] int getDay() const {
+    [[nodiscard]] int getDay() const
+    {
         return _day;
     }
 
-    [[nodiscard]] int getMonth() const {
+    [[nodiscard]] int getMonth() const
+    {
         return _month;
     }
 
-    [[nodiscard]] int getYear() const {
+    [[nodiscard]] int getYear() const
+    {
         return _year;
     }
 
-    bool setDate(std::string& dateAsString){
-        if (checkStringFormat(dateAsString)){
+    bool setDate(std::string &dateAsString)
+    {
+        if (checkStringFormat(dateAsString))
+        {
             std::vector<std::string> numbers = COM::splitString(dateAsString, '-');
             _day = std::stoi(numbers[0]);
             _month = std::stoi(numbers[1]);
@@ -83,18 +88,20 @@ public:
     }
 
 
-    [[nodiscard]]static bool checkStringFormat(const std::string& dateAsString) {
-        std::regex format{R"(\d{2}\-\d{2}\-\d{4})"}; // Date should be in format DD-MM-YYYY
+    [[nodiscard]] static bool checkStringFormat(const std::string &dateAsString)
+    {
+        std::regex format{R"(\d{2}\-\d{2}\-\d{4})"};// Date should be in format DD-MM-YYYY
         std::smatch match;
         return std::regex_match(dateAsString, match, format);
     }
 
-    [[nodiscard]]static int yearsBetween(const Date& date1, const Date& date2){
-        if(date1._year > 0 and date2._year > 0)
+    [[nodiscard]] static int yearsBetween(const Date &date1, const Date &date2)
+    {
+        if (date1._year > 0 and date2._year > 0)
         {
             return date1._year - date2._year;
-        }
-        else return 0;
+        } else
+            return 0;
     }
 
 
@@ -103,19 +110,20 @@ protected:
     int _month = 0;
     int _year = 0;
 
-    std::array<unsigned int, 12> daysInMonth = {31,30,28,30,31,30,31,31,30,31,30,31};
-
+    std::array<unsigned int, 12> daysInMonth = {31, 30, 28, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 };
 
-class Today : public Date{
+class Today : public Date
+{
 public:
-
-    Date operator()(){
+    Date operator()()
+    {
         update();
         return getDate();
     }
 
-    void update(){
+    void update()
+    {
         // Used for updating TODAY-date
         auto nowPtr = std::chrono::system_clock::now();
         std::time_t now = std::chrono::system_clock::to_time_t(nowPtr);
@@ -124,7 +132,6 @@ public:
         _day = localTime.tm_mday;
         _month = localTime.tm_mon + 1;
         _year = localTime.tm_year + 1900;
-
     }
 };
 
