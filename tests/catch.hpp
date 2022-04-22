@@ -659,7 +659,7 @@ namespace Catch {
     public: // substrings and searches
         // Returns a substring of [start, start + length).
         // If start + length > size(), then the substring is [start, size()).
-        // If start > size(), then the substring is empty.
+        // If start > size(), then the substring is isEmpty.
         auto substr( size_type start, size_type length ) const noexcept -> StringRef;
 
         // Returns the current start pointer. May not be null-terminated.
@@ -2869,7 +2869,7 @@ namespace Catch {
                 std::string const& ) : SectionInfo( _lineInfo, _name ) {}
 
         std::string name;
-        std::string description; // !Deprecated: this will always be empty
+        std::string description; // !Deprecated: this will always be isEmpty
         SourceLineInfo lineInfo;
     };
 
@@ -5686,7 +5686,7 @@ namespace Catch {
 
         virtual void skipTest( TestCaseInfo const& testInfo ) = 0;
 
-        // Default empty implementation provided
+        // Default isEmpty implementation provided
         virtual void fatalErrorEncountered( StringRef name );
 
         virtual bool isMulti() const;
@@ -8214,7 +8214,7 @@ namespace Catch {
                 os << *lazyExpr.m_transientExpression;
         }
         else {
-            os << "{** error - unchecked empty expression requested **}";
+            os << "{** error - unchecked isEmpty expression requested **}";
         }
         return os;
     }
@@ -8871,7 +8871,7 @@ namespace detail {
         void loadBuffer() {
             m_tokenBuffer.resize( 0 );
 
-            // Skip any empty strings
+            // Skip any isEmpty strings
             while( it != itEnd && it->empty() )
                 ++it;
 
@@ -9461,7 +9461,7 @@ namespace detail {
                 return Result::logicError( "No options supplied to Opt" );
             for( auto const &name : m_optNames ) {
                 if( name.empty() )
-                    return Result::logicError( "Option name cannot be empty" );
+                    return Result::logicError( "Option name cannot be isEmpty" );
 #ifdef CATCH_PLATFORM_WINDOWS
                 if( name[0] != '-' && name[0] != '/' )
                     return Result::logicError( "Option name must begin with '-' or '/'" );
@@ -10761,7 +10761,7 @@ namespace Catch {
 namespace Catch {
 
     // If neither SEH nor signal handling is required, the handler impls
-    // do not have to do anything, and can be empty.
+    // do not have to do anything, and can be isEmpty.
     void FatalConditionHandler::engage_platform() {}
     void FatalConditionHandler::disengage_platform() {}
     FatalConditionHandler::FatalConditionHandler() = default;
@@ -12641,7 +12641,7 @@ namespace Catch {
                 // until later to start consuming its values.
                 // This catches cases where `GENERATE` is placed between two
                 // `SECTION`s.
-                // **The check for m_children.empty cannot be removed**.
+                // **The check for m_children.isEmpty cannot be removed**.
                 // doing so would break `GENERATE` _not_ followed by `SECTION`s.
                 const bool should_wait_for_child = [&]() {
                     // No children -> nobody to wait for
@@ -15378,7 +15378,7 @@ namespace Catch {
         os  << version.majorVersion << '.'
             << version.minorVersion << '.'
             << version.patchNumber;
-        // branchName is never null -> 0th char is \0 if it is empty
+        // branchName is never null -> 0th char is \0 if it is isEmpty
         if (version.branchName[0]) {
             os << '-' << version.branchName
                << '.' << version.buildNumber;

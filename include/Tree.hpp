@@ -115,6 +115,11 @@ public:
     }
 
 
+    bool isEmpty(){
+        return !_root;
+    }
+
+
     [[nodiscard]] const Node<T> &viewNode(unsigned int index) const
     {
         //TODO
@@ -195,13 +200,12 @@ public:
         }
     }
 
-
     void listNodes()
     {
         if (!_root)
             return;
         traverseDFS(_root.get(), [](Node<T> *node) {
-            std::cout << node->viewData() << std::endl;
+            std::cout << *node->viewData() << std::endl;
         });
     }
 
@@ -213,26 +217,26 @@ public:
             std::cout << "Treet er tomt :/" << std::endl;
             return;
         }
-        int depth = 0;
+
         int indent = globalIndent;
         _root->traverseDFSWithDepth([indent](Node<T> *node, int depth) {
-            for (int i = 0; i < depth - 1; ++i)
+            for (int i = 0; i < depth; ++i)
             {
                 for (int space = 0; space < indent; ++space)
                 {
                     std::cout << " ";
                 }
             }
-            if (depth != 0)
+/*            if (depth != 0)
             {
                 for (int space = 0; space < indent; ++space)
                 {
                     std::cout << " ";
                 }
                 std::cout << "";
-            }
+            }*/
             std::cout << *node->viewData() << std::endl;
-            depth++;
+            //depth++;
         });
     }
 
