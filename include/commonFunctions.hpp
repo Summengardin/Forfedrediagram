@@ -18,34 +18,58 @@ namespace COM {
     // Common functions
 
 
-    inline std::string getString(const std::string &prompt) {
+    inline std::string getString(const std::string &prompt, bool allowEmpty = false) {
         std::cout << prompt << std::endl;
 
         std::string input;
+        std::noskipws(std::cin);
 
         std::getline(std::cin, input);
-      //  std::cin.ignore(10000, '\n');
-        //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
+        while (!allowEmpty and input.empty()){
+            std::cout << "\nVerdien kan ikke være, prøv igjen:" << std::endl;
+            std::getline(std::cin, input);
+        }
+
+        std::skipws(std::cin);
 
         return input;
+    }
+
+
+    template<class T>
+    inline T convert(const std::string& str){
+        // https://gist.github.com/mark-d-holmberg/862733
+        std::istringstream iss(str);
+        T num;
+        iss >> num;
+
+        return num;
+    }
+
+    inline bool isNumber(const std::string& str){
+
+        return std::all_of(str.begin(), str.end(), [](char c){
+            return std::isdigit(c);
+        });
     }
 
     template<class T>
     inline T getNum(const std::string &prompt) {
         std::cout << prompt << std::endl;
 
-        T input;
-        std::cin >> input;
-        while (!std::cin.good()) {
+        std::string inputAsString;
+        std::getline(std::cin, inputAsString);
+
+        while(!isNumber(inputAsString)){
             std::cout << "Det der var ingen gyldig verdi, prøv igjen." << std::endl;
-            std::cin.clear();
-            std::cin.ignore(100000, '\n');
-            std::cin >> input;
+            std::getline(std::cin, inputAsString);
         }
 
-        return input;
+        return convert<T>(inputAsString);
     }
+
+
 
 
     inline std::vector<std::string> splitString(const std::string &str, char delimiter) {

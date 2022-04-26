@@ -8,6 +8,7 @@ enable_testing() #Enable c-tests for testing in GitHub workflows
 add_subdirectory(tests) # Ligger egen CMakeLists.txt i mappen tests
 
 add_subdirectory(src)
+add_subdirectory(CLI)
 
 
 

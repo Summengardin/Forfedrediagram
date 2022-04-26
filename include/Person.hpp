@@ -29,7 +29,7 @@ public:
     Person() = default;
 
 
-    Person(std::string &firstName, std::string &lastName);
+    Person(const std::string &firstName, const std::string &lastName);
 
 
     explicit Person(const json &j);
@@ -77,7 +77,13 @@ public:
     void viewDetails();
 
 
+    static bool validateName(const std::string& str);
+
+
     friend std::ostream &operator<<(std::ostream &os, const Person &p);
+
+
+
 
 
 private:

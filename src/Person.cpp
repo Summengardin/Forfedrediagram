@@ -13,7 +13,7 @@ std::ostream &operator<<(std::ostream &os, const Person &p)
 }
 
 
-Person::Person(std::string &firstName, std::string &lastName)
+Person::Person(const std::string &firstName, const std::string &lastName)
 {
     setFirstName(firstName);
     setLastName(lastName);
@@ -142,19 +142,44 @@ void Person::edit()
 {
     //TODO - Er det mulig å la brukeren ikke skrive inn igjen den nåværende verdien om den skal beholdes
     //TODO - Implementer sjekk av alle inputs
-    //TODO - Må være mulig å legge inn tom input
+
     _firstName = COM::getString("Fornavn: ");
-    _middleName = COM::getString("Mellomnavn: ");
+    while(!Person::validateName(_firstName)){
+        _firstName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+    }
+
+    _middleName = COM::getString("Mellomnavn: ", true);
+    while(!Person::validateName(_middleName)){
+        _middleName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+    }
+
     _lastName = COM::getString("Etternavn: ");
-    _age = COM::getNum<unsigned int>("Alder?");
-    _birth = Date(COM::getString("Når ble " + _firstName + " " + _middleName + " født? [DD-MM-YYYY]: "));
+    while(!Person::validateName(_lastName)){
+        _lastName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+    }
+    //_age = COM::getNum<unsigned int>("Alder?");
+
+    auto birthAsString = COM::getString("Når ble " + _firstName + " " + _middleName + " født? [DD-MM-YYYY]: ");
+    while(!Date::validateStringFormat(birthAsString)){
+        birthAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
+    }
+    _birth = Date(birthAsString);
+
     auto aliveAnswer = COM::getString("Er personen " + _firstName + " " + _middleName + " i live? (y/n)");
+    while(aliveAnswer != "y" and aliveAnswer != "Y" and aliveAnswer != "n" and aliveAnswer != "N"){
+        aliveAnswer = COM::getString("Du må nesten svare 'y' eller 'n'. Mer enn det forstår jeg ikke :/\nPrøv igjen: ");
+    }
     if (aliveAnswer == "y" or aliveAnswer == "Y")
         _isDead = false;
     else if (aliveAnswer == "n" or aliveAnswer == "N")
         _isDead = true;
-    if (_isDead)
-        _birth = Date(COM::getString("Når døde personen? [DD-MM-YYYY]: "));
+    if (_isDead){
+        auto deathAsString = COM::getString("Når døde " + _firstName + " " + _middleName + "? [DD-MM-YYYY]: ");
+        while(!Date::validateStringFormat(deathAsString)){
+            deathAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
+        }
+        _death = Date(deathAsString);
+    }
 }
 
 
@@ -163,7 +188,18 @@ void Person::viewDetails()
     std::cout << "[Person]:\n"
               << getFullName() << ",\n"
               << "Alder: " << _age << "år\n"
-              << (_birth.isValid() ? ("F: " + _birth.toString()) : "Bursdag ligger ikke i systemet.")
-              << ((_isDead) ? (_death.isValid() ? "  -  D: " + _death.toString() : "\nDødsdato ligger ikke i systemet.") : "")
+              << (_birth.validate() ? ("F: " + _birth.toString()) : "Bursdag ligger ikke i systemet.")
+              << ((_isDead) ? (_death.validate() ? "  -  D: " + _death.toString() : "\nDødsdato ligger ikke i systemet.") : "")
               << std::endl;
+}
+
+bool Person::validateName(const std::string& str)
+{
+    std::string validLetters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ ";
+
+    bool result = std::all_of(str.begin(), str.end(), [&validLetters](char c){
+        return validLetters.find(c) != std::string::npos;
+    });
+
+    return result;
 }
