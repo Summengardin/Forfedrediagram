@@ -40,9 +40,6 @@ Person::Person(const json &j)
         _birth = Date();
     }
 
-    if (j.contains("_age") and j.at("_age").is_string())
-        _age = j.at("_age");
-
     if (j.contains("death") and j.at("death").is_string())
     {
         std::string birthStr = j["death"];
@@ -65,7 +62,6 @@ json Person::toJson() const
             {"middleName", _middleName},
             {"birth", _birth.toString()},
             {"death", _death.toString()},
-            {"age", _age},
             {"isDeath", _isDead}};
     return j;
 }
@@ -146,7 +142,7 @@ void Person::edit()
     _firstName = COM::getString("Fornavn: ");
     _middleName = COM::getString("Mellomnavn: ");
     _lastName = COM::getString("Etternavn: ");
-    _age = COM::getNum<unsigned int>("Alder?");
+
     _birth = Date(COM::getString("Når ble " + _firstName + " " + _middleName + " født? [DD-MM-YYYY]: "));
     auto aliveAnswer = COM::getString("Er personen " + _firstName + " " + _middleName + " i live? (y/n)");
     if (aliveAnswer == "y" or aliveAnswer == "Y")
@@ -162,8 +158,20 @@ void Person::viewDetails()
 {
     std::cout << "[Person]:\n"
               << getFullName() << ",\n"
-              << "Alder: " << _age << "år\n"
               << (_birth.isValid() ? ("F: " + _birth.toString()) : "Bursdag ligger ikke i systemet.")
               << ((_isDead) ? (_death.isValid() ? "  -  D: " + _death.toString() : "\nDødsdato ligger ikke i systemet.") : "")
               << std::endl;
+}
+
+bool Person::validName(const std::string &str)
+{
+    std::string validLetters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ ";
+
+    for(auto& c : str){
+        if(validLetters.find(c) == std::string::npos){
+            return false;
+        }
+    }
+
+    return true;
 }

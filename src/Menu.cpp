@@ -72,7 +72,7 @@ void Menu::show(const Menu &m)
                  << std::endl;
 
         for (size_t i = 0U; i < menuCount; ++i)
-            oSStream << i + 1 << ")  " << menu._menuItems[i].name << std::endl;
+            oSStream << i + 1 << ")  " << menu._menuItems[i].name << "\n";
 
         oSStream << "0)  Tilbake/Avslutt\n\nSkriv inn valg:";
 

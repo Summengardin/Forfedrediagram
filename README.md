@@ -1,6 +1,8 @@
 # Forfedrediagram
 Mappeinnlevering AIS1002 - Forfedretre <br>
 
+* Tillater bare to foreldre
+
 ## Description
 
 ---

@@ -26,7 +26,7 @@ TEST_CASE("Check date format")
     std::string death = "23061999";
     std::string unknownDelimiter = "23.06.1999";
 
-    REQUIRE(COM::Date::checkStringFormat((birth)) == true);
+    REQUIRE(Date::checkStringFormat((birth)) == true);
     REQUIRE(COM::Date::checkStringFormat((death)) == false);
     REQUIRE(COM::Date::checkStringFormat((unknownDelimiter)) == false);
 }
