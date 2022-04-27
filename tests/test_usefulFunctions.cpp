@@ -20,13 +20,14 @@ TEST_CASE("Split string"){
     REQUIRE(correctString3 == COM::splitString(string3, ';'));
 }
 
-TEST_CASE("Check date format")
-{
-    std::string birth = "22-06-1999";
-    std::string death = "23061999";
-    std::string unknownDelimiter = "23.06.1999";
 
-    REQUIRE(COM::Date::checkStringFormat((birth)) == true);
-    REQUIRE(COM::Date::checkStringFormat((death)) == false);
-    REQUIRE(COM::Date::checkStringFormat((unknownDelimiter)) == false);
+TEST_CASE("Check filetype")
+{
+    std::string string1 = "22-06.json";
+    std::string string2 = "enSlagsFil.tt";
+    std::string string3 = "Dette\\Er\\en\\jsonfil.json";
+
+    REQUIRE(COM::fileIsType(string1, "1999") == false);
+    REQUIRE(COM::fileIsType(string2, ".tt") == false);
+    REQUIRE(COM::fileIsType(string3, "json") == true);
 }

@@ -2717,7 +2717,7 @@ namespace detail
 @param[in]     f  the substring to replace with @a t
 @param[in]     t  the string to replace @a f
 
-@pre The search string @a f must not be empty. **This precondition is
+@pre The search string @a f must not be isEmpty. **This precondition is
 enforced with an assertion.**
 
 @since version 2.0.0
@@ -4342,7 +4342,7 @@ template<typename IteratorType> class iteration_proxy_value
     mutable std::size_t array_index_last = 0;
     /// a string representation of the array index
     mutable string_type array_index_str = "0";
-    /// an empty string (to return a reference for primitive values)
+    /// an isEmpty string (to return a reference for primitive values)
     const string_type empty_str{};
 
   public:
@@ -4399,7 +4399,7 @@ template<typename IteratorType> class iteration_proxy_value
             case value_t::object:
                 return anchor.key();
 
-            // use an empty key for all primitive types
+            // use an isEmpty key for all primitive types
             case value_t::null:
             case value_t::string:
             case value_t::boolean:
@@ -5977,7 +5977,7 @@ class json_sax_dom_parser
 
   private:
     /*!
-    @invariant If the ref stack is empty, then the passed value will be the new
+    @invariant If the ref stack is isEmpty, then the passed value will be the new
                root.
     @invariant If the ref stack contains a value, then it is an array or an
                object to which we can add elements
@@ -6231,9 +6231,9 @@ class json_sax_dom_callback_parser
     @param[in] skip_callback  whether we should skip calling the callback
                function; this is required after start_array() and
                start_object() SAX events, because otherwise we would call the
-               callback function with an empty array or object, respectively.
+               callback function with an isEmpty array or object, respectively.
 
-    @invariant If the ref stack is empty, then the passed value will be the new
+    @invariant If the ref stack is isEmpty, then the passed value will be the new
                root.
     @invariant If the ref stack contains a value, then it is an array or an
                object to which we can add elements
@@ -11064,7 +11064,7 @@ class parser
             // we reached this line after we successfully parsed a value
             if (states.empty())
             {
-                // empty stack: we reached the end of the hierarchy: done
+                // isEmpty stack: we reached the end of the hierarchy: done
                 return true;
             }
 
@@ -11570,7 +11570,7 @@ class iter_impl // NOLINT(cppcoreguidelines-special-member-functions,hicpp-speci
 
             case value_t::null:
             {
-                // set to end so begin()==end() is true: null is empty
+                // set to end so begin()==end() is true: null is isEmpty
                 m_it.primitive_iterator.set_end();
                 break;
             }
@@ -12388,7 +12388,7 @@ class json_pointer
     }
 
     /// @brief return whether pointer points to the root document
-    /// @sa https://json.nlohmann.me/api/json_pointer/empty/
+    /// @sa https://json.nlohmann.me/api/json_pointer/isEmpty/
     bool empty() const noexcept
     {
         return reference_tokens.empty();
@@ -12513,7 +12513,7 @@ class json_pointer
                 The following code is only reached if there exists a reference
                 token _and_ the current value is primitive. In this case, we have
                 an error situation, because primitive values may only occur as
-                single value; that is, with an empty list of reference tokens.
+                single value; that is, with an isEmpty list of reference tokens.
                 */
                 case detail::value_t::string:
                 case detail::value_t::boolean:
@@ -12854,14 +12854,14 @@ class json_pointer
     @note This function is only called by the json_pointer constructor.
           All exceptions below are documented there.
 
-    @throw parse_error.107  if the pointer is not empty or begins with '/'
+    @throw parse_error.107  if the pointer is not isEmpty or begins with '/'
     @throw parse_error.108  if character '~' is not followed by '0' or '1'
     */
     static std::vector<std::string> split(const std::string& reference_string)
     {
         std::vector<std::string> result;
 
-        // special case: empty reference string -> no reference tokens
+        // special case: isEmpty reference string -> no reference tokens
         if (reference_string.empty())
         {
             return result;
@@ -12870,7 +12870,7 @@ class json_pointer
         // check if nonempty reference string begins with slash
         if (JSON_HEDLEY_UNLIKELY(reference_string[0] != '/'))
         {
-            JSON_THROW(detail::parse_error::create(107, 1, "JSON pointer must be empty or begin with '/' - was: '" + reference_string + "'", BasicJsonType()));
+            JSON_THROW(detail::parse_error::create(107, 1, "JSON pointer must be isEmpty or begin with '/' - was: '" + reference_string + "'", BasicJsonType()));
         }
 
         // extract the reference tokens:
@@ -12935,7 +12935,7 @@ class json_pointer
             {
                 if (value.m_value.array->empty())
                 {
-                    // flatten empty array as null
+                    // flatten isEmpty array as null
                     result[reference_string] = nullptr;
                 }
                 else
@@ -12954,7 +12954,7 @@ class json_pointer
             {
                 if (value.m_value.object->empty())
                 {
-                    // flatten empty object as null
+                    // flatten isEmpty object as null
                     result[reference_string] = nullptr;
                 }
                 else
@@ -17617,7 +17617,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         json_value(number_unsigned_t v) noexcept : number_unsigned(v) {}
         /// constructor for numbers (floating-point)
         json_value(number_float_t v) noexcept : number_float(v) {}
-        /// constructor for empty values of a given type
+        /// constructor for isEmpty values of a given type
         json_value(value_t t)
         {
             switch (t)
@@ -17968,7 +17968,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /// assignment, static functions creating objects, and the destructor.
     /// @{
 
-    /// @brief create an empty value with a given type
+    /// @brief create an isEmpty value with a given type
     /// @sa https://json.nlohmann.me/api/basic_json/basic_json/
     basic_json(const value_t v)
         : m_type(v), m_value(v)
@@ -19181,7 +19181,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /// @sa https://json.nlohmann.me/api/basic_json/operator%5B%5D/
     reference operator[](size_type idx)
     {
-        // implicitly convert null value to an empty array
+        // implicitly convert null value to an isEmpty array
         if (is_null())
         {
             m_type = value_t::array;
@@ -19240,7 +19240,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /// @sa https://json.nlohmann.me/api/basic_json/operator%5B%5D/
     reference operator[](const typename object_t::key_type& key)
     {
-        // implicitly convert null value to an empty object
+        // implicitly convert null value to an isEmpty object
         if (is_null())
         {
             m_type = value_t::object;
@@ -19798,27 +19798,27 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /// @name capacity
     /// @{
 
-    /// @brief checks whether the container is empty.
-    /// @sa https://json.nlohmann.me/api/basic_json/empty/
+    /// @brief checks whether the container is isEmpty.
+    /// @sa https://json.nlohmann.me/api/basic_json/isEmpty/
     bool empty() const noexcept
     {
         switch (m_type)
         {
             case value_t::null:
             {
-                // null values are empty
+                // null values are isEmpty
                 return true;
             }
 
             case value_t::array:
             {
-                // delegate call to array_t::empty()
+                // delegate call to array_t::isEmpty()
                 return m_value.array->empty();
             }
 
             case value_t::object:
             {
-                // delegate call to object_t::empty()
+                // delegate call to object_t::isEmpty()
                 return m_value.object->empty();
             }
 
@@ -19845,7 +19845,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         {
             case value_t::null:
             {
-                // null values are empty
+                // null values are isEmpty
                 return 0;
             }
 
@@ -20312,7 +20312,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /// @sa https://json.nlohmann.me/api/basic_json/update/
     void update(const_iterator first, const_iterator last, bool merge_objects = false)
     {
-        // implicitly convert null value to an empty object
+        // implicitly convert null value to an isEmpty object
         if (is_null())
         {
             m_type = value_t::object;
@@ -21666,7 +21666,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
         // the patch
         basic_json result(value_t::array);
 
-        // if the values are the same, return empty patch
+        // if the values are the same, return isEmpty patch
         if (source == target)
         {
             return result;

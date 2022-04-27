@@ -6,8 +6,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 enable_testing() #Enable c-tests for testing in GitHub workflows
 add_subdirectory(tests) # Ligger egen CMakeLists.txt i mappen tests
-
 add_subdirectory(src)
+add_subdirectory(CLI)
+#add_subdirectory(example)
 
 
 

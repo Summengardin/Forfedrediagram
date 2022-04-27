@@ -18,18 +18,25 @@ class Person
 {
 private:
     //TODO Genders
+    
+
+
+public:
+    
+    
     enum GenderType
     {
         male,
         female,
+        other,
+        unknown
     };
-
-
-public:
+    
+    
     Person() = default;
 
 
-    Person(std::string &firstName, std::string &lastName);
+    Person(const std::string &firstName, const std::string &lastName);
 
 
     explicit Person(const json &j);
@@ -53,7 +60,7 @@ public:
     [[nodiscard]] std::string getFullName() const;
 
 
-    [[nodiscard]] bool contains(const std::string &str) const;
+    [[nodiscard]] std::string getGenderString() const;
 
 
     [[nodiscard]] const Date &getBirth() const;
@@ -61,6 +68,15 @@ public:
 
     [[nodiscard]] int getAge() const;
 
+
+    [[nodiscard]] GenderType getGender() const;
+
+
+    [[nodiscard]] bool isAlive() const;
+    
+    
+    [[nodiscard]] bool contains(const std::string &str) const;
+    
 
     void setFirstName(const std::string &firstName);
 
@@ -77,7 +93,13 @@ public:
     void viewDetails();
 
 
+    static bool validateName(const std::string& str);
+
+
     friend std::ostream &operator<<(std::ostream &os, const Person &p);
+
+
+
 
 
 private:
@@ -87,9 +109,9 @@ private:
     Date _birth;
     Date _death;
     unsigned int _age = 0;
-    GenderType gender;
+    GenderType _gender;
     bool _isDead{false};
-    //COM::Date _birthday;
+
 };
 
 

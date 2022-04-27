@@ -68,7 +68,7 @@ public:
     }
 
 
-    bool addParent(const std::shared_ptr<Node> &n)
+    bool addParent(std::shared_ptr<Node> n)
     {
         // Returns true if successfully added parent, false if not.
         if (!_left)
@@ -168,7 +168,7 @@ public:
 
     [[nodiscard]] Node &getLeft()
     {
-        return *_left();
+        return *_left;
     }
 
     [[nodiscard]] const Node &viewLeft() const
