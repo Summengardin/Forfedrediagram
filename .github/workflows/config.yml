@@ -1,0 +1,47 @@
+name: Build
+
+on: [workflow_dispatch] #For now we only want to test build manually
+
+jobs:
+  build-on-linux:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure and build
+        run: |
+          cmake . -B build
+          cmake --build build
+          
+      - name: Test
+        run: |
+          cd build/tests
+          ctest --output-on-failure
+          
+          
+  build-on-windows:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure and build
+        run: |
+          cmake . -B build -A x64
+          cmake --build build --config Release
+          
+      - name: Test
+        run: |
+          cd build/tests
+          ctest -C --output-on-failure
