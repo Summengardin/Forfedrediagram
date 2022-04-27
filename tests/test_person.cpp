@@ -22,7 +22,7 @@ TEST_CASE("Getters Person"){
 
 TEST_CASE("Get _age"){
     std::string date = "22-06-1999";
-    int actualAge = 22;
+    int actualAge = 23;
 
     Person person;
     person.setBirth(date);

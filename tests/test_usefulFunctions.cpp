@@ -29,5 +29,5 @@ TEST_CASE("Check filetype")
 
     REQUIRE(COM::fileIsType(string1, "1999") == false);
     REQUIRE(COM::fileIsType(string2, ".tt") == false);
-    REQUIRE(COM::fileIsType(string3, "json") == true);
+    CHECK(COM::fileIsType(string3, "json") == true);
 }
