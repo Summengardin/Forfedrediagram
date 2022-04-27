@@ -119,6 +119,10 @@ int Person::getAge() const
     return Date::yearsBetween(today(), _birth);
 }
 
+bool Person::isAlive() const
+{
+    return !_isDead;
+}
 
 void Person::setFirstName(const std::string &firstName)
 {
@@ -202,4 +206,30 @@ bool Person::validateName(const std::string& str)
     });
 
     return result;
+}
+
+
+std::string Person::getGenderString() const
+{
+    switch (_gender)
+    {
+        case male:
+            return "male";
+            break;
+        case female:
+            return "female";
+            break;
+        case other:
+            return "other";
+            break;
+        case unknown:
+            return "unknown";
+            break;
+    }
+}
+
+
+Person::GenderType Person::getGender() const
+{
+    return _gender;
 }

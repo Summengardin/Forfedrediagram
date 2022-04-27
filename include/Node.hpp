@@ -168,7 +168,7 @@ public:
 
     [[nodiscard]] Node &getLeft()
     {
-        return *_left();
+        return *_left;
     }
 
     [[nodiscard]] const Node &viewLeft() const

@@ -18,14 +18,21 @@ class Person
 {
 private:
     //TODO Genders
+    
+
+
+public:
+    
+    
     enum GenderType
     {
         male,
         female,
+        other,
+        unknown
     };
-
-
-public:
+    
+    
     Person() = default;
 
 
@@ -53,7 +60,7 @@ public:
     [[nodiscard]] std::string getFullName() const;
 
 
-    [[nodiscard]] bool contains(const std::string &str) const;
+    [[nodiscard]] std::string getGenderString() const;
 
 
     [[nodiscard]] const Date &getBirth() const;
@@ -61,6 +68,15 @@ public:
 
     [[nodiscard]] int getAge() const;
 
+
+    [[nodiscard]] GenderType getGender() const;
+
+
+    [[nodiscard]] bool isAlive() const;
+    
+    
+    [[nodiscard]] bool contains(const std::string &str) const;
+    
 
     void setFirstName(const std::string &firstName);
 
@@ -93,9 +109,9 @@ private:
     Date _birth;
     Date _death;
     unsigned int _age = 0;
-    GenderType gender;
+    GenderType _gender;
     bool _isDead{false};
-    //COM::Date _birthday;
+
 };
 
 

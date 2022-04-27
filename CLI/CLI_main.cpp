@@ -28,7 +28,43 @@ int main() {
                             std::cout << "Fant ingen personer med navn \"" << name << "\"" << std::endl;
                         } else {
                             for (auto &node: familyTree.findNodeByString(name)) {
-                                node->getData()->viewDetails();
+                                std::stringstream ssPerson;
+                                auto currentPerson = node->getData();
+
+                                // Name [index]
+                                ssPerson << currentPerson->getFullName() << "[" << node->getIdx() << "]";
+                                // F: Birth - D: Death
+                                ssPerson << "\nF: " << currentPerson->getBirth().toString();
+                                ssPerson << (currentPerson->isAlive() ? "" : (" - D: " + currentPerson->getBirth().toString()));
+                                // Kjønn:
+                                ssPerson << "\nKjønn er ";
+                                switch (currentPerson->getGender())
+                                {
+                                    case Person::male:
+                                        ssPerson << "mann";
+                                        break;
+                                    case Person::female:
+                                        ssPerson << "kvinne";
+                                        break;
+                                    case Person::other:
+                                        ssPerson << "annet";
+                                        break;
+                                    case Person::unknown:
+                                        ssPerson << "ukjent";
+                                        break;
+                                }
+                                //Foreldre
+                                ssPerson << "\nForeldrene er\n";
+                                if(node->leftPtr() or node->rightPtr())
+                                {
+                                    if (node->leftPtr())
+                                        ssPerson << "   " << node->getLeft().getData()->getFullName() << "[" << node->leftPtr()->getIdx() << "]";
+                                    if (node->rightPtr())
+                                        ssPerson << "   " << node->getRight().getData()->getFullName() << "[" << node->rightPtr()->getIdx() << "]";
+                                } else
+                                    ssPerson << "... ikke lagret i vår database";
+
+                                std::cout << ssPerson.str() << "\n";
                             }
                         }
                     }},
