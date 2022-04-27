@@ -55,7 +55,7 @@ int main() {
                                 }
                                 //Foreldre
                                 ssPerson << "\nForeldrene er\n";
-                                if(node->leftPtr() or node->rightPtr())
+                                if(node->leftPtr() || node->rightPtr())
                                 {
                                     if (node->leftPtr())
                                         ssPerson << "   " << node->getLeft().getData()->getFullName() << "[" << node->leftPtr()->getIdx() << "]";

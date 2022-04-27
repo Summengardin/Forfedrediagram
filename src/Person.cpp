@@ -22,16 +22,16 @@ Person::Person(const std::string &firstName, const std::string &lastName)
 
 Person::Person(const json &j)
 {
-    if (j.contains("firstName") and j.at("firstName").is_string())
+    if (j.contains("firstName") && j.at("firstName").is_string())
         _firstName = j.at("firstName");
 
-    if (j.contains("middleName") and j.at("middleName").is_string())
+    if (j.contains("middleName") && j.at("middleName").is_string())
         _middleName = j.at("middleName");
 
-    if (j.contains("lastName") and j.at("lastName").is_string())
+    if (j.contains("lastName") && j.at("lastName").is_string())
         _lastName = j.at("lastName");
 
-    if (j.contains("birth") and j.at("birth").is_string())
+    if (j.contains("birth") && j.at("birth").is_string())
     {
         std::string birthStr = j["birth"];
         _birth = Date(birthStr);
@@ -40,10 +40,10 @@ Person::Person(const json &j)
         _birth = Date();
     }
 
-    if (j.contains("_age") and j.at("_age").is_string())
+    if (j.contains("_age") && j.at("_age").is_string())
         _age = j.at("_age");
 
-    if (j.contains("death") and j.at("death").is_string())
+    if (j.contains("death") && j.at("death").is_string())
     {
         std::string birthStr = j["death"];
         _death = Date(birthStr);
@@ -52,7 +52,7 @@ Person::Person(const json &j)
         _death = Date();
     }
 
-    if (j.contains("isDead") and j.at("isDead").is_boolean())
+    if (j.contains("isDead") && j.at("isDead").is_boolean())
         _isDead = j.at("isDead");
 }
 
@@ -170,12 +170,12 @@ void Person::edit()
     _birth = Date(birthAsString);
 
     auto aliveAnswer = COM::getString("Er personen " + _firstName + " " + _middleName + " i live? (y/n)");
-    while(aliveAnswer != "y" and aliveAnswer != "Y" and aliveAnswer != "n" and aliveAnswer != "N"){
+    while(aliveAnswer != "y" && aliveAnswer != "Y" && aliveAnswer != "n" && aliveAnswer != "N"){
         aliveAnswer = COM::getString("Du må nesten svare 'y' eller 'n'. Mer enn det forstår jeg ikke :/\nPrøv igjen: ");
     }
-    if (aliveAnswer == "y" or aliveAnswer == "Y")
+    if (aliveAnswer == "y" || aliveAnswer == "Y")
         _isDead = false;
-    else if (aliveAnswer == "n" or aliveAnswer == "N")
+    else if (aliveAnswer == "n" || aliveAnswer == "N")
         _isDead = true;
     if (_isDead){
         auto deathAsString = COM::getString("Når døde " + _firstName + " " + _middleName + "? [DD-MM-YYYY]: ");
