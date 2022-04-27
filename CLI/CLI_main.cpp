@@ -32,7 +32,7 @@ int main() {
                                 auto currentPerson = node->getData();
 
                                 // Name [index]
-                                ssPerson << currentPerson->getFullName() << "[" << node->getIdx() << "]";
+                                ssPerson << "\n" << currentPerson->getFullName() << "[" << node->getIdx() << "]";
                                 // F: Birth - D: Death
                                 ssPerson << "\nF: " << currentPerson->getBirth().toString();
                                 ssPerson << (currentPerson->isAlive() ? "" : (" - D: " + currentPerson->getBirth().toString()));
