@@ -1,5 +1,5 @@
 add_library(FamilyTree_LIB
-        FamilyTree.cpp
+        #FamilyTree.cpp
         Menu.cpp
         Person.cpp)
 
