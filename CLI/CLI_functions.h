@@ -9,15 +9,81 @@
 #include "Tree.hpp"
 #include "commonFunctions.hpp"
 
+
+
 namespace CLI
 {
+    namespace
+    {
+        void editPerson(Person &personToEdit)
+        {
+
+            //TODO - Er det mulig å la brukeren ikke skrive inn igjen den nåværende verdien om den skal beholdes
+            //TODO - Implementer sjekk av alle inputs
+
+            auto firstName = COM::getString("Fornavn: ");
+            while (!Person::validateName(firstName))
+            {
+                firstName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+            }
+            personToEdit.setFirstName(firstName);
+
+            auto middleName = COM::getString("Mellomnavn: ", true);
+            while (!Person::validateName(middleName))
+            {
+                middleName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+            }
+            personToEdit.setMiddleName(middleName);
+
+            auto lastName = COM::getString("Etternavn: ");
+            while (!Person::validateName(lastName))
+            {
+                lastName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+            }
+            personToEdit.setLastName(lastName);
+
+            auto gender = COM::getString("Kjønn: ", true);
+            personToEdit.setGender(gender);
+
+            auto birthAsString = COM::getString("Når ble " + firstName + " " + middleName + " født? [DD-MM-YYYY]: ", true);
+            if(!birthAsString.empty())
+            {
+                while (!Date::validateStringFormat(birthAsString))
+                {
+                    birthAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
+                }
+                personToEdit.setBirth(birthAsString);
+            }
+
+            auto aliveAnswer = COM::getString("Er personen " + firstName + " " + middleName + " i live? (y/n)");
+            while (aliveAnswer != "y" && aliveAnswer != "Y" && aliveAnswer != "n" && aliveAnswer != "N")
+            {
+                aliveAnswer = COM::getString("Du må nesten svare 'y' eller 'n'. Mer enn det forstår jeg ikke :/\nPrøv igjen: ");
+            }
+            if (aliveAnswer == "y" || aliveAnswer == "Y")
+                personToEdit.isAlive(true);
+            else
+            {
+                personToEdit.isAlive(false);
+
+                auto deathAsString = COM::getString("Når døde " + firstName + " " + middleName + "? [DD-MM-YYYY]: ");
+                while (!Date::validateStringFormat(deathAsString))
+                {
+                    deathAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
+                }
+                personToEdit.setDeath(deathAsString);
+            }
+        }
+
+    }
+
     template<class T>
     void addPerson(Tree<T> &tree){
 
         // Generate the new person and create node with this person
         Person newPerson;
         // TODO Get edit function out of Person-class to separate CLI from API
-        newPerson.edit();
+        editPerson(newPerson);
         std::unique_ptr<Node<Person>> newNode = std::make_unique<Node<Person>>(newPerson);
 
         // Set new node as root if Tree has no root
@@ -28,7 +94,7 @@ namespace CLI
 
         // Choose relation of new node
         std::cout << "Velg person dette er forelder til." << std::endl;
-        auto name = COM::getString("Skriv navnet på barnet til personen:");
+        auto name = COM::getString("Skriv navnet på barnet til " + newPerson.getFirstName());
         std::vector<Node<Person> *> matchingNodes = tree.findNodeByString(name);
 
         int attemptCounter = 0;
@@ -69,9 +135,41 @@ namespace CLI
 
             parentNode->addParent(std::move(newNode));
         }
-
     }
 
+    template<class T>
+    void removePerson(Tree<T> &tree){
+        // Choose person to remove
+        auto name = COM::getString("Skriv navnet på personen du ønsker å fjerne");
+        std::vector<Node<Person> *> people = tree.findNodeByString(name);
+
+        Person removedPerson;
+
+        Person* personToEdit;
+        if (people.empty()) {
+            std::cout << "\nFant ingen person med navn \"" << name << "\"" << std::endl;
+        } else if (people.size() == 1) {
+            tree.removeNode(people[0]->getIdx());
+        } else
+        {
+            // Creates new menu to choose between all people with name
+            Menu peopleMenu;
+            peopleMenu.setTitle("Velg person du ønsker å fjerne");
+
+            for (auto &node: tree.findNodeByString(name))
+            {
+                Person *currentPerson = node->getData();
+                peopleMenu.append({currentPerson->getFullName() + " " +
+                                           (currentPerson->getBirth().validate() ? currentPerson->getBirth().toString() : ""),
+                                   [&tree, &node]() {
+                                       tree.removeNode(node->getIdx());
+                                   }});
+            }
+            peopleMenu.show();
+        }
+
+
+    }
 
     template<class T>
     void showPeople(Tree<T> &tree)
@@ -123,6 +221,8 @@ namespace CLI
         }
     }
 
+
+
     template<class T>
     void editPerson(Tree<T> &tree){
 
@@ -153,54 +253,9 @@ namespace CLI
             }
             peopleMenu.show();
         }
+
         // Edit person
-
-        //TODO - Er det mulig å la brukeren ikke skrive inn igjen den nåværende verdien om den skal beholdes
-        //TODO - Implementer sjekk av alle inputs
-
-        auto firstName = COM::getString("Fornavn: ");
-        while(!Person::validateName(firstName)){
-            firstName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-        }
-        personToEdit->setFirstName(firstName);
-
-        auto middleName = COM::getString("Mellomnavn: ", true);
-        while(!Person::validateName(middleName)){
-            middleName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-        }
-        personToEdit->setMiddleName(middleName);
-
-        auto lastName = COM::getString("Etternavn: ");
-        while(!Person::validateName(lastName)){
-            lastName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-        }
-        personToEdit->setMiddleName(middleName);
-        //_age = COM::getNum<unsigned int>("Alder?");
-
-        auto birthAsString = COM::getString("Når ble " + firstName + " " + middleName + " født? [DD-MM-YYYY]: ");
-        while(!Date::validateStringFormat(birthAsString)){
-            birthAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
-        }
-        personToEdit->setBirth(birthAsString);
-
-        auto aliveAnswer = COM::getString("Er personen " + firstName + " " + middleName + " i live? (y/n)");
-        while(aliveAnswer != "y" && aliveAnswer != "Y" && aliveAnswer != "n" && aliveAnswer != "N"){
-            aliveAnswer = COM::getString("Du må nesten svare 'y' eller 'n'. Mer enn det forstår jeg ikke :/\nPrøv igjen: ");
-        }
-        if (aliveAnswer == "y" || aliveAnswer == "Y")
-            personToEdit->isAlive(true);
-        else if (aliveAnswer == "n" || aliveAnswer == "N")
-            personToEdit->isAlive(false);
-
-        if (personToEdit->isAlive()){
-            auto deathAsString = COM::getString("Når døde " + firstName + " " + middleName + "? [DD-MM-YYYY]: ");
-            while(!Date::validateStringFormat(deathAsString)){
-                deathAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
-            }
-            personToEdit->setDeath(deathAsString);
-        }
-
-
+        editPerson(*personToEdit);
     }
 
     template<class T>

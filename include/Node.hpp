@@ -73,13 +73,12 @@ public:
         // Returns true if successfully added parent, false if not.
         if (!_left)
         {
-            _left = n;//std::move(n);
+            _left = n;
         } else if (!_right)
         {
-            _right = n;//std::move(n);
-        } else
-        {
-            std::cout << "Node already has to links" << std::endl;
+            _right = n;
+        } else{
+
             return false;
         }
         return true;

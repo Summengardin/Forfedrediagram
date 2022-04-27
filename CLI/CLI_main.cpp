@@ -2,15 +2,16 @@
 #include <memory>
 
 
+#include "CLI_functions.h"
 #include "Menu.hpp"
 #include "Node.hpp"
 #include "Person.hpp"
 #include "Tree.hpp"
 #include "commonFunctions.hpp"
-#include "CLI_functions.h"
 
 
-int main() {
+int main()
+{
 
     Tree<Person> familyTree;
 
@@ -31,12 +32,34 @@ int main() {
                         CLI::addPerson(familyTree);
                     }},
 
-                   {"Rediger person", [&familyTree]() {
-                       CLI::editPerson(familyTree);
+
+                   // Add new peron to fanily-tree
+                   {"Slett person", [&familyTree]() {
+                        CLI::removePerson(familyTree);
                     }},
 
+                   {"Rediger person", [&familyTree]() {
+                        CLI::editPerson(familyTree);
+                    }},
+
+                   /*{"Slett person/gren",
+
+                        {"Velg om du vil slette en enkelt person eller en hel gren",
+                            {
+                                {"Slett person (Personen vil bli erstattet med en \"dummy\")", []() {
+
+                                 }},
+                                {{
+                                    "Slett gren (Alle etterefølgende personer vil også bli slettet)",[](){
+
+                                        }
+                                }}
+                            }
+                        }
+                    },*/
+
                    {"Last tre fra fil", [&familyTree]() {
-                       CLI::loadTree(familyTree);
+                        CLI::loadTree(familyTree);
                     }},
 
                    {"Lagre tre til fil", [&familyTree]() {
@@ -56,4 +79,3 @@ int main() {
 
     return EXIT_SUCCESS;
 }
-

@@ -42,9 +42,6 @@ public:
     explicit Person(const json &j);
 
 
-    static Person generate();
-
-
     [[nodiscard]] json toJson() const;
 
 
@@ -93,12 +90,6 @@ public:
     void setDeath(const std::string &death);
 
 
-    void edit();
-
-
-    void viewDetails();
-
-
     static bool validateName(const std::string& str);
 
 
@@ -107,15 +98,18 @@ public:
 
     void setMiddleName(const std::string &middleName);
 
+
+    void setGender(const std::string &gender);
+
 private:
     std::string _firstName;
     std::string _middleName;
     std::string _lastName;
     Date _birth;
     Date _death;
-    unsigned int _age = 0;
-    GenderType _gender;
+    GenderType _gender{GenderType::unknown};
     bool _isDead{false};
+
 };
 
 

@@ -40,8 +40,8 @@ Person::Person(const json &j)
         _birth = Date();
     }
 
-    if (j.contains("_age") && j.at("_age").is_string())
-        _age = j.at("_age");
+    if (j.contains("gender") && j.at("gender").is_string())
+        setGender( j.at("lastName"));
 
     if (j.contains("death") && j.at("death").is_string())
     {
@@ -65,7 +65,7 @@ json Person::toJson() const
             {"middleName", _middleName},
             {"birth", _birth.toString()},
             {"death", _death.toString()},
-            {"age", _age},
+            {"gender", getGenderString()},
             {"isDeath", _isDead}};
     return j;
 }
@@ -75,14 +75,6 @@ const std::string &Person::getFirstName() const
     return _firstName;
 }
 
-
-Person Person::generate()
-{
-    Person p;
-    std::cout << "Opprett ny person: " << std::endl;
-    p.edit();
-    return p;
-}
 
 const std::string &Person::getMiddleName() const
 {
@@ -121,7 +113,12 @@ int Person::getAge() const
 
 bool Person::isAlive() const
 {
-    return !_isDead;
+    return (!_isDead);
+}
+
+void Person::isAlive(bool alive)
+{
+    _isDead = (!alive);
 }
 
 void Person::setFirstName(const std::string &firstName)
@@ -150,61 +147,6 @@ void Person::setDeath(const std::string &death)
     _death = Date(death);
 }
 
-
-void Person::edit()
-{
-    //TODO - Er det mulig å la brukeren ikke skrive inn igjen den nåværende verdien om den skal beholdes
-    //TODO - Implementer sjekk av alle inputs
-
-    _firstName = COM::getString("Fornavn: ");
-    while(!Person::validateName(_firstName)){
-        _firstName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-    }
-
-    _middleName = COM::getString("Mellomnavn: ", true);
-    while(!Person::validateName(_middleName)){
-        _middleName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-    }
-
-    _lastName = COM::getString("Etternavn: ");
-    while(!Person::validateName(_lastName)){
-        _lastName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-    }
-    //_age = COM::getNum<unsigned int>("Alder?");
-
-    auto birthAsString = COM::getString("Når ble " + _firstName + " " + _middleName + " født? [DD-MM-YYYY]: ");
-    while(!Date::validateStringFormat(birthAsString)){
-        birthAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
-    }
-    _birth = Date(birthAsString);
-
-    auto aliveAnswer = COM::getString("Er personen " + _firstName + " " + _middleName + " i live? (y/n)");
-    while(aliveAnswer != "y" && aliveAnswer != "Y" && aliveAnswer != "n" && aliveAnswer != "N"){
-        aliveAnswer = COM::getString("Du må nesten svare 'y' eller 'n'. Mer enn det forstår jeg ikke :/\nPrøv igjen: ");
-    }
-    if (aliveAnswer == "y" || aliveAnswer == "Y")
-        _isDead = false;
-    else if (aliveAnswer == "n" || aliveAnswer == "N")
-        _isDead = true;
-    if (_isDead){
-        auto deathAsString = COM::getString("Når døde " + _firstName + " " + _middleName + "? [DD-MM-YYYY]: ");
-        while(!Date::validateStringFormat(deathAsString)){
-            deathAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
-        }
-        _death = Date(deathAsString);
-    }
-}
-
-
-void Person::viewDetails()
-{
-    std::cout << "[Person]:\n"
-              << getFullName() << ",\n"
-              << "Alder: " << _age << "år\n"
-              << (_birth.validate() ? ("F: " + _birth.toString()) : "Bursdag ligger ikke i systemet.")
-              << ((_isDead) ? (_death.validate() ? "  -  D: " + _death.toString() : "\nDødsdato ligger ikke i systemet.") : "")
-              << std::endl;
-}
 
 bool Person::validateName(const std::string& str)
 {
@@ -242,8 +184,16 @@ Person::GenderType Person::getGender() const
 {
     return _gender;
 }
-void Person::isAlive(bool alive)
-{
-    _isDead = !alive;
+
+void Person::setGender(const std::string& gender){
+    if(gender == "male")
+        _gender = GenderType::male;
+    else if(gender == "female")
+        _gender = GenderType::female;
+    else if(gender == "other")
+        _gender = GenderType::other;
+    else
+        _gender = GenderType::unknown;
 }
+
 

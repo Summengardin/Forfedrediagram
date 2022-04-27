@@ -27,7 +27,7 @@ namespace COM {
         std::getline(std::cin, input);
 
         while (!allowEmpty && input.empty()){
-            std::cout << "\nVerdien kan ikke være, prøv igjen:" << std::endl;
+            std::cout << "\nVerdien kan ikke være tom, prøv igjen:" << std::endl;
             std::getline(std::cin, input);
         }
 

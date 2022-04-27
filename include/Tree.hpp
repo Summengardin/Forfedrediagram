@@ -123,6 +123,17 @@ public:
     }
 
 
+    void removeNode(int index){
+
+        auto node = findNodeByIdx(index);
+    //    T removed{*node->getData()};
+        T dummy("Dummy", std::to_string(TreeId()));
+        node->setData(dummy);
+
+  //      return removed;
+    }
+
+
     bool isEmpty(){
         return !_root;
     }
@@ -173,16 +184,13 @@ public:
         if (!_root)
             return;
 
+        func(nextNode);
 
-        Node<T> *currentNode = _root.get();
+        if (nextNode->leftPtr())
+            traverseDFS(nextNode->leftPtr(), func);
 
-        func(currentNode);
-
-        if (_root->leftPtr())
-            traverseDFS(_root->leftPtr(), func);
-
-        if (_root->rightPtr())
-            traverseDFS(_root->rightPtr(), func);
+        if (nextNode->rightPtr())
+            traverseDFS(nextNode->rightPtr(), func);
     }
 
 
@@ -217,23 +225,21 @@ public:
         });
     }
 
-    Node<T> &findNodeByIdx(unsigned int index)
+    Node<T> *findNodeByIdx(unsigned int index)
     {
         if (_root->getIdx() == index)
         {
-            return *_root;
+            return _root.get();
         }
         Node<T> *found = nullptr;
         traverseDFS(_root.get(), [&found, index](Node<T> *node) {
-            if (node->getIdx() == index)
+            if (node->getIdx() == index){
                 found = node;
+                return;
+            }
         });
 
-        if (found == nullptr)
-        {
-            throw std::runtime_error("In function 'findByIndex': could not find index " + std::to_string(index));
-        }
-        return *found;
+        return found;
     }
 
 
