@@ -35,7 +35,7 @@ public:
 
     [[nodiscard]] bool validate() const
     {
-        return !(_day == 0 or _month == 0 or _year == 0);
+        return !(_day == 0 || _month == 0 || _year == 0);
     }
 
 
