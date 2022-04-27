@@ -217,38 +217,6 @@ public:
         });
     }
 
-
-    void show()
-    {
-        if (!_root)
-        {
-            std::cout << "Treet er tomt :/" << std::endl;
-            return;
-        }
-
-        int indent = globalIndent;
-        _root->traverseDFSWithDepth([indent](Node<T> *node, int depth) {
-            for (int i = 0; i < depth; ++i)
-            {
-                for (int space = 0; space < indent; ++space)
-                {
-                    std::cout << " ";
-                }
-            }
-/*            if (depth != 0)
-            {
-                for (int space = 0; space < indent; ++space)
-                {
-                    std::cout << " ";
-                }
-                std::cout << "";
-            }*/
-            std::cout << *node->viewData() << std::endl;
-            //depth++;
-        });
-    }
-
-
     Node<T> &findNodeByIdx(unsigned int index)
     {
         if (_root->getIdx() == index)

@@ -73,6 +73,9 @@ public:
 
 
     [[nodiscard]] bool isAlive() const;
+
+
+    void isAlive(bool alive);
     
     
     [[nodiscard]] bool contains(const std::string &str) const;
@@ -87,6 +90,9 @@ public:
     void setBirth(const std::string &birth);
 
 
+    void setDeath(const std::string &death);
+
+
     void edit();
 
 
@@ -99,8 +105,7 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Person &p);
 
 
-
-
+    void setMiddleName(const std::string &middleName);
 
 private:
     std::string _firstName;
@@ -111,7 +116,6 @@ private:
     unsigned int _age = 0;
     GenderType _gender;
     bool _isDead{false};
-
 };
 
 

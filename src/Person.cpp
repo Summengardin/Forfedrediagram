@@ -7,7 +7,7 @@ std::ostream &operator<<(std::ostream &os, const Person &p)
         os << "Empty person";
     } else
     {
-        os << "[Person] Name: " << p.getFullName() << (p._isDead ? " \u2620" : " \u2665");
+        os << p.getFullName() << (p._isDead ? " \u2620" : " \u2665");
     }
     return os;
 }
@@ -129,6 +129,10 @@ void Person::setFirstName(const std::string &firstName)
     _firstName = firstName;
 }
 
+void Person::setMiddleName(const std::string &middleName)
+{
+    _middleName = middleName;
+}
 
 void Person::setLastName(const std::string &lastName)
 {
@@ -139,6 +143,11 @@ void Person::setLastName(const std::string &lastName)
 void Person::setBirth(const std::string &birth)
 {
     _birth = Date(birth);
+}
+
+void Person::setDeath(const std::string &death)
+{
+    _death = Date(death);
 }
 
 
@@ -233,3 +242,8 @@ Person::GenderType Person::getGender() const
 {
     return _gender;
 }
+void Person::isAlive(bool alive)
+{
+    _isDead = !alive;
+}
+
