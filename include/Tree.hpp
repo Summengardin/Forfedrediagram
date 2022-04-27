@@ -33,7 +33,12 @@ public:
 
 
         std::unordered_map<int, std::shared_ptr<Node<T>>> nodes;
-        std::unordered_map<int, std::pair<int, int>> parentIdxs;// pair.first = leftIdx, pair.second = rightIdx
+
+        struct nodeParents {
+            int left, right;
+        };
+
+        std::unordered_map<int, nodeParents> parentIdxs;
         for (auto &nodeData: treeJson["nodes"])
         {
             std::unique_ptr<Node<T>> newNode(std::make_unique<Node<T>>(nodeData));
@@ -42,33 +47,34 @@ public:
 
             COM::debug("Node created");
             // Store index of parents. If no parent, index is -1
-            if (nodeData.contains("leftIdx") and nodeData["leftIdx"].is_number_integer())
+            if (nodeData.contains("leftIdx") && nodeData["leftIdx"].is_number_integer())
             {
-                parentIdxs[nodeData["treeIdx"]].first = nodeData["leftIdx"];
+                parentIdxs[nodeData["treeIdx"]].left = nodeData["leftIdx"];
             } else
             {
-                parentIdxs[nodeData["treeIdx"]].first = -1;
+                parentIdxs[nodeData["treeIdx"]].left = -1;
             }
 
             if (nodeData["rightIdx"] != nullptr)
             {
-                parentIdxs[nodeData["treeIdx"]].second = nodeData["rightIdx"];
+                parentIdxs[nodeData["treeIdx"]].right = nodeData["rightIdx"];
             } else
             {
-                parentIdxs[nodeData["treeIdx"]].second = -1;
+                parentIdxs[nodeData["treeIdx"]].right = -1;
             }
         }
 
-        // Setting root node - index 1 from tree;
-        _root = nodes[1];
+        // Setting root node - node with uuid "1" from tree;
+        // In this case we are not counting from 0
+        setRoot(nodes[1]);
         ++_size;
 
         for (auto [key, value]: nodes)
         {
 
             // Get index of parents
-            int leftIdx = parentIdxs[key].first;
-            int rightIdx = parentIdxs[key].second;
+            int leftIdx = parentIdxs[key].left;
+            int rightIdx = parentIdxs[key].right;
 
             // Add parents if they exist
             if (leftIdx != -1)
@@ -87,24 +93,26 @@ public:
 
     [[nodiscard]] json toJson() const
     {
+        // All nodes as json-list
         json nodes;
         _root->traverseDFS([&nodes](Node<T> *node) {
             nodes.push_back(node->toJson());
         });
 
+
         json j = json{
                 {
-                        "nodes",
-                        nodes,
+                        "nodes", nodes,
                 },
-                {"tree", {{"settings", {{"globalIndent", globalIndent}}}}}};
+                {"tree",
+                 {{"settings", {{"globalIndent", globalIndent}}}}}};
         return j;
     }
 
 
     void setRoot(std::shared_ptr<Node<T>> n)
     {
-        _root = std::move(n);
+        _root = n;
     }
 
 
@@ -200,17 +208,13 @@ public:
         }
     }
 
-    std::vector<Node<T>*> listNodes()
+    void listOfNodes()
     {
-        std::vector<Node<T>*> allNodes;
-
-        if (_root){
-            traverseDFS(_root.get(), [&allNodes](Node<T> *node) {
-                allNodes.push_back(node);
-            });
-        }
-
-        return allNodes;
+        if (!_root)
+            return;
+        traverseDFS(_root.get(), [](Node<T> *node) {
+            std::cout << *node->viewData() << std::endl;
+        });
     }
 
 
@@ -284,11 +288,15 @@ public:
     }
 
 
-    void addParent(int childIndex, Node<T> *node)
+    void addParent(int childIndex, std::shared_ptr<Node<T>> node)
     {
         Node<T> &childNode = findNodeByIdx(childIndex);
         if (childNode.addParent(std::shared_ptr<Node<T>>(node)))
             ++_size;
+    }
+
+    void addNode(std::shared_ptr<Node<T>> node){
+        //TODO
     }
 
 

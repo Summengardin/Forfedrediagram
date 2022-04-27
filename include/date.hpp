@@ -33,15 +33,15 @@ public:
     }
 
 
-    [[nodiscard]] bool isValid() const
+    [[nodiscard]] bool validate() const
     {
-        return !(_day == 0 or _month == 0 or _year == 0);
+        return !(_day == 0 || _month == 0 || _year == 0);
     }
 
 
     [[nodiscard]] std::string toString() const
     {
-        if (isValid())
+        if (validate())
         {
             std::ostringstream oSStream;
 
@@ -76,7 +76,7 @@ public:
 
     bool setDate(std::string &dateAsString)
     {
-        if (checkStringFormat(dateAsString))
+        if (validateStringFormat(dateAsString))
         {
             std::vector<std::string> numbers = COM::splitString(dateAsString, '-');
             _day = std::stoi(numbers[0]);
@@ -88,7 +88,7 @@ public:
     }
 
 
-    [[nodiscard]] static bool checkStringFormat(const std::string &dateAsString)
+    [[nodiscard]] static bool validateStringFormat(const std::string &dateAsString)
     {
         std::regex format{R"(\d{2}\-\d{2}\-\d{4})"};// Date should be in format DD-MM-YYYY
         std::smatch match;
@@ -97,7 +97,7 @@ public:
 
     [[nodiscard]] static int yearsBetween(const Date &date1, const Date &date2)
     {
-        if (date1._year > 0 and date2._year > 0)
+        if (date1._year > 0 && date2._year > 0)
         {
             return date1._year - date2._year;
         } else

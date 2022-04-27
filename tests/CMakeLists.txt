@@ -1,6 +1,8 @@
 
 include_directories(PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
+link_libraries(FamilyTree_LIB)
+
 add_executable(TestTree test_tree.cpp)
 add_test(NAME TestTree COMMAND TestTree)
 

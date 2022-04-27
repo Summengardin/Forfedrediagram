@@ -20,9 +20,9 @@ public:
     {
         data = std::make_shared<T>(j["data"]);
         //data->fromJson(j["data"]);
-        //        if(j.contains("treeIdx") and j["treeIdx"] != nullptr)
+        //        if(j.contains("treeIdx") && j["treeIdx"] != nullptr)
         //            _treeIdx = j["treeIdx"];
-        if (j.contains("treeIndex") and j["treeIndex"].is_string())
+        if (j.contains("treeIndex") && j["treeIndex"].is_string())
         {
             _treeIdx = j["treeIndex"];
             TreeId.update(_treeIdx);
@@ -68,7 +68,7 @@ public:
     }
 
 
-    bool addParent(const std::shared_ptr<Node> &n)
+    bool addParent(std::shared_ptr<Node> n)
     {
         // Returns true if successfully added parent, false if not.
         if (!_left)
@@ -168,7 +168,7 @@ public:
 
     [[nodiscard]] Node &getLeft()
     {
-        return *_left();
+        return *_left;
     }
 
     [[nodiscard]] const Node &viewLeft() const

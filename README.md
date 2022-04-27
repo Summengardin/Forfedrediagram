@@ -82,5 +82,12 @@ https://github.com/nlohmann/json <br><br>
 
 ### Menu-class
 The menu-class is self-written but highly inspired by: <br> 
-["Menu Class - Example of Modern C++ STL features"](https://www.cppstories.com/2018/07/menu-cpp17-example/) <br>
+["Menu Class - Example of Modern C++ STL features"](https://www.cppstories.com/2018/07/menu-cpp17-example/) <br><br>
+
+
+### Github Actions and Catch2 Testing
+The setup of GitHub actions and Catch2-testing would not be possible without an example: <br> 
+["Markaren - Pathfinding"](https://github.com/AIS1002-OOP/Pathfinding) <br>
+
+
 
