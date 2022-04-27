@@ -47,7 +47,7 @@ public:
 
             COM::debug("Node created");
             // Store index of parents. If no parent, index is -1
-            if (nodeData.contains("leftIdx") and nodeData["leftIdx"].is_number_integer())
+            if (nodeData.contains("leftIdx") && nodeData["leftIdx"].is_number_integer())
             {
                 parentIdxs[nodeData["treeIdx"]].left = nodeData["leftIdx"];
             } else

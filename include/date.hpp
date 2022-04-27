@@ -97,7 +97,7 @@ public:
 
     [[nodiscard]] static int yearsBetween(const Date &date1, const Date &date2)
     {
-        if (date1._year > 0 and date2._year > 0)
+        if (date1._year > 0 && date2._year > 0)
         {
             return date1._year - date2._year;
         } else
