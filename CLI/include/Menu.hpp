@@ -40,7 +40,7 @@ public:
 
     void setTitle(const std::string &);
 
-    void show();
+    void run(bool autoExit = false);
 
     [[nodiscard]] bool empty() const;
 
@@ -52,11 +52,18 @@ public:
 
     bool insert(size_t index, const MenuItem &menuItem);
 
+    size_t menuChoice();
+
+
+
 private:
-    void show(const Menu &m);
+    void show();
+
+    void execute(size_t menuChoice, bool autoExit = false);
 
     std::string _title;
     std::vector<MenuItem> _menuItems;
+
 };
 
 

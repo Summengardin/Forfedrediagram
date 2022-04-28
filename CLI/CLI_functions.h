@@ -82,7 +82,7 @@ namespace CLI
 
         // Generate the new person and create node with this person
         Person newPerson;
-        // TODO Get edit function out of Person-class to separate CLI from API
+
         editPerson(newPerson);
         std::unique_ptr<Node<Person>> newNode = std::make_unique<Node<Person>>(newPerson);
 
@@ -131,7 +131,7 @@ namespace CLI
                                         parentNode = node;
                                     }});
             }
-            matchesMenu.show();
+            matchesMenu.run();
 
             parentNode->addParent(std::move(newNode));
         }
@@ -141,22 +141,21 @@ namespace CLI
     void removePerson(Tree<T> &tree){
         // Choose person to remove
         auto name = COM::getString("Skriv navnet på personen du ønsker å fjerne");
-        std::vector<Node<Person> *> people = tree.findNodeByString(name);
+        auto matchingPeople = tree.findNodeByString(name);
 
-        Person removedPerson;
+        //Person removedPerson;
 
-        Person* personToEdit;
-        if (people.empty()) {
+        //Person* personToEdit;
+        if (matchingPeople.empty()) {
             std::cout << "\nFant ingen person med navn \"" << name << "\"" << std::endl;
-        } else if (people.size() == 1) {
-            tree.removeNode(people[0]->getIdx());
-        } else
-        {
-            // Creates new menu to choose between all people with name
+        } else if (matchingPeople.size() == 1) {
+            tree.removeNode(matchingPeople[0]->getIdx());
+        } else{
+            // Creates new menu to choose between all people matching search-terms
             Menu peopleMenu;
             peopleMenu.setTitle("Velg person du ønsker å fjerne");
 
-            for (auto &node: tree.findNodeByString(name))
+            for (auto &node : matchingPeople)
             {
                 Person *currentPerson = node->getData();
                 peopleMenu.append({currentPerson->getFullName() + " " +
@@ -165,7 +164,7 @@ namespace CLI
                                        tree.removeNode(node->getIdx());
                                    }});
             }
-            peopleMenu.show();
+            peopleMenu.run(false);
         }
 
 
@@ -251,7 +250,7 @@ namespace CLI
                                        personToEdit = currentPerson;
                                    }});
             }
-            peopleMenu.show();
+            peopleMenu.run();
         }
 
         // Edit person

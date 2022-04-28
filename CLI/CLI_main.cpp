@@ -75,7 +75,7 @@ int main()
     std::cout << "\nI dag er det " << today().toString() << "," << std::endl;
     std::cout << "gjør det til en flott en!" << std::endl;
 
-    mainMenu.show();
+    mainMenu.run();
 
     return EXIT_SUCCESS;
 }

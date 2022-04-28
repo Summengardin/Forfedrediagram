@@ -5727,7 +5727,7 @@ namespace Catch {
     // Returns double formatted as %.3f (format expected on output)
     std::string getFormattedDuration( double duration );
 
-    //! Should the reporter show
+    //! Should the reporter run
     bool shouldShowDuration( IConfig const& config, double duration );
 
     std::string serializeFilters( std::vector<std::string> const& container );
@@ -9831,7 +9831,7 @@ namespace Catch {
                 ( "skip exception tests" )
             | Opt( config.showInvisibles )
                 ["-i"]["--invisibles"]
-                ( "show invisibles (tabs, newlines)" )
+                ( "run invisibles (tabs, newlines)" )
             | Opt( config.outputFilename, "filename" )
                 ["-o"]["--out"]
                 ( "output filename" )
@@ -9852,10 +9852,10 @@ namespace Catch {
                 ( "enable warnings" )
             | Opt( [&]( bool flag ) { config.showDurations = flag ? ShowDurations::Always : ShowDurations::Never; }, "yes|no" )
                 ["-d"]["--durations"]
-                ( "show tests durations" )
+                ( "run tests durations" )
             | Opt( config.minDuration, "seconds" )
                 ["-D"]["--min-duration"]
-                ( "show tests durations for tests taking at least the given number of seconds" )
+                ( "run tests durations for tests taking at least the given number of seconds" )
             | Opt( loadTestNamesFromFile, "filename" )
                 ["-f"]["--input-file"]
                 ( "load tests names to run from a file" )
