@@ -93,7 +93,6 @@ namespace CLI
         }
 
         // Choose relation of new node
-        std::cout << "Velg person dette er forelder til." << std::endl;
         auto name = COM::getString("Skriv navnet på barnet til " + newPerson.getFirstName());
         std::vector<Node<Person> *> matchingNodes = tree.findNodeByString(name);
 
@@ -111,7 +110,7 @@ namespace CLI
                 attemptCounter++;
             }
 
-            name = COM::getString("Skriv navnet på barnet til personen:");
+            name = COM::getString("Skriv navnet på barnet til " + newPerson.getFirstName());
             matchingNodes = tree.findNodeByString(name);
         }
 
@@ -164,7 +163,7 @@ namespace CLI
                                        tree.removeNode(node->getIdx());
                                    }});
             }
-            peopleMenu.run(false);
+            peopleMenu.run(true);
         }
 
 

@@ -132,13 +132,13 @@ public:
     }
 
 
-    void setLeft(std::shared_ptr<Node> &node)
+    void setLeft(std::shared_ptr<Node> node)
     {
         _left = node;
     }
 
 
-    void setRight(std::shared_ptr<Node> &node)
+    void setRight(std::shared_ptr<Node> node)
     {
         _right = node;
     }
@@ -194,6 +194,10 @@ public:
     [[nodiscard]] Node *rightPtr() const
     {
         return _right.get();
+    }
+
+    [[nodiscard]] bool isLeaf() const {
+        return (!_left && !_right);
     }
 
     std::pair<std::shared_ptr<Node>, std::shared_ptr<Node>> getParents()

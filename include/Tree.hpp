@@ -123,14 +123,39 @@ public:
     }
 
 
-    void removeNode(int index){
+    void removeNode(size_t index){
+        size_t prevIdx = _root->getIdx();
+        if(prevIdx == index){
+            setRoot(nullptr);
+        }
+        traverseDFS(_root.get(), [index, &prevIdx](Node<T>* node){
+            if(node->leftPtr())
+            {
+                if (node->leftPtr()->getIdx() == index)
+                {
+                    if(node->leftPtr()->isLeaf()){
+                        node->setLeft(nullptr);
+                    } else{
+                        T dummy("Dummy", std::to_string(TreeId()));
+                        node->leftPtr()->setData(dummy);
+                    }
+                }
+            }
+            if(node->rightPtr())
+            {
+                if (node->rightPtr()->getIdx() == index)
+                {
+                    if(node->rightPtr()->isLeaf()){
+                        node->setRight(nullptr);
+                    } else{
+                        T dummy("Dummy", std::to_string(TreeId()));
+                        node->rightPtr()->setData(dummy);
+                    }
+                }
+            }
+        });
 
-        auto node = findNodeByIdx(index);
-    //    T removed{*node->getData()};
-        T dummy("Dummy", std::to_string(TreeId()));
-        node->setData(dummy);
-
-  //      return removed;
+        //return removed;
     }
 
 

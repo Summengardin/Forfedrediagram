@@ -22,9 +22,10 @@ void Menu::run(bool autoExit)
     size_t choice;
     do
     {
-        show(*this);
+        show();
         choice = menuChoice();
-        execute(choice, autoExit);
+        if(choice > 0)
+            execute(choice, autoExit);
     } while(choice > 0 && !autoExit);
 }
 

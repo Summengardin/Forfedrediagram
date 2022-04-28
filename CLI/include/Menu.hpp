@@ -52,11 +52,9 @@ public:
 
     bool insert(size_t index, const MenuItem &menuItem);
 
+private:
     size_t menuChoice();
 
-
-
-private:
     void show();
 
     void execute(size_t menuChoice, bool autoExit = false);

@@ -7,7 +7,7 @@ std::ostream &operator<<(std::ostream &os, const Person &p)
         os << "Empty person";
     } else
     {
-        os << p.getFullName() << (p._isDead ? " \u2620" : " \u2665");
+        os << p.getFullName();
     }
     return os;
 }
