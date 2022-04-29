@@ -1,15 +1,23 @@
 #include "Menu.hpp"
 
-
-Menu::Menu(std::string title, std::vector<MenuItem> menuItems) :
-    _title(std::move(title)),
-    _menuItems(std::move(menuItems))
-{}
-
+Menu::Menu(std::string title, std::vector<MenuItem> menuItems, bool loop)
+    : _title(std::move(title)), _menuItems(std::move(menuItems)), _loop(loop)
+{
+}
 
 auto Menu::getTitle() const noexcept
 {
     return _title;
+}
+
+bool Menu::isEmpty() const
+{
+    return _menuItems.empty();
+}
+
+size_t Menu::size() const
+{
+    return _menuItems.size();
 }
 
 void Menu::setTitle(const std::string &t)
@@ -17,26 +25,21 @@ void Menu::setTitle(const std::string &t)
     _title = t;
 }
 
-void Menu::run(bool autoExit)
+void Menu::setLoop(bool loop)
 {
-    size_t choice;
+    _loop = loop;
+}
+
+void Menu::show()
+{
+    size_t userChoice;
     do
     {
-        show();
-        choice = menuChoice();
-        if(choice > 0)
-            execute(choice, autoExit);
-    } while(choice > 0 && !autoExit);
-}
-
-[[nodiscard]] bool Menu::empty() const
-{
-    return !_menuItems.empty();
-}
-
-[[nodiscard]] size_t Menu::size() const
-{
-    return _menuItems.size();
+        writeOut();
+        userChoice = menuChoice();
+        if (userChoice > 0)
+            execute(userChoice);
+    } while (userChoice > 0 && _loop);
 }
 
 bool Menu::remove(size_t index)
@@ -67,42 +70,40 @@ bool Menu::insert(size_t index, const MenuItem &menuItem)
     return false;
 }
 
-void Menu::show()
+size_t Menu::menuChoice()
 {
-    std::ostringstream oSStream;
+    auto userChoice = COM::getNum<size_t>("");
+    while (userChoice > this->_menuItems.size())
+    {
+        userChoice = COM::getNum<size_t>("You didn't get that option did you?\nTry again: ");
+    }
+    return userChoice;
+}
 
-    oSStream << "\n-----------------------------------" << std::endl;
-    oSStream << std::endl
-             << this->getTitle() << std::endl
-             << std::endl;
+void Menu::writeOut()
+{
+    std::ostringstream ssMenu;
+
+    ssMenu << "\n-----------------------------------\n";
+    ssMenu << "\n" << this->getTitle() << "\n" << std::endl;
 
     for (size_t i = 0U; i < this->_menuItems.size(); ++i)
-        oSStream << i + 1 << ")  " << this->_menuItems[i].name << "\n";
+        ssMenu << i + 1 << ")  " << this->_menuItems[i].name << "\n";
 
-    oSStream << "0)  Tilbake/Avslutt\n\nSkriv inn valg:";
+    ssMenu << "0)  Back/Exit\n\nChoose option:";
 
-    std::cout << oSStream.str();
-
-
-}
-size_t Menu::menuChoice(){
-    auto returnValue = COM::getNum<size_t>("");
-    while (returnValue > this->_menuItems.size())
-    {
-        returnValue = COM::getNum<size_t>("Å nei du, det valget fikk du ikke.\nPrøv igjen, skriv inn menyvalg:");
-    }
-    return returnValue;
+    std::cout << ssMenu.str();
 }
 
-void Menu::execute(size_t menuChoice, bool autoExit){
-
+void Menu::execute(size_t menuChoice)
+{
     // Sjekker om meny-elementet inneholder en funksjon eller en ny meny.
 
-    if (const auto &menuItem = this->_menuItems[menuChoice - 1]; std::holds_alternative<std::function<void()>>(menuItem.func))
-        std::get<std::function<void()>>(menuItem.func)();
+    if (const auto &menuItem = this->_menuItems[menuChoice - 1];
+        std::holds_alternative<std::function<void()>>(menuItem.action))
+        std::get<std::function<void()>>(menuItem.action)();
     else
     {
-        std::get<Menu *>(menuItem.func)->run(autoExit);
+        std::get<Menu *>(menuItem.action)->show();
     }
-
 }

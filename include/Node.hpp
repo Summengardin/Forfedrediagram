@@ -1,5 +1,4 @@
-#pragma once// FORFEDREDIAGRAM_NODE_HPP
-
+#pragma once // FORFEDREDIAGRAM_NODE_HPP
 
 #include <iostream>
 #include <memory>
@@ -11,31 +10,32 @@
 
 using json = nlohmann::json;
 
-template<class T>
-class Node
+template <class T> class Node
 {
-public:
-    explicit Node(const json &j)
+  public:
+    explicit Node(const json &jsonFile)
     {
-        data = std::make_shared<T>(j["data"]);
-        //data->fromJson(j["data"]);
-        //        if(j.contains("treeIdx") && j["treeIdx"] != nullptr)
-        //            _treeIdx = j["treeIdx"];
-        if (j.contains("treeIndex") && j["treeIndex"].is_string())
-        {
-            _treeIdx = j["treeIndex"];
-            TreeId.update(_treeIdx);
-        } else
-            _treeIdx = TreeId();
-    }
+        data = std::make_shared<T>(jsonFile["data"]);
 
+        if (jsonFile.contains("treeIndex"))
+        {
+            if (jsonFile["treeIndex"].is_string())
+            {
+                _treeIdx = jsonFile["treeIndex"];
+                TreeId.update(_treeIdx);
+            }
+            else
+            {
+                _treeIdx = TreeId();
+            }
+        }
+    }
 
     explicit Node(const T &p)
     {
         data = std::make_shared<T>(p);
         _treeIdx = TreeId();
     }
-
 
     [[nodiscard]] json toJson() const
     {
@@ -50,22 +50,19 @@ public:
         else
             rightIndex = -1;
 
-
         json j = json{
-                {"data", data->toJson()},
-                {"treeIdx", _treeIdx},
-                {"leftIdx", leftIndex},
-                {"rightIdx", rightIndex},
+            {"data", data->toJson()},
+            {"treeIdx", _treeIdx},
+            {"leftIdx", leftIndex},
+            {"rightIdx", rightIndex},
         };
         return j;
     }
-
 
     void setData(const T &p)
     {
         data = std::make_shared<T>(p);
     }
-
 
     bool addParent(std::shared_ptr<Node> n)
     {
@@ -73,36 +70,41 @@ public:
         if (!_left)
         {
             _left = n;
-        } else if (!_right)
+        }
+        else if (!_right)
         {
             _right = n;
-        } else{
+        }
+        else
+        {
 
             return false;
         }
         return true;
     }
 
-
-    void addParent(const T &p)
+    bool addParent(const T &p)
     {
+        // Returns true if able to set parent
 
         if (!_left)
         {
             _left = std::make_shared<Node>(Node(p));
-        } else if (!_right)
+            return true;
+        }
+        else if (!_right)
         {
             _right = std::make_shared<Node>(Node(p));
-        } else
-        {
-            std::cout << "T har allerede to foreldre" << std::endl;
+            return true;
         }
-    }
 
+        return false;
+    }
 
     void traverseDFS(const std::function<void(Node *)> &f)
     {
         // DepthFirst - PreOrder
+
         f(this);
 
         if (_left)
@@ -112,10 +114,10 @@ public:
             _right->traverseDFS(f);
     }
 
-
     void traverseDFSWithDepth(const std::function<void(Node *, int)> &f, int depth = 0)
     {
         // DepthFirst - PreOrder. Used for printing with depth information
+
         f(this, depth);
 
         if (_left)
@@ -125,29 +127,24 @@ public:
             _right->traverseDFSWithDepth(f, depth + 1);
     }
 
-
     void traverseBFS(const std::function<void(Node *)> &f)
     {
     }
-
 
     void setLeft(std::shared_ptr<Node> node)
     {
         _left = node;
     }
 
-
     void setRight(std::shared_ptr<Node> node)
     {
         _right = node;
     }
 
-
     void setIdx(unsigned int index)
     {
         _treeIdx = index;
     }
-
 
     [[nodiscard]] unsigned int getIdx() const
     {
@@ -179,7 +176,6 @@ public:
         return _left.get();
     }
 
-
     [[nodiscard]] Node &getRight()
     {
         return *_right;
@@ -195,7 +191,8 @@ public:
         return _right.get();
     }
 
-    [[nodiscard]] bool isLeaf() const {
+    [[nodiscard]] bool isLeaf() const
+    {
         return (!_left && !_right);
     }
 
@@ -210,13 +207,11 @@ public:
         return os;
     }
 
-private:
+  private:
     unsigned int _treeIdx;
-    unsigned int id;
     std::shared_ptr<T> data;
     std::shared_ptr<Node> _left;
     std::shared_ptr<Node> _right;
 };
 
-
-//FORFEDREDIAGRAM_NODE_HPP
+// FORFEDREDIAGRAM_NODE_HPP

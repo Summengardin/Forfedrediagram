@@ -1,72 +1,57 @@
 #include "Person.hpp"
 
-std::ostream &operator<<(std::ostream &os, const Person &p)
-{
-    if (p.getFullName().empty())
-    {
-        os << "Empty person";
-    } else
-    {
-        os << p.getFullName();
-    }
-    return os;
-}
-
-
 Person::Person(const std::string &firstName, const std::string &lastName)
 {
     setFirstName(firstName);
     setLastName(lastName);
 }
 
-
-Person::Person(const json &j)
+Person::Person(const json &jsonFile)
 {
-    if (j.contains("firstName") && j.at("firstName").is_string())
-        _firstName = j.at("firstName");
+    if (jsonFile.contains("firstName"))
+        if (jsonFile.at("firstName").is_string())
+            _firstName = jsonFile.at("firstName");
 
-    if (j.contains("middleName") && j.at("middleName").is_string())
-        _middleName = j.at("middleName");
+    if (jsonFile.contains("middleName"))
+        if (jsonFile.at("middleName").is_string())
+            _middleName = jsonFile.at("middleName");
 
-    if (j.contains("lastName") && j.at("lastName").is_string())
-        _lastName = j.at("lastName");
+    if (jsonFile.contains("lastName"))
+        if (jsonFile.at("lastName").is_string())
+            _lastName = jsonFile.at("lastName");
 
-    if (j.contains("birth") && j.at("birth").is_string())
+    if (jsonFile.contains("gender"))
+        if (jsonFile.at("gender").is_string())
+            setGender(jsonFile.at("lastName"));
+
+    if (jsonFile.contains("birth"))
     {
-        std::string birthStr = j["birth"];
-        _birth = Date(birthStr);
-    } else
-    {
-        _birth = Date();
+        if (jsonFile.at("birth").is_string())
+        {
+            std::string birthStr = jsonFile["birth"];
+            _birth = Date(birthStr);
+        }
     }
 
-    if (j.contains("gender") && j.at("gender").is_string())
-        setGender( j.at("lastName"));
-
-    if (j.contains("death") && j.at("death").is_string())
+    if (jsonFile.contains("death"))
     {
-        std::string birthStr = j["death"];
-        _death = Date(birthStr);
-    } else
-    {
-        _death = Date();
+        if (jsonFile.at("death").is_string())
+        {
+            std::string deathStr = jsonFile["death"];
+            _death = Date(deathStr);
+        }
     }
 
-    if (j.contains("isDead") && j.at("isDead").is_boolean())
-        _isDead = j.at("isDead");
+    if (jsonFile.contains("isAlive"))
+        if (jsonFile.at("isAlive").is_boolean())
+            _isAlive = jsonFile.at("isAlive");
 }
-
 
 json Person::toJson() const
 {
-    json j = json{
-            {"firstName", _firstName},
-            {"lastName", _lastName},
-            {"middleName", _middleName},
-            {"birth", _birth.toString()},
-            {"death", _death.toString()},
-            {"gender", getGenderString()},
-            {"isDeath", _isDead}};
+    json j = json{{"firstName", _firstName},    {"lastName", _lastName},      {"middleName", _middleName},
+                  {"birth", _birth.toString()}, {"death", _death.toString()}, {"gender", getGenderString()},
+                  {"isAlive", _isAlive}};
     return j;
 }
 
@@ -74,7 +59,6 @@ const std::string &Person::getFirstName() const
 {
     return _firstName;
 }
-
 
 const std::string &Person::getMiddleName() const
 {
@@ -91,34 +75,49 @@ std::string Person::getFullName() const
     return _firstName + " " + (_middleName.empty() ? "" : (_middleName + " ")) + _lastName;
 }
 
-bool Person::contains(const std::string &str) const
-{
-    //  std::vector<std::string> nameSplitted = COM::splitString(getFullName(), ' ');
-    //  return (std::find( nameSplitted.begin(), nameSplitted.end(), str) != nameSplitted.end());
-
-    return (getFullName().find(str) != std::string::npos);
-}
-
-
 const Date &Person::getBirth() const
 {
     return _birth;
 }
 
+const Date &Person::getDeath() const
+{
+    return _death;
+}
 
 int Person::getAge() const
 {
     return Date::yearsBetween(today(), _birth);
 }
 
-bool Person::isAlive() const
+Person::GenderType Person::getGender() const
 {
-    return (!_isDead);
+    return _gender;
 }
 
-void Person::isAlive(bool alive)
+std::string Person::getGenderString() const
 {
-    _isDead = (!alive);
+    switch (_gender)
+    {
+    case male:
+        return "male";
+    case female:
+        return "female";
+    case other:
+        return "other";
+    default:
+        return "unknown";
+    }
+}
+
+bool Person::isAlive() const
+{
+    return (!_isAlive);
+}
+
+bool Person::contains(const std::string &str) const
+{
+    return (getFullName().find(str) != std::string::npos);
 }
 
 void Person::setFirstName(const std::string &firstName)
@@ -136,7 +135,6 @@ void Person::setLastName(const std::string &lastName)
     _lastName = lastName;
 }
 
-
 void Person::setBirth(const std::string &birth)
 {
     _birth = Date(birth);
@@ -147,53 +145,42 @@ void Person::setDeath(const std::string &death)
     _death = Date(death);
 }
 
-
-bool Person::validateName(const std::string& str)
+void Person::setGender(const std::string &gender)
 {
-    std::string validLetters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ ";
-
-    bool result = std::all_of(str.begin(), str.end(), [&validLetters](char c){
-        return validLetters.find(c) != std::string::npos;
-    });
-
-    return result;
-}
-
-
-std::string Person::getGenderString() const
-{
-    switch (_gender)
-    {
-        case male:
-            return "male";
-            break;
-        case female:
-            return "female";
-            break;
-        case other:
-            return "other";
-            break;
-        default:
-            return "unknown";
-            break;
-    }
-}
-
-
-Person::GenderType Person::getGender() const
-{
-    return _gender;
-}
-
-void Person::setGender(const std::string& gender){
-    if(gender == "male")
+    if (gender == "male")
         _gender = GenderType::male;
-    else if(gender == "female")
+    else if (gender == "female")
         _gender = GenderType::female;
-    else if(gender == "other")
+    else if (gender == "other")
         _gender = GenderType::other;
     else
         _gender = GenderType::unknown;
 }
 
+void Person::setAliveness(bool alive)
+{
+    _isAlive = alive;
+}
 
+bool Person::validateName(const std::string &str)
+{
+    std::string validLetters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ ";
+
+    bool checkAllLetters = std::all_of(str.begin(), str.end(),
+                                       [&validLetters](char c) { return validLetters.find(c) != std::string::npos; });
+
+    return checkAllLetters;
+}
+
+std::ostream &operator<<(std::ostream &os, const Person &p)
+{
+    if (p.getFullName().empty())
+    {
+        os << "Empty person";
+    }
+    else
+    {
+        os << p.getFullName();
+    }
+    return os;
+}

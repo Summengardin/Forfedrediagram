@@ -1,13 +1,13 @@
-#pragma once//FORFEDREDIAGRAM_GLOBALS_HPP
+#pragma once // FORFEDREDIAGRAM_GLOBALS_HPP
 
 #include "date.hpp"
 
 class uuid
 {
-private:
+  private:
     unsigned int nextFreeIdx = 0;
 
-public:
+  public:
     inline unsigned int operator()()
     {
         return ++nextFreeIdx;
@@ -23,7 +23,7 @@ public:
 };
 
 inline uuid TreeId;
+inline uuid DummyId;
 inline Today today;
 
-
-//FORFEDREDIAGRAM_GLOBALS_HPP
+// FORFEDREDIAGRAM_GLOBALS_HPP

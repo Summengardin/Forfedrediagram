@@ -11,7 +11,8 @@
             },
             "treeIdx" : 1,
             "leftIdx": 2,
-            "rightIdx": 3
+            "rightIdx": 3,
+            "isRoot": true
         },
         {
             "data": {
