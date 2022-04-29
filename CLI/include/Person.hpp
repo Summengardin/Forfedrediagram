@@ -17,7 +17,6 @@ using json = nlohmann::json;
 class Person
 {
 private:
-    //TODO Genders
     
 
 

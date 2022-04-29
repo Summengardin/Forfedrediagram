@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "Node.hpp"
-#include "Person.hpp"
 #include "commonFunctions.hpp"
 #include "json.hpp"
 

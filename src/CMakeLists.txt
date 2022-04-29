@@ -1,7 +1,7 @@
 add_library(FamilyTree_LIB
         #FamilyTree.cpp
         ../CLI/include/Menu.cpp
-        Person.cpp)
+        ../CLI/include/Person.cpp)
 
 target_include_directories(FamilyTree_LIB
         PRIVATE
