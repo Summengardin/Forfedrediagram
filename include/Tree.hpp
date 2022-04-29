@@ -35,11 +35,14 @@ template <class T> class Tree
             int left, right;
         };
 
+
         // Extract nodes
         std::unordered_map<int, nodeChildren> childrenIndexes;
         for (auto &nodeData : treeJson["nodes"])
         {
             std::shared_ptr<Node<T>> newNode{std::make_shared<Node<T>>(nodeData)};
+
+            std::cout << *newNode << std::endl;
 
             if (nodeData.contains("isRoot"))
             {
@@ -53,33 +56,40 @@ template <class T> class Tree
                 }
             }
 
-            nodes[nodeData["treeIdx"]] = newNode;
+            nodes[nodeData["treeIndex"]] = newNode;
 
             // Store index of parents. If no parent, index is -1
             if (nodeData.contains("leftIdx"))
             {
                 if (nodeData["leftIdx"].is_number_integer())
-                    childrenIndexes[nodeData["treeIdx"]].left = nodeData["leftIdx"];
+                    childrenIndexes[nodeData["treeIndex"]].left = nodeData["leftIdx"];
                 else
-                    childrenIndexes[nodeData["treeIdx"]].left = -1;
+                    childrenIndexes[nodeData["treeIndex"]].left = -1;
             }
             else
             {
-                childrenIndexes[nodeData["treeIdx"]].left = -1;
+                childrenIndexes[nodeData["treeIndex"]].left = -1;
             }
 
             if (nodeData.contains("rightIdx"))
             {
                 if (nodeData["rightIdx"].is_number_integer())
-                    childrenIndexes[nodeData["treeIdx"]].right = nodeData["rightIdx"];
+                    childrenIndexes[nodeData["treeIndex"]].right = nodeData["rightIdx"];
                 else
-                    childrenIndexes[nodeData["treeIdx"]].right = -1;
+                    childrenIndexes[nodeData["treeIndex"]].right = -1;
             }
             else
             {
-                childrenIndexes[nodeData["treeIdx"]].right = -1;
+                childrenIndexes[nodeData["treeIndex"]].right = -1;
             }
         }
+
+        // For testing - printing out all nodeindexes
+        for (auto idx : childrenIndexes){
+            std::cout << "[" << idx.second.left << "] <- [" << idx.first << "] -> [" << idx.second.right << "]" << std::endl;
+        }
+
+
 
         for (auto [index, node] : nodes)
         {
@@ -87,6 +97,8 @@ template <class T> class Tree
             // Get index of parents
             int leftChildIdx = childrenIndexes[index].left;
             int rightChildIdx = childrenIndexes[index].right;
+
+            std::cout << *node << std::endl;
 
             // Add parents if they exist
             if (leftChildIdx != -1)
@@ -107,6 +119,7 @@ template <class T> class Tree
         json nodes;
         _root->traverseDFS([&nodes](Node<T> *node) { nodes.push_back(node->toJson()); });
 
+        COM::debug("All nodes ok");
         json j = json{{
                           "nodes",
                           nodes,
@@ -117,7 +130,11 @@ template <class T> class Tree
 
     void setRoot(std::shared_ptr<Node<T>> n)
     {
+        if(_root)
+            _root->setRootFlag(false);
+
         _root = n;
+        _root->setRootFlag(true);
     }
 
     T removeNode(size_t index)

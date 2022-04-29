@@ -15,53 +15,58 @@ template <class T> class Node
   public:
     explicit Node(const json &jsonFile)
     {
-        data = std::make_shared<T>(jsonFile["data"]);
+        _data = std::make_shared<T>(jsonFile["data"]);
 
         if (jsonFile.contains("treeIndex"))
         {
-            if (jsonFile["treeIndex"].is_string())
+            if (jsonFile.at("treeIndex").is_number_integer())
             {
-                _treeIdx = jsonFile["treeIndex"];
-                TreeId.update(_treeIdx);
+                _treeIndex = jsonFile.at("treeIndex");
+                TreeId.update(_treeIndex);
             }
             else
             {
-                _treeIdx = TreeId();
+                _treeIndex = TreeId();
             }
+        }
+        else
+        {
+            _treeIndex = TreeId();
         }
     }
 
     explicit Node(const T &p)
     {
-        data = std::make_shared<T>(p);
-        _treeIdx = TreeId();
+        _data = std::make_shared<T>(p);
+        _treeIndex = TreeId();
     }
 
     [[nodiscard]] json toJson() const
     {
         int leftIndex, rightIndex;
         if (_left)
-            leftIndex = _left->_treeIdx;
+            leftIndex = _left->_treeIndex;
         else
             leftIndex = -1;
 
         if (_right)
-            rightIndex = _right->_treeIdx;
+            rightIndex = _right->_treeIndex;
         else
             rightIndex = -1;
 
         json j = json{
-            {"data", data->toJson()},
-            {"treeIdx", _treeIdx},
+            {"_data", _data->toJson()},
+            {"treeIndex", _treeIndex},
             {"leftIdx", leftIndex},
             {"rightIdx", rightIndex},
+            {"isRoot", _isRoot}
         };
         return j;
     }
 
     void setData(const T &p)
     {
-        data = std::make_shared<T>(p);
+        _data = std::make_shared<T>(p);
     }
 
     bool addParent(std::shared_ptr<Node> n)
@@ -77,7 +82,6 @@ template <class T> class Node
         }
         else
         {
-
             return false;
         }
         return true;
@@ -131,6 +135,11 @@ template <class T> class Node
     {
     }
 
+    void setRootFlag(bool rootFlag)
+    {
+        _isRoot = rootFlag;
+    }
+
     void setLeft(std::shared_ptr<Node> node)
     {
         _left = node;
@@ -143,22 +152,22 @@ template <class T> class Node
 
     void setIdx(unsigned int index)
     {
-        _treeIdx = index;
+        _treeIndex = index;
     }
 
     [[nodiscard]] unsigned int getIdx() const
     {
-        return _treeIdx;
+        return _treeIndex;
     }
 
     [[nodiscard]] const T *viewData() const
     {
-        return data.get();
+        return _data.get();
     }
 
     [[nodiscard]] T *getData()
     {
-        return data.get();
+        return _data.get();
     }
 
     [[nodiscard]] Node &getLeft()
@@ -196,6 +205,11 @@ template <class T> class Node
         return (!_left && !_right);
     }
 
+    [[nodiscard]] bool isRoot() const
+    {
+        return _isRoot;
+    }
+
     std::pair<std::shared_ptr<Node>, std::shared_ptr<Node>> getParents()
     {
         return {_left, _right};
@@ -203,13 +217,14 @@ template <class T> class Node
 
     friend std::ostream &operator<<(std::ostream &os, Node &n)
     {
-        os << "[Node] Idx: " << n.getIdx() << ", contains: " << n.viewData();
+        os << "[Node] Idx: " << n.getIdx() << ", contains: " << *n.viewData();
         return os;
     }
 
   private:
-    unsigned int _treeIdx;
-    std::shared_ptr<T> data;
+    bool _isRoot{false};
+    unsigned int _treeIndex;
+    std::shared_ptr<T> _data;
     std::shared_ptr<Node> _left;
     std::shared_ptr<Node> _right;
 };

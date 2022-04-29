@@ -123,7 +123,7 @@ void addPerson(Tree<Person> &tree)
     }
     else
     {
-        // Creates new menu to choose between all matching Nodes with their data as text
+        // Creates new menu to choose between all matching Nodes with their _data as text
         Node<Person> *parentNode;
         Menu matchesMenu;
         matchesMenu.setTitle("Velg person som skal være forelder");
@@ -190,7 +190,7 @@ void showPeople(Tree<Person> &tree)
             auto currentPerson = node->getData();
 
             // Name [index]
-            ssPerson << "\n" << currentPerson->getFullName() << "[" << node->getIdx() << "]";
+            ssPerson << "\n[" << node->getIdx() << "] " << currentPerson->getFullName() << "[" << node->getIdx() << "]";
             // B: Birth - D: Death
             ssPerson << "\nB: " << currentPerson->getBirth().toString();
             ssPerson << (currentPerson->isAlive() ? "" : (" - D: " + currentPerson->getBirth().toString()));

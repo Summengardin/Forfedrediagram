@@ -49,8 +49,12 @@ Person::Person(const json &jsonFile)
 
 json Person::toJson() const
 {
-    json j = json{{"firstName", _firstName},    {"lastName", _lastName},      {"middleName", _middleName},
-                  {"birth", _birth.toString()}, {"death", _death.toString()}, {"gender", getGenderString()},
+    json j = json{{"firstName", _firstName},
+                  {"lastName", _lastName},
+                  {"middleName", _middleName},
+                  {"birth", _birth.toString()},
+                  {"death", _death.toString()},
+                  {"gender", getGenderString()},
                   {"isAlive", _isAlive}};
     return j;
 }
