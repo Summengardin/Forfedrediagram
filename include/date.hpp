@@ -1,6 +1,5 @@
 
-#pragma once//FORFEDREDIAGRAM_DATE_HPP
-
+#pragma once // FORFEDREDIAGRAM_DATE_HPP
 
 #include <chrono>
 #include <iostream>
@@ -12,49 +11,41 @@
 
 class Date
 {
-public:
+  public:
     Date() = default;
 
-    Date(int d, int m, int y) :
-        _day(d),
-        _month(m),
-        _year(y){};
+    Date(int d, int m, int y) : _day(d), _month(m), _year(y){};
 
     explicit Date(std::string dateAsString)
     {
         setDate(dateAsString);
     }
 
-
     [[nodiscard]] Date getDate() const
     {
-        //TODO
         return *this;
     }
 
-
-    [[nodiscard]] bool validate() const
+    [[nodiscard]] bool isValid() const
     {
         return !(_day == 0 || _month == 0 || _year == 0);
     }
 
-
     [[nodiscard]] std::string toString() const
     {
-        if (validate())
+        if (isValid())
         {
-            std::ostringstream oSStream;
+            std::ostringstream ssDate;
 
             std::string dayString = std::to_string(_day);
             std::string monthString = std::to_string(_month);
             std::string yearString = std::to_string(_year);
 
-            oSStream << std::setw(2) << std::setfill('0') << dayString << "-";
-            oSStream << std::setw(2) << std::setfill('0') << monthString << "-";
-            oSStream << std::setw(4) << std::setfill('0') << yearString;
+            ssDate << std::setw(2) << std::setfill('0') << dayString << "-";
+            ssDate << std::setw(2) << std::setfill('0') << monthString << "-";
+            ssDate << std::setw(4) << std::setfill('0') << yearString;
 
-            return oSStream.str();
-            return (_day < 10 ? "0" : "") + std::to_string(_day) + "-" + (_month < 10 ? "0" : "") + std::to_string(_month) + "-" + std::to_string(_year);
+            return ssDate.str();
         }
         return "Unknown date";
     }
@@ -87,10 +78,10 @@ public:
         return false;
     }
 
-
     [[nodiscard]] static bool validateStringFormat(const std::string &dateAsString)
     {
-        std::regex format{R"(\d{2}\-\d{2}\-\d{4})"};// Date should be in format DD-MM-YYYY
+        // Date must be in format DD-MM-YYYY
+        std::regex format{R"(\d{2}\-\d{2}\-\d{4})"};
         std::smatch match;
         return std::regex_match(dateAsString, match, format);
     }
@@ -100,12 +91,12 @@ public:
         if (date1._year > 0 && date2._year > 0)
         {
             return date1._year - date2._year;
-        } else
+        }
+        else
             return 0;
     }
 
-
-protected:
+  protected:
     int _day = 0;
     int _month = 0;
     int _year = 0;
@@ -115,7 +106,7 @@ protected:
 
 class Today : public Date
 {
-public:
+  public:
     Date operator()()
     {
         update();
@@ -135,5 +126,4 @@ public:
     }
 };
 
-
-//FORFEDREDIAGRAM_DATE_HPP
+// FORFEDREDIAGRAM_DATE_HPP

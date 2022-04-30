@@ -1,4 +1,4 @@
-#pragma once//FORFEDREDIAGRAM_TREE_HPP
+#pragma once // FORFEDREDIAGRAM_TREE_HPP
 
 #include <fstream>
 #include <functional>
@@ -11,161 +11,199 @@
 #include <vector>
 
 #include "Node.hpp"
-#include "Person.hpp"
 #include "commonFunctions.hpp"
 #include "json.hpp"
 
 using json = nlohmann::json;
 
-
-template<class T>
-class Tree
+template <class T> class Tree
 {
 
-public:
+  public:
     void fillFromJson(const json &treeJson)
     {
         // Fill tree from json-file. Must be compatible, preferably exported from tree
+        // It is done by first extracting all nodes from the tree into a map.
+        // Then looping through the indexes and assigning children based on the indexes
 
         // Tree settings
         if (treeJson["tree"]["settings"]["globalIndent"] != nullptr)
             globalIndent = treeJson["tree"]["settings"]["globalIndent"];
 
-
         std::unordered_map<int, std::shared_ptr<Node<T>>> nodes;
 
-        struct nodeParents {
+        struct childrenIndex
+        {
             int left, right;
         };
 
-        std::unordered_map<int, nodeParents> parentIdxs;
-        for (auto &nodeData: treeJson["nodes"])
+        // Extract nodes
+        std::unordered_map<int, childrenIndex> childrenIndexes;
+        for (auto &nodeData : treeJson["nodes"])
         {
-            std::unique_ptr<Node<T>> newNode(std::make_unique<Node<T>>(nodeData));
+            std::shared_ptr<Node<T>> newNode{std::make_shared<Node<T>>(nodeData)};
 
-            nodes[nodeData["treeIdx"]] = std::move(newNode);
+            std::cout << *newNode << std::endl;
 
-            COM::debug("Node created");
+            if (nodeData.contains("isRoot") && nodeData.at("isRoot").is_boolean() && nodeData.at("isRoot"))
+            {
+                setRoot(newNode);
+                _size++;
+            }
+
+            nodes[nodeData["treeIndex"]] = newNode;
+
             // Store index of parents. If no parent, index is -1
             if (nodeData.contains("leftIdx") && nodeData["leftIdx"].is_number_integer())
-            {
-                parentIdxs[nodeData["treeIdx"]].left = nodeData["leftIdx"];
-            } else
-            {
-                parentIdxs[nodeData["treeIdx"]].left = -1;
-            }
+                childrenIndexes[nodeData["treeIndex"]].left = nodeData["leftIdx"];
+            else
+                childrenIndexes[nodeData["treeIndex"]].left = -1;
 
-            if (nodeData["rightIdx"] != nullptr)
-            {
-                parentIdxs[nodeData["treeIdx"]].right = nodeData["rightIdx"];
-            } else
-            {
-                parentIdxs[nodeData["treeIdx"]].right = -1;
-            }
+            if (nodeData.contains("rightIdx") && nodeData["rightIdx"].is_number_integer())
+                childrenIndexes[nodeData["treeIndex"]].right = nodeData["rightIdx"];
+            else
+                childrenIndexes[nodeData["treeIndex"]].right = -1;
         }
 
-        // Setting root node - node with uuid "1" from tree;
-        // In this case we are not counting from 0
-        setRoot(nodes[1]);
-        ++_size;
-
-        for (auto [key, value]: nodes)
+        for (auto [index, node] : nodes)
         {
 
             // Get index of parents
-            int leftIdx = parentIdxs[key].left;
-            int rightIdx = parentIdxs[key].right;
+            int leftChildIdx = childrenIndexes[index].left;
+            int rightChildIdx = childrenIndexes[index].right;
 
             // Add parents if they exist
-            if (leftIdx != -1)
+            if (leftChildIdx != -1)
             {
-                value->setLeft(nodes.at(leftIdx));
+                node->setLeft(nodes.at(leftChildIdx));
                 ++_size;
             }
-            if (rightIdx != -1)
+            if (rightChildIdx != -1)
             {
-                value->setRight(nodes.at(rightIdx));
+                node->setRight(nodes.at(rightChildIdx));
                 ++_size;
             }
         }
     }
 
-
     [[nodiscard]] json toJson() const
     {
-        // All nodes as json-list
         json nodes;
-        _root->traverseDFS([&nodes](Node<T> *node) {
-            nodes.push_back(node->toJson());
-        });
+        _root->traverseDFS([&nodes](Node<T> *node) { nodes.push_back(node->toJson()); });
 
-
-        json j = json{
-                {
-                        "nodes", nodes,
-                },
-                {"tree",
-                 {{"settings", {{"globalIndent", globalIndent}}}}}};
+        COM::debug("All nodes ok");
+        json j = json{{
+                          "nodes",
+                          nodes,
+                      },
+                      {"tree", {{"settings", {{"globalIndent", globalIndent}}}}}};
         return j;
     }
 
-
     void setRoot(std::shared_ptr<Node<T>> n)
     {
+        if (_root)
+            _root->setRootFlag(false);
+
         _root = n;
+        _root->setRootFlag(true);
     }
 
-
-    [[nodiscard]] Node<T> &getNode(unsigned int index)
+    T removeNode(size_t index)
     {
-        //TODO
-        return *_root;
+        T removedData;
+
+        size_t prevIndex = _root->getIdx();
+
+        if (prevIndex == index)
+        {
+            removedData = *_root->getData();
+            if (_root->isLeaf())
+            {
+                setRoot(nullptr);
+            }
+            else
+            {
+                T dummy("Dummy", std::to_string(DummyId()));
+                _root->setData(dummy);
+            }
+        }
+        else
+        {
+            traverseDFS(_root.get(), [index, &prevIndex, &removedData](Node<T> *node) {
+                if (node->leftChild() && node->leftChild()->getIdx() == index)
+                {
+                    removedData = *node->leftChild()->getData();
+                    if (node->leftChild()->isLeaf())
+                    {
+                        node->setLeft(nullptr);
+                    }
+                    else
+                    {
+                        T dummy("Dummy", std::to_string(DummyId()));
+                        node->leftChild()->setData(dummy);
+                    }
+                    return;
+                }
+
+                if (node->rightChild() && node->rightChild()->getIdx() == index)
+                {
+
+                    removedData = *node->rightChild()->getData();
+                    if (node->rightChild()->isLeaf())
+                    {
+                        node->setRight(nullptr);
+                    }
+                    else
+                    {
+                        T dummy("Dummy", std::to_string(DummyId()));
+                        node->rightChild()->setData(dummy);
+                    }
+                    return;
+                }
+            });
+        }
+
+        return removedData;
     }
 
-
-    bool isEmpty(){
+    bool isEmpty()
+    {
         return !_root;
     }
 
-
     [[nodiscard]] const Node<T> &viewNode(unsigned int index) const
     {
-        //TODO
+        // TODO
         return *_root;
     }
 
-
-    [[nodiscard]] Person &getDataAt(unsigned int index)
+    [[nodiscard]] T &getDataAt(unsigned int index)
     {
-        //TODO
+        // TODO
         return *_root->getData();
     }
 
-
-    [[nodiscard]] const Person &viewDataAt(unsigned int index) const
+    [[nodiscard]] const T &viewDataAt(unsigned int index) const
     {
-        //TODO
+        // TODO
         return *_root->getData();
     }
-
 
     [[nodiscard]] Node<T> &viewRoot()
     {
         return *_root;
     }
 
-
-    [[nodiscard]] Node<T> &getRoot()
+    [[nodiscard]]   Node<T> &getRoot()
     {
         return *_root;
     }
-
 
     [[nodiscard]] const Node<T> &viewRoot() const
     {
         return *_root;
     }
-
 
     void traverseDFS(Node<T> *nextNode, const std::function<void(Node<T> *)> &func)
     {
@@ -173,18 +211,14 @@ public:
         if (!_root)
             return;
 
+        func(nextNode);
 
-        Node<T> *currentNode = _root.get();
+        if (nextNode->leftChild())
+            traverseDFS(nextNode->leftChild(), func);
 
-        func(currentNode);
-
-        if (_root->leftPtr())
-            traverseDFS(_root->leftPtr(), func);
-
-        if (_root->rightPtr())
-            traverseDFS(_root->rightPtr(), func);
+        if (nextNode->rightChild())
+            traverseDFS(nextNode->rightChild(), func);
     }
-
 
     void traverseBFS(const std::function<void(Node<T> *)> &func)
     {
@@ -197,10 +231,10 @@ public:
         {
             Node<T> *currentNode = Q.front();
 
-            if (currentNode->leftPtr())
-                Q.push(currentNode->leftPtr());
-            if (currentNode->rightPtr())
-                Q.push(currentNode->rightPtr());
+            if (currentNode->leftChild())
+                Q.push(currentNode->leftChild());
+            if (currentNode->rightChild())
+                Q.push(currentNode->rightChild());
 
             func(currentNode);
 
@@ -208,66 +242,33 @@ public:
         }
     }
 
-    void listOfNodes()
+    std::vector<Node<T>*> listOfNodes()
     {
-        if (!_root)
-            return;
-        traverseDFS(_root.get(), [](Node<T> *node) {
-            std::cout << *node->viewData() << std::endl;
-        });
+        std::vector<Node<T>*> allNodes;
+
+        if (_root)
+            traverseDFS(_root.get(), [&allNodes](Node<T> *node) {  allNodes.push_back(node); });
+
+        return allNodes;
     }
 
-
-    void show()
-    {
-        if (!_root)
-        {
-            std::cout << "Treet er tomt :/" << std::endl;
-            return;
-        }
-
-        int indent = globalIndent;
-        _root->traverseDFSWithDepth([indent](Node<T> *node, int depth) {
-            for (int i = 0; i < depth; ++i)
-            {
-                for (int space = 0; space < indent; ++space)
-                {
-                    std::cout << " ";
-                }
-            }
-/*            if (depth != 0)
-            {
-                for (int space = 0; space < indent; ++space)
-                {
-                    std::cout << " ";
-                }
-                std::cout << "";
-            }*/
-            std::cout << *node->viewData() << std::endl;
-            //depth++;
-        });
-    }
-
-
-    Node<T> &findNodeByIdx(unsigned int index)
+    Node<T> *findNodeByIdx(unsigned int index)
     {
         if (_root->getIdx() == index)
         {
-            return *_root;
+            return _root.get();
         }
         Node<T> *found = nullptr;
         traverseDFS(_root.get(), [&found, index](Node<T> *node) {
             if (node->getIdx() == index)
+            {
                 found = node;
+                return;
+            }
         });
 
-        if (found == nullptr)
-        {
-            throw std::runtime_error("In function 'findByIndex': could not find index " + std::to_string(index));
-        }
-        return *found;
+        return found;
     }
-
 
     std::vector<Node<T> *> findNodeByString(const std::string &str)
     {
@@ -287,26 +288,24 @@ public:
         return nodes;
     }
 
-
     void addParent(int childIndex, std::shared_ptr<Node<T>> node)
     {
         Node<T> &childNode = findNodeByIdx(childIndex);
-        if (childNode.addParent(std::shared_ptr<Node<T>>(node)))
+        if (childNode.addChild(std::shared_ptr<Node<T>>(node)))
             ++_size;
     }
 
-    void addNode(std::shared_ptr<Node<T>> node){
-        //TODO
+    void addNode(std::shared_ptr<Node<T>> node)
+    {
+        // TODO
     }
 
-
-private:
+  private:
     std::shared_ptr<Node<T>> _root;
     std::size_t _size = 0;
 
-    //settings
+    // settings
     int globalIndent = 5;
 };
 
-
-//FORFEDREDIAGRAM_TREE_HPP
+// FORFEDREDIAGRAM_TREE_HPP

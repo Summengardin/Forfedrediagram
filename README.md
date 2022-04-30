@@ -1,6 +1,8 @@
 # Forfedrediagram
 Mappeinnlevering AIS1002 - Forfedretre <br>
 
+* Tillater bare to foreldre
+
 ## Description
 
 ---
@@ -12,7 +14,7 @@ Example .JSON-file:
  {
     "nodes": [
         {
-            "data": {
+            "_data": {
                 "birth": "22-06-1999",
                 "death": null,
                 "firstName": "Me",
@@ -26,7 +28,7 @@ Example .JSON-file:
             "rightIdx": 3
         },
         {
-            "data": {
+            "_data": {
                 "birth": "11-03-1968",
                 "death": null,
                 "firstName": "Mom",
@@ -39,7 +41,7 @@ Example .JSON-file:
             "rightIdx": null
         },
         {
-            "data": {
+            "_data": {
                 "birth": "08-02-1965",
                 "death": null,
                 "firstName": "Dad",

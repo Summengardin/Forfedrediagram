@@ -6,8 +6,7 @@
 //
 // --------------------------------------------------------------
 
-#pragma once//FORFEDREDIAGRAM_MENU_HPP
-
+#pragma once // FORFEDREDIAGRAM_MENU_HPP
 
 #include <cctype>
 #include <functional>
@@ -23,28 +22,31 @@
 
 #include "commonFunctions.hpp"
 
-
 class Menu
 {
-private:
-    struct MenuItem {
+  private:
+    struct MenuItem
+    {
         std::string name;
-        std::variant<std::function<void()>, Menu *> func;
+        std::variant<std::function<void()>, Menu *> action;
     };
 
-public:
+  public:
     Menu() = default;
-    Menu(std::string, std::vector<MenuItem>);
+
+    Menu(std::string, std::vector<MenuItem>, bool loop = true);
 
     [[nodiscard]] auto getTitle() const noexcept;
 
-    void setTitle(const std::string &);
-
-    void show();
-
-    [[nodiscard]] bool empty() const;
+    [[nodiscard]] bool isEmpty() const;
 
     [[nodiscard]] size_t size() const;
+
+    void setTitle(const std::string &);
+
+    void setLoop(bool);
+
+    void show();
 
     bool remove(size_t index);
 
@@ -52,12 +54,16 @@ public:
 
     bool insert(size_t index, const MenuItem &menuItem);
 
-private:
-    void show(const Menu &m);
+  private:
+    size_t menuChoice();
+
+    void writeOut();
+
+    void execute(size_t menuChoice);
 
     std::string _title;
     std::vector<MenuItem> _menuItems;
+    bool _loop;
 };
 
-
-//FORFEDREDIAGRAM_MENU_HPP
+// FORFEDREDIAGRAM_MENU_HPP

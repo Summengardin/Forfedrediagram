@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "catch.hpp"
-#include "../include/Person.hpp"
+#include "../CLI/include/Person.hpp"
 
 TEST_CASE("Getters Person"){
     std::string fName = "Martin";

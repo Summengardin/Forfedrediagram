@@ -9,9 +9,10 @@
                 "age" : 22,
                 "isDead" : false
             },
-            "treeIdx" : 1,
+            "treeIndex" : 1,
             "leftIdx": 2,
-            "rightIdx": 3
+            "rightIdx": 3,
+            "isRoot": true
         },
         {
             "data": {
@@ -22,7 +23,7 @@
                 "age" : null,
                 "isDead" : false
             },
-            "treeIdx" : 2,
+            "treeIndex" : 2,
             "leftIdx": 5,
             "rightIdx": 4
         },
@@ -36,7 +37,7 @@
                 "age" : null,
                 "isDead" : false
             },
-            "treeIdx" : 3,
+            "treeIndex" : 3,
             "leftIdx": 6,
             "rightIdx": 7
         },
@@ -50,7 +51,7 @@
                 "age" : null,
                 "isDead" : false
             },
-            "treeIdx" : 4,
+            "treeIndex" : 4,
             "leftIdx": null,
             "rightIdx": null
         },
@@ -64,7 +65,7 @@
                 "age" : null,
                 "isDead" : false
             },
-            "treeIdx" : 5,
+            "treeIndex" : 5,
             "leftIdx": 8,
             "rightIdx": 9
         },
@@ -77,7 +78,7 @@
                 "age" : null,
                 "isDead" : true
             },
-            "treeIdx" : 6,
+            "treeIndex" : 6,
             "leftIdx": null,
             "rightIdx": null
         },
@@ -90,7 +91,7 @@
                 "age" : null,
                 "isDead" : true
             },
-            "treeIdx" : 7,
+            "treeIndex" : 7,
             "leftIdx": null,
             "rightIdx": null
         },
@@ -103,7 +104,7 @@
                 "age" : null,
                 "isDead" : true
             },
-            "treeIdx" : 8,
+            "treeIndex" : 8,
             "leftIdx": null,
             "rightIdx": null
         },
@@ -116,7 +117,7 @@
                 "age" : null,
                 "isDead" : true
             },
-            "treeIdx" : 9,
+            "treeIndex" : 9,
             "leftIdx": null,
             "rightIdx": null
         }

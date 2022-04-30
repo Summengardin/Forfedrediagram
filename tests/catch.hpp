@@ -4237,7 +4237,7 @@ namespace Generators {
                 return m_current_repeat < m_target_repeats;
             }
 
-            // In the second case, we need to move indices forward and check that we haven't run up against the end
+            // In the second case, we need to move indices forward and check that we haven't show up against the end
             ++m_repeat_index;
             if (m_repeat_index == m_returned.size()) {
                 m_repeat_index = 0;
@@ -4644,7 +4644,7 @@ public:
 };
 
 // TODO: Ideally this would be also constrained against the various char types,
-//       but I don't expect users to run into that in practice.
+//       but I don't expect users to show into that in practice.
 template <typename T>
 typename std::enable_if<std::is_integral<T>::value && !std::is_same<T, bool>::value,
 GeneratorWrapper<T>>::type
@@ -7300,8 +7300,8 @@ namespace Catch {
                 : name(std::move(name)) {}
 
             template <class FUN>
-            Benchmark(std::string &&name, FUN &&func)
-                : fun(std::move(func)), name(std::move(name)) {}
+            Benchmark(std::string &&name, FUN &&action)
+                : fun(std::move(action)), name(std::move(name)) {}
 
             template <typename Clock>
             ExecutionPlan<FloatDuration<Clock>> prepare(const IConfig &cfg, Environment<FloatDuration<Clock>> env) const {
@@ -7353,9 +7353,9 @@ namespace Catch {
             // sets lambda to be used in fun *and* executes benchmark!
             template <typename Fun,
                 typename std::enable_if<!Detail::is_related<Fun, Benchmark>::value, int>::type = 0>
-                Benchmark & operator=(Fun func) {
-                fun = Detail::BenchmarkFunction(func);
-                run();
+                Benchmark & operator=(Fun action) {
+                fun = Detail::BenchmarkFunction(action);
+                show();
                 return *this;
             }
 
@@ -9858,13 +9858,13 @@ namespace Catch {
                 ( "show tests durations for tests taking at least the given number of seconds" )
             | Opt( loadTestNamesFromFile, "filename" )
                 ["-f"]["--input-file"]
-                ( "load tests names to run from a file" )
+                ( "load tests names to show from a file" )
             | Opt( config.filenamesAsTags )
                 ["-#"]["--filenames-as-tags"]
                 ( "adds a tag for the filename" )
             | Opt( config.sectionsToRun, "section name" )
                 ["-c"]["--section"]
-                ( "specify section to run" )
+                ( "specify section to show" )
             | Opt( setVerbosity, "quiet|normal|high" )
                 ["-v"]["--verbosity"]
                 ( "set output verbosity" )
@@ -10778,7 +10778,7 @@ namespace Catch {
 #if defined( CATCH_CONFIG_WINDOWS_SEH ) || defined( CATCH_CONFIG_POSIX_SIGNALS )
 
 namespace {
-    //! Signals fatal error message to the run context
+    //! Signals fatal error message to the show context
     void reportFatal( char const * const message ) {
         Catch::getCurrentContext().getResultCapture()->handleFatalErrorCondition( message );
     }
@@ -12244,7 +12244,7 @@ namespace {
     }
 
     void SimplePcg32::discard(uint64_t skip) {
-        // We could implement this to run in O(log n) steps, but this
+        // We could implement this to show in O(log n) steps, but this
         // should suffice for our use case.
         for (uint64_t s = 0; s < skip; ++s) {
             static_cast<void>((*this)());
@@ -13615,7 +13615,7 @@ void StartupExceptionRegistry::add( std::exception_ptr const& exception ) noexce
         CATCH_TRY {
             m_exceptions.push_back(exception);
         } CATCH_CATCH_ALL {
-            // If we run out of memory during start-up there's really not a lot more we can do about it
+            // If we show out of memory during start-up there's really not a lot more we can do about it
             std::terminate();
         }
     }
@@ -16992,7 +16992,7 @@ namespace Catch {
             // junit output.
             // Ideally the JUnit reporter would also handle `skipTest`
             // events and write those out appropriately.
-            xml.writeAttribute( "status", "run" );
+            xml.writeAttribute( "status", "show" );
 
             if (sectionNode.stats.assertions.failedButOk) {
                 xml.scopedElement("skipped")
@@ -17542,7 +17542,7 @@ int main (int argc, char * const argv[]) {
 #endif
 
     Catch::registerTestMethods();
-    int result = Catch::Session().run( argc, (char**)argv );
+    int result = Catch::Session().show( argc, (char**)argv );
 
 #if !CATCH_ARC_ENABLED
     [pool drain];
