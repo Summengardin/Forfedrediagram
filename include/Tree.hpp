@@ -178,13 +178,13 @@ template <class T> class Tree
         return *_root;
     }
 
-    [[nodiscard]] Person &getDataAt(unsigned int index)
+    [[nodiscard]] T &getDataAt(unsigned int index)
     {
         // TODO
         return *_root->getData();
     }
 
-    [[nodiscard]] const Person &viewDataAt(unsigned int index) const
+    [[nodiscard]] const T &viewDataAt(unsigned int index) const
     {
         // TODO
         return *_root->getData();
