@@ -1,6 +1,7 @@
 #pragma once // FORFEDREDIAGRAM_PERSON_HPP
 
 #include <iostream>
+#include <sstream>
 #include <optional>
 #include <regex>
 #include <utility>
@@ -65,7 +66,7 @@ class Person
 
     void setGender(const std::string &gender);
 
-    void setAliveness(bool alive);
+    void setAliveFlag(bool alive);
 
     static bool validateName(const std::string &str);
 

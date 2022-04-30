@@ -11,65 +11,61 @@
 
 namespace CLI
 {
+
 namespace
 {
 void editPerson(Person &personToEdit)
 {
+    std::cout << "\n--- EDITING ---\n" << personToEdit << std::endl;
 
-    // TODO - Er det mulig å la brukeren ikke skrive inn igjen den nåværende verdien om den skal beholdes
-    // TODO - Implementer sjekk av alle inputs
+    std::cout << "\nFor every entry, \"-\" will leave value unchanged" << std::endl;
 
-    auto firstName = COM::getString("Fornavn: ");
-    while (!Person::validateName(firstName))
-    {
-        firstName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-    }
-    personToEdit.setFirstName(firstName);
+    auto newFirstName = COM::getString("First name: ");
+    while (!Person::validateName(newFirstName) && (newFirstName != "-"))
+        newFirstName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+    if (newFirstName != "-")
+        personToEdit.setFirstName(newFirstName);
 
-    auto middleName = COM::getString("Mellomnavn: ", true);
-    while (!Person::validateName(middleName))
-    {
-        middleName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-    }
-    personToEdit.setMiddleName(middleName);
+    auto newMiddleName = COM::getString("Middle name: ", true);
+    while (!newMiddleName.empty() && !Person::validateName(newMiddleName) && (newMiddleName != "-"))
+        newMiddleName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+    if (newMiddleName != "-")
+        personToEdit.setMiddleName(newMiddleName);
 
-    auto lastName = COM::getString("Etternavn: ");
-    while (!Person::validateName(lastName))
-    {
-        lastName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
-    }
-    personToEdit.setLastName(lastName);
+    auto newLastName = COM::getString("Last name: ");
+    while (!Person::validateName(newLastName) && (newLastName != "-"))
+        newLastName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+    if (newLastName != "-")
+        personToEdit.setLastName(newLastName);
 
-    auto gender = COM::getString("Kjønn: ", true);
-    personToEdit.setGender(gender);
+    auto newGender = COM::getString("Gender (male, female, other): ", true);
+    if (newGender != "-")
+        personToEdit.setGender(newGender);
 
-    auto birthAsString = COM::getString("Når ble " + firstName + " " + middleName + " født? [DD-MM-YYYY]: ", true);
-    if (!birthAsString.empty())
-    {
-        while (!Date::validateStringFormat(birthAsString))
-        {
-            birthAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
-        }
+    auto birthAsString =
+        COM::getString("When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " born? [DD-MM-YYYY]: ", true);
+    while (!birthAsString.empty() && !Date::validateStringFormat(birthAsString) && (birthAsString != "-"))
+        birthAsString = COM::getString("That was not a valid date, format must be [DD-MM-YYYY].\nTry again: ");
+    if (birthAsString != "-")
         personToEdit.setBirth(birthAsString);
-    }
 
-    auto aliveAnswer = COM::getString("Er personen " + firstName + " " + middleName + " i live? (y/n)");
-    while (aliveAnswer != "y" && aliveAnswer != "Y" && aliveAnswer != "n" && aliveAnswer != "N")
-    {
-        aliveAnswer = COM::getString("Du må nesten svare 'y' eller 'n'. Mer enn det forstår jeg ikke :/\nPrøv igjen: ");
-    }
+    auto aliveAnswer = COM::getString("Is " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " alive? (y/n)");
+    while (aliveAnswer != "y" && aliveAnswer != "Y" && aliveAnswer != "n" && aliveAnswer != "N" && aliveAnswer != "-")
+        aliveAnswer = COM::getString("You have to answer 'y', 'n' or '-'\nTry again: ");
     if (aliveAnswer == "y" || aliveAnswer == "Y")
-        personToEdit.setAliveness(true);
-    else
+        personToEdit.setAliveFlag(true);
+    else if (aliveAnswer == "n" && aliveAnswer == "N")
     {
-        personToEdit.setAliveness(false);
+        personToEdit.setAliveFlag(false);
 
-        auto deathAsString = COM::getString("Når døde " + firstName + " " + middleName + "? [DD-MM-YYYY]: ");
-        while (!Date::validateStringFormat(deathAsString))
+        auto deathAsString =
+            COM::getString("When did " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " pass away? [DD-MM-YYYY]: ");
+        while (!deathAsString.empty() && !Date::validateStringFormat(deathAsString) && (deathAsString != "-"))
         {
-            deathAsString = COM::getString("Ikke en gyldig dato, må være [DD-MM-YYYY]. Prøv igjen: ");
+            deathAsString = COM::getString("That was not a valid date [DD-MM-YYYY]. Prøv igjen: ");
         }
-        personToEdit.setDeath(deathAsString);
+        if (deathAsString != "-")
+            personToEdit.setDeath(deathAsString);
     }
 }
 
@@ -101,8 +97,11 @@ void addPerson(Tree<Person> &tree)
     {
         if (attemptCounter >= 2)
         {
-            std::cout << "Trenger du hjelp? Her er alle personene som finnes i treet:" << std::endl;
-            tree.listOfNodes();
+            std::cout << "Do you need help? Here are all people listed in the tree" << std::endl;
+            for (const auto &node : tree.listOfNodes())
+            {
+                std::cout << *node->getData() << std::endl;
+            }
             attemptCounter = 0;
         }
         else
@@ -119,7 +118,7 @@ void addPerson(Tree<Person> &tree)
 
     if (matchingNodes.size() == 1)
     {
-        matchingNodes[0]->addParent(std::move(newNode));
+        matchingNodes[0]->addChild(std::move(newNode));
     }
     else
     {
@@ -131,12 +130,12 @@ void addPerson(Tree<Person> &tree)
         {
             matchesMenu.append(
                 {node->getData()->getFullName() + " " +
-                     (node->getData()->getBirth().validate() ? node->getData()->getBirth().toString() : ""),
+                     (node->getData()->getBirth().isValid() ? node->getData()->getBirth().toString() : ""),
                  [&node, &parentNode]() { parentNode = node; }});
         }
         matchesMenu.show();
 
-        parentNode->addParent(std::move(newNode));
+        parentNode->addChild(std::move(newNode));
     }
 }
 
@@ -166,7 +165,7 @@ void removePerson(Tree<Person> &tree)
             std::cout << node->getIdx();
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
-                               (currentPerson->getBirth().validate() ? currentPerson->getBirth().toString() : "");
+                               (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
             peopleMenu.append({personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIdx()); }});
         }
         peopleMenu.show();
@@ -190,22 +189,27 @@ void showPeople(Tree<Person> &tree)
             auto currentPerson = node->getData();
 
             // Name [index]
-            ssPerson << "\n[" << node->getIdx() << "] " << currentPerson->getFullName() << "[" << node->getIdx() << "]";
-            // B: Birth - D: Death
-            ssPerson << "\nB: " << currentPerson->getBirth().toString();
-            ssPerson << (currentPerson->isAlive() ? "" : (" - D: " + currentPerson->getBirth().toString()));
+            ssPerson << "\n" << currentPerson->getFullName() << " [" << node->getIdx() << "]";
+            // B: Birth
+            auto birthValid = currentPerson->getBirth().isValid();
+            if (birthValid)
+                ssPerson << "\nB: " << currentPerson->getBirth().toString();
+            // D: Death
+            auto deathValid = currentPerson->getDeath().isValid();
+            if (!currentPerson->isAlive() && deathValid)
+                ssPerson << "\nD: " << currentPerson->getDeath().toString();
             // Gender:
             ssPerson << "\nGender is " << currentPerson->getGenderString();
 
             // Parents
             ssPerson << "\nParents are\n";
-            if (node->leftPtr() || node->rightPtr())
+            if (node->leftChild() || node->rightChild())
             {
-                if (node->leftPtr())
-                    ssPerson << "   " << node->getLeft().getData()->getFullName() << "[" << node->leftPtr()->getIdx()
+                if (node->leftChild())
+                    ssPerson << "   " << node->getLeft().getData()->getFullName() << " [" << node->leftChild()->getIdx()
                              << "]";
-                if (node->rightPtr())
-                    ssPerson << "   " << node->getRight().getData()->getFullName() << "[" << node->rightPtr()->getIdx()
+                if (node->rightChild())
+                    ssPerson << "   " << node->getRight().getData()->getFullName() << " [" << node->rightChild()->getIdx()
                              << "]";
             }
             else
@@ -220,13 +224,13 @@ void editPerson(Tree<Person> &tree)
 {
 
     // Choose person to edit
-    auto searchTerm = COM::getString("Type in the searchTerm in of the person");
+    auto searchTerm = COM::getString("Type in name of the person you want to edit");
     std::vector<Node<Person> *> people = tree.findNodeByString(searchTerm);
 
     Person *personToEdit;
     if (people.empty())
     {
-        std::cout << "\nCould not find anyone searchTerm \"" << searchTerm << "\"" << std::endl;
+        std::cout << "\nCould not find anyone with search-term \"" << searchTerm << "\"" << std::endl;
         return;
     }
     else if (people.size() == 1)
@@ -243,7 +247,7 @@ void editPerson(Tree<Person> &tree)
         {
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
-                               (currentPerson->getBirth().validate() ? currentPerson->getBirth().toString() : "");
+                               (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
             peopleMenu.append({personTitle, [&personToEdit, &currentPerson]() { personToEdit = currentPerson; }});
         }
         peopleMenu.show();

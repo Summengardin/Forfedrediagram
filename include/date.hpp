@@ -26,14 +26,14 @@ class Date
         return *this;
     }
 
-    [[nodiscard]] bool validate() const
+    [[nodiscard]] bool isValid() const
     {
         return !(_day == 0 || _month == 0 || _year == 0);
     }
 
     [[nodiscard]] std::string toString() const
     {
-        if (validate())
+        if (isValid())
         {
             std::ostringstream ssDate;
 

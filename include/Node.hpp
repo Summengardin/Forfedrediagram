@@ -17,17 +17,10 @@ template <class T> class Node
     {
         _data = std::make_shared<T>(jsonFile["data"]);
 
-        if (jsonFile.contains("treeIndex"))
+        if (jsonFile.contains("treeIndex") && jsonFile.at("treeIndex").is_number_integer())
         {
-            if (jsonFile.at("treeIndex").is_number_integer())
-            {
-                _treeIndex = jsonFile.at("treeIndex");
-                TreeId.update(_treeIndex);
-            }
-            else
-            {
-                _treeIndex = TreeId();
-            }
+            _treeIndex = jsonFile.at("treeIndex");
+            TreeId.update(_treeIndex);
         }
         else
         {
@@ -44,23 +37,21 @@ template <class T> class Node
     [[nodiscard]] json toJson() const
     {
         int leftIndex, rightIndex;
-        if (_left)
-            leftIndex = _left->_treeIndex;
+        if (_leftChildNode)
+            leftIndex = _leftChildNode->_treeIndex;
         else
             leftIndex = -1;
 
-        if (_right)
-            rightIndex = _right->_treeIndex;
+        if (_rightChildNode)
+            rightIndex = _rightChildNode->_treeIndex;
         else
             rightIndex = -1;
 
-        json j = json{
-            {"_data", _data->toJson()},
-            {"treeIndex", _treeIndex},
-            {"leftIdx", leftIndex},
-            {"rightIdx", rightIndex},
-            {"isRoot", _isRoot}
-        };
+        json j = json{{"_data", _data->toJson()},
+                      {"treeIndex", _treeIndex},
+                      {"leftIdx", leftIndex},
+                      {"rightIdx", rightIndex},
+                      {"isRoot", _isRoot}};
         return j;
     }
 
@@ -69,36 +60,32 @@ template <class T> class Node
         _data = std::make_shared<T>(p);
     }
 
-    bool addParent(std::shared_ptr<Node> n)
+    bool addChild(std::shared_ptr<Node> n)
     {
-        // Returns true if successfully added parent, false if not.
-        if (!_left)
-        {
-            _left = n;
-        }
-        else if (!_right)
-        {
-            _right = n;
-        }
+        // Returns true if successfully added child, false if not.
+
+        if (!_leftChildNode)
+            _leftChildNode = n;
+        else if (!_rightChildNode)
+            _rightChildNode = n;
         else
-        {
             return false;
-        }
+
         return true;
     }
 
-    bool addParent(const T &p)
+    bool addChild(const T &p)
     {
-        // Returns true if able to set parent
+        // Returns true if successfully added child, false if not.
 
-        if (!_left)
+        if (!_leftChildNode)
         {
-            _left = std::make_shared<Node>(Node(p));
+            _leftChildNode = std::make_shared<Node>(Node(p));
             return true;
         }
-        else if (!_right)
+        else if (!_rightChildNode)
         {
-            _right = std::make_shared<Node>(Node(p));
+            _rightChildNode = std::make_shared<Node>(Node(p));
             return true;
         }
 
@@ -111,11 +98,11 @@ template <class T> class Node
 
         f(this);
 
-        if (_left)
-            _left->traverseDFS(f);
+        if (_leftChildNode)
+            _leftChildNode->traverseDFS(f);
 
-        if (_right)
-            _right->traverseDFS(f);
+        if (_rightChildNode)
+            _rightChildNode->traverseDFS(f);
     }
 
     void traverseDFSWithDepth(const std::function<void(Node *, int)> &f, int depth = 0)
@@ -124,11 +111,11 @@ template <class T> class Node
 
         f(this, depth);
 
-        if (_left)
-            _left->traverseDFSWithDepth(f, depth + 1);
+        if (_leftChildNode)
+            _leftChildNode->traverseDFSWithDepth(f, depth + 1);
 
-        if (_right)
-            _right->traverseDFSWithDepth(f, depth + 1);
+        if (_rightChildNode)
+            _rightChildNode->traverseDFSWithDepth(f, depth + 1);
     }
 
     void traverseBFS(const std::function<void(Node *)> &f)
@@ -142,12 +129,12 @@ template <class T> class Node
 
     void setLeft(std::shared_ptr<Node> node)
     {
-        _left = node;
+        _leftChildNode = node;
     }
 
     void setRight(std::shared_ptr<Node> node)
     {
-        _right = node;
+        _rightChildNode = node;
     }
 
     void setIdx(unsigned int index)
@@ -172,37 +159,37 @@ template <class T> class Node
 
     [[nodiscard]] Node &getLeft()
     {
-        return *_left;
+        return *_leftChildNode;
     }
 
     [[nodiscard]] const Node &viewLeft() const
     {
-        return *_left;
+        return *_leftChildNode;
     }
 
-    [[nodiscard]] Node *leftPtr() const
+    [[nodiscard]] Node *leftChild() const
     {
-        return _left.get();
+        return _leftChildNode.get();
     }
 
     [[nodiscard]] Node &getRight()
     {
-        return *_right;
+        return *_rightChildNode;
     }
 
     [[nodiscard]] const Node &viewRight() const
     {
-        return *_right;
+        return *_rightChildNode;
     }
 
-    [[nodiscard]] Node *rightPtr() const
+    [[nodiscard]] Node *rightChild() const
     {
-        return _right.get();
+        return _rightChildNode.get();
     }
 
     [[nodiscard]] bool isLeaf() const
     {
-        return (!_left && !_right);
+        return (!_leftChildNode && !_rightChildNode);
     }
 
     [[nodiscard]] bool isRoot() const
@@ -212,7 +199,7 @@ template <class T> class Node
 
     std::pair<std::shared_ptr<Node>, std::shared_ptr<Node>> getParents()
     {
-        return {_left, _right};
+        return {_leftChildNode, _rightChildNode};
     };
 
     friend std::ostream &operator<<(std::ostream &os, Node &n)
@@ -225,8 +212,8 @@ template <class T> class Node
     bool _isRoot{false};
     unsigned int _treeIndex;
     std::shared_ptr<T> _data;
-    std::shared_ptr<Node> _left;
-    std::shared_ptr<Node> _right;
+    std::shared_ptr<Node> _leftChildNode;
+    std::shared_ptr<Node> _rightChildNode;
 };
 
 // FORFEDREDIAGRAM_NODE_HPP

@@ -23,6 +23,8 @@ template <class T> class Tree
     void fillFromJson(const json &treeJson)
     {
         // Fill tree from json-file. Must be compatible, preferably exported from tree
+        // It is done by first extracting all nodes from the tree into a map.
+        // Then looping through the indexes and assigning children based on the indexes
 
         // Tree settings
         if (treeJson["tree"]["settings"]["globalIndent"] != nullptr)
@@ -30,66 +32,38 @@ template <class T> class Tree
 
         std::unordered_map<int, std::shared_ptr<Node<T>>> nodes;
 
-        struct nodeChildren
+        struct childrenIndex
         {
             int left, right;
         };
 
-
         // Extract nodes
-        std::unordered_map<int, nodeChildren> childrenIndexes;
+        std::unordered_map<int, childrenIndex> childrenIndexes;
         for (auto &nodeData : treeJson["nodes"])
         {
             std::shared_ptr<Node<T>> newNode{std::make_shared<Node<T>>(nodeData)};
 
             std::cout << *newNode << std::endl;
 
-            if (nodeData.contains("isRoot"))
+            if (nodeData.contains("isRoot") && nodeData.at("isRoot").is_boolean() && nodeData.at("isRoot"))
             {
-                if (nodeData.at("isRoot").is_boolean())
-                {
-                    if (nodeData.at("isRoot"))
-                    {
-                        setRoot(newNode);
-                        _size++;
-                    }
-                }
+                setRoot(newNode);
+                _size++;
             }
 
             nodes[nodeData["treeIndex"]] = newNode;
 
             // Store index of parents. If no parent, index is -1
-            if (nodeData.contains("leftIdx"))
-            {
-                if (nodeData["leftIdx"].is_number_integer())
-                    childrenIndexes[nodeData["treeIndex"]].left = nodeData["leftIdx"];
-                else
-                    childrenIndexes[nodeData["treeIndex"]].left = -1;
-            }
+            if (nodeData.contains("leftIdx") && nodeData["leftIdx"].is_number_integer())
+                childrenIndexes[nodeData["treeIndex"]].left = nodeData["leftIdx"];
             else
-            {
                 childrenIndexes[nodeData["treeIndex"]].left = -1;
-            }
 
-            if (nodeData.contains("rightIdx"))
-            {
-                if (nodeData["rightIdx"].is_number_integer())
-                    childrenIndexes[nodeData["treeIndex"]].right = nodeData["rightIdx"];
-                else
-                    childrenIndexes[nodeData["treeIndex"]].right = -1;
-            }
+            if (nodeData.contains("rightIdx") && nodeData["rightIdx"].is_number_integer())
+                childrenIndexes[nodeData["treeIndex"]].right = nodeData["rightIdx"];
             else
-            {
                 childrenIndexes[nodeData["treeIndex"]].right = -1;
-            }
         }
-
-        // For testing - printing out all nodeindexes
-        for (auto idx : childrenIndexes){
-            std::cout << "[" << idx.second.left << "] <- [" << idx.first << "] -> [" << idx.second.right << "]" << std::endl;
-        }
-
-
 
         for (auto [index, node] : nodes)
         {
@@ -97,8 +71,6 @@ template <class T> class Tree
             // Get index of parents
             int leftChildIdx = childrenIndexes[index].left;
             int rightChildIdx = childrenIndexes[index].right;
-
-            std::cout << *node << std::endl;
 
             // Add parents if they exist
             if (leftChildIdx != -1)
@@ -130,7 +102,7 @@ template <class T> class Tree
 
     void setRoot(std::shared_ptr<Node<T>> n)
     {
-        if(_root)
+        if (_root)
             _root->setRootFlag(false);
 
         _root = n;
@@ -158,44 +130,40 @@ template <class T> class Tree
         }
         else
         {
-
             traverseDFS(_root.get(), [index, &prevIndex, &removedData](Node<T> *node) {
-                if (node->leftPtr())
+                if (node->leftChild() && node->leftChild()->getIdx() == index)
                 {
-                    if (node->leftPtr()->getIdx() == index)
+                    removedData = *node->leftChild()->getData();
+                    if (node->leftChild()->isLeaf())
                     {
-                        removedData = *node->leftPtr()->getData();
-                        if (node->leftPtr()->isLeaf())
-                        {
-                            node->setLeft(nullptr);
-                        }
-                        else
-                        {
-                            T dummy("Dummy", std::to_string(DummyId()));
-                            node->leftPtr()->setData(dummy);
-                        }
-                        return;
+                        node->setLeft(nullptr);
                     }
+                    else
+                    {
+                        T dummy("Dummy", std::to_string(DummyId()));
+                        node->leftChild()->setData(dummy);
+                    }
+                    return;
                 }
-                if (node->rightPtr())
+
+                if (node->rightChild() && node->rightChild()->getIdx() == index)
                 {
-                    if (node->rightPtr()->getIdx() == index)
+
+                    removedData = *node->rightChild()->getData();
+                    if (node->rightChild()->isLeaf())
                     {
-                        removedData = *node->rightPtr()->getData();
-                        if (node->rightPtr()->isLeaf())
-                        {
-                            node->setRight(nullptr);
-                        }
-                        else
-                        {
-                            T dummy("Dummy", std::to_string(DummyId()));
-                            node->rightPtr()->setData(dummy);
-                        }
-                        return;
+                        node->setRight(nullptr);
                     }
+                    else
+                    {
+                        T dummy("Dummy", std::to_string(DummyId()));
+                        node->rightChild()->setData(dummy);
+                    }
+                    return;
                 }
             });
         }
+
         return removedData;
     }
 
@@ -227,7 +195,7 @@ template <class T> class Tree
         return *_root;
     }
 
-    [[nodiscard]] Node<T> &getRoot()
+    [[nodiscard]]   Node<T> &getRoot()
     {
         return *_root;
     }
@@ -245,11 +213,11 @@ template <class T> class Tree
 
         func(nextNode);
 
-        if (nextNode->leftPtr())
-            traverseDFS(nextNode->leftPtr(), func);
+        if (nextNode->leftChild())
+            traverseDFS(nextNode->leftChild(), func);
 
-        if (nextNode->rightPtr())
-            traverseDFS(nextNode->rightPtr(), func);
+        if (nextNode->rightChild())
+            traverseDFS(nextNode->rightChild(), func);
     }
 
     void traverseBFS(const std::function<void(Node<T> *)> &func)
@@ -263,10 +231,10 @@ template <class T> class Tree
         {
             Node<T> *currentNode = Q.front();
 
-            if (currentNode->leftPtr())
-                Q.push(currentNode->leftPtr());
-            if (currentNode->rightPtr())
-                Q.push(currentNode->rightPtr());
+            if (currentNode->leftChild())
+                Q.push(currentNode->leftChild());
+            if (currentNode->rightChild())
+                Q.push(currentNode->rightChild());
 
             func(currentNode);
 
@@ -274,11 +242,14 @@ template <class T> class Tree
         }
     }
 
-    void listOfNodes()
+    std::vector<Node<T>*> listOfNodes()
     {
-        if (!_root)
-            return;
-        traverseDFS(_root.get(), [](Node<T> *node) { std::cout << *node->viewData() << std::endl; });
+        std::vector<Node<T>*> allNodes;
+
+        if (_root)
+            traverseDFS(_root.get(), [&allNodes](Node<T> *node) {  allNodes.push_back(node); });
+
+        return allNodes;
     }
 
     Node<T> *findNodeByIdx(unsigned int index)
@@ -320,7 +291,7 @@ template <class T> class Tree
     void addParent(int childIndex, std::shared_ptr<Node<T>> node)
     {
         Node<T> &childNode = findNodeByIdx(childIndex);
-        if (childNode.addParent(std::shared_ptr<Node<T>>(node)))
+        if (childNode.addChild(std::shared_ptr<Node<T>>(node)))
             ++_size;
     }
 

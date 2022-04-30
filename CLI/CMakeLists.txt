@@ -1,8 +1,4 @@
 
-
-#link_libraries(FamilyTree_LIB)
-
-
 add_executable(FamilyTree_CLI
         CLI_main.cpp CLI_functions.h)
 
@@ -14,12 +10,3 @@ target_include_directories(FamilyTree_CLI
         )
 
 target_link_libraries(FamilyTree_CLI PUBLIC FamilyTree_LIB)
-
-
-
-
-
-
-
-
-#target_link_libraries(Forfedrediagram_CLI include src)
