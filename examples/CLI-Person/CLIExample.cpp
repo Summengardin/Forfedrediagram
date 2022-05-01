@@ -2,11 +2,11 @@
 #include <memory>
 
 #include "CLI_functions.h"
-#include "Menu.hpp"
-#include "Node.hpp"
-#include "Person.hpp"
-#include "Tree.hpp"
-#include "commonFunctions.hpp"
+#include "menu.hpp"
+#include "node.hpp"
+#include "person.hpp"
+#include "tree.hpp"
+#include "CLIhelpers.hpp"
 
 int main()
 {

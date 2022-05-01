@@ -1,4 +1,4 @@
-#include "Person.hpp"
+#include "include/person.hpp"
 
 Person::Person(const std::string &firstName, const std::string &lastName)
 {

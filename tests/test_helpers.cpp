@@ -4,7 +4,7 @@
 #include <string>
 
 #include "catch.hpp"
-#include "commonFunctions.hpp"
+#include "helpers.hpp"
 
 TEST_CASE("Split string"){
     std::string string1 = "22-06-1999";

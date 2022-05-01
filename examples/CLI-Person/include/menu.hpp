@@ -20,7 +20,7 @@
 #include <variant>
 #include <vector>
 
-#include "commonFunctions.hpp"
+#include "helpers.hpp"
 
 class Menu
 {
@@ -63,7 +63,7 @@ class Menu
 
     std::string _title;
     std::vector<MenuItem> _menuItems;
-    bool _loop;
+    bool _loop{true};
 };
 
 // FORFEDREDIAGRAM_MENU_HPP

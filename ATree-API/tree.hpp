@@ -10,8 +10,8 @@
 #include <utility>
 #include <vector>
 
-#include "Node.hpp"
-#include "commonFunctions.hpp"
+#include "node.hpp"
+#include "helpers.hpp"
 #include "json.hpp"
 
 using json = nlohmann::json;

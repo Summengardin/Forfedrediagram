@@ -1,12 +1,9 @@
 #include <memory>
 
-
-#include "../CLI/include/Menu.hpp"
-#include "Node.hpp"
-#include "Person.hpp"
-#include "Tree.hpp"
-#include "commonFunctions.hpp"
-
+#include "node.hpp"
+#include "person.hpp"
+#include "tree.hpp"
+#include "helpers.hpp"
 
 int main() {
     Tree<Person> familyTree;

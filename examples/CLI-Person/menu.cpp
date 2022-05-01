@@ -1,4 +1,4 @@
-#include "Menu.hpp"
+#include "include/menu.hpp"
 
 Menu::Menu(std::string title, std::vector<MenuItem> menuItems, bool loop)
     : _title(std::move(title)), _menuItems(std::move(menuItems)), _loop(loop)
