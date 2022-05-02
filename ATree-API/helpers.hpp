@@ -27,7 +27,7 @@ inline std::string getString(const std::string &prompt, bool allowEmpty = false)
 
     while (!allowEmpty && input.empty())
     {
-        std::cout << "\nVerdien kan ikke være tom, prøv igjen:" << std::endl;
+        std::cout << "\nThis field may not be empty, try again:" << std::endl;
         std::getline(std::cin, input);
     }
 

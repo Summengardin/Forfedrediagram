@@ -38,34 +38,28 @@ Person::Person(const json &jsonFile)
 
 json Person::toJson() const
 {
-    json j = json{{"firstName", _firstName},
-                  {"lastName", _lastName},
-                  {"middleName", _middleName},
-                  {"birth", _birth.toString()},
-                  {"death", _death.toString()},
-                  {"gender", getGenderString()},
-                  {"isAlive", _isAlive}};
+    // clang-format off
+    json j = json{
+                {"firstName", _firstName},
+                {"lastName", _lastName},
+                {"middleName", _middleName},
+                {"birth", _birth.toString()},
+                {"death", _death.toString()},
+                {"gender", getGenderString()},
+                {"isAlive", _isAlive}
+            };
+    // clang-format on
     return j;
 }
 
-const std::string &Person::getFirstName() const
-{
-    return _firstName;
-}
+const std::string &Person::getFirstName() const { return _firstName; }
 
-const std::string &Person::getMiddleName() const
-{
-    return _middleName;
-}
+const std::string &Person::getMiddleName() const { return _middleName; }
 
-const std::string &Person::getLastName() const
-{
-    return _lastName;
-}
+const std::string &Person::getLastName() const { return _lastName; }
 
 std::string Person::getFullName() const
 {
-
     std::ostringstream ssPerson;
 
     ssPerson << (_firstName.empty() ? "" : (_firstName + " "));
@@ -75,25 +69,13 @@ std::string Person::getFullName() const
     return ssPerson.str();
 }
 
-const Date &Person::getBirth() const
-{
-    return _birth;
-}
+const Date &Person::getBirth() const { return _birth; }
 
-const Date &Person::getDeath() const
-{
-    return _death;
-}
+const Date &Person::getDeath() const { return _death; }
 
-int Person::getAge() const
-{
-    return Date::yearsBetween(today(), _birth);
-}
+int Person::getAge() const { return Date::yearsBetween(Date::today(), _birth); }
 
-Person::GenderType Person::getGender() const
-{
-    return _gender;
-}
+Person::GenderType Person::getGender() const { return _gender; }
 
 std::string Person::getGenderString() const
 {
@@ -110,40 +92,19 @@ std::string Person::getGenderString() const
     }
 }
 
-bool Person::isAlive() const
-{
-    return (!_isAlive);
-}
+bool Person::isAlive() const { return (!_isAlive); }
 
-bool Person::contains(const std::string &str) const
-{
-    return (getFullName().find(str) != std::string::npos);
-}
+bool Person::contains(const std::string &str) const { return (getFullName().find(str) != std::string::npos); }
 
-void Person::setFirstName(const std::string &firstName)
-{
-    _firstName = firstName;
-}
+void Person::setFirstName(const std::string &firstName) { _firstName = firstName; }
 
-void Person::setMiddleName(const std::string &middleName)
-{
-    _middleName = middleName;
-}
+void Person::setMiddleName(const std::string &middleName) { _middleName = middleName; }
 
-void Person::setLastName(const std::string &lastName)
-{
-    _lastName = lastName;
-}
+void Person::setLastName(const std::string &lastName) { _lastName = lastName; }
 
-void Person::setBirth(const std::string &birth)
-{
-    _birth = Date(birth);
-}
+void Person::setBirth(const std::string &birth) { _birth = Date(birth); }
 
-void Person::setDeath(const std::string &death)
-{
-    _death = Date(death);
-}
+void Person::setDeath(const std::string &death) { _death = Date(death); }
 
 void Person::setGender(const std::string &gender)
 {
@@ -157,10 +118,7 @@ void Person::setGender(const std::string &gender)
         _gender = GenderType::unknown;
 }
 
-void Person::setAliveFlag(bool alive)
-{
-    _isAlive = alive;
-}
+void Person::setAliveFlag(bool alive) { _isAlive = alive; }
 
 bool Person::validateName(const std::string &str)
 {

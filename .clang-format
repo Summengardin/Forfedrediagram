@@ -10,13 +10,13 @@ BasedOnStyle: Microsoft
 #AllowAllParametersOfDeclarationOnNextLine: false
 #AllowShortBlocksOnASingleLine: Never
 #AllowShortCaseLabelsOnASingleLine: false
-#AllowShortFunctionsOnASingleLine: None
+AllowShortFunctionsOnASingleLine: All
 #AllowShortIfStatementsOnASingleLine: Always
 #AllowShortLambdasOnASingleLine: None
 #AllowShortLoopsOnASingleLine: true
 #AlwaysBreakAfterReturnType: None
 #AlwaysBreakTemplateDeclarations: Yes
-#BreakBeforeBraces: Custom
+BreakBeforeBraces: Custom
 #BraceWrapping:
 #  AfterCaseLabel: false
 #  AfterClass: true

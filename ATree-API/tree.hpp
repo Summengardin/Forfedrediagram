@@ -10,9 +10,9 @@
 #include <utility>
 #include <vector>
 
-#include "node.hpp"
 #include "helpers.hpp"
 #include "json.hpp"
+#include "node.hpp"
 
 using json = nlohmann::json;
 
@@ -20,6 +20,13 @@ template <class T> class Tree
 {
 
   public:
+    enum DFSOrder
+    {
+        PRE,
+        IN,
+        POST
+    };
+
     void fillFromJson(const json &treeJson)
     {
         // Fill tree from json-file. Must be compatible, preferably exported from tree
@@ -86,17 +93,19 @@ template <class T> class Tree
         }
     }
 
-    [[nodiscard]] json toJson() const
+    [[nodiscard]] json toJson()
     {
         json nodes;
-        _root->traverseDFS([&nodes](Node<T> *node) { nodes.push_back(node->toJson()); });
+        traverseDFS(getRoot(), [&nodes](Node<T> *node) { nodes.push_back(node->toJson()); });
 
-        COM::debug("All nodes ok");
-        json j = json{{
-                          "nodes",
-                          nodes,
-                      },
-                      {"tree", {{"settings", {{"globalIndent", globalIndent}}}}}};
+        // clang-format off
+        json j = json{
+                    {"nodes", nodes},
+                    {"tree", {
+                        {"settings", {
+                            {"globalIndent", globalIndent}
+                                    }}}}};
+        // clang-format on
         return j;
     }
 
@@ -113,10 +122,12 @@ template <class T> class Tree
     {
         T removedData;
 
-        size_t prevIndex = _root->getIdx();
+        size_t prevIndex = _root->getIndex();
 
         if (prevIndex == index)
         {
+            // If root has index searched for
+
             removedData = *_root->getData();
             if (_root->isLeaf())
             {
@@ -131,7 +142,7 @@ template <class T> class Tree
         else
         {
             traverseDFS(_root.get(), [index, &prevIndex, &removedData](Node<T> *node) {
-                if (node->leftChild() && node->leftChild()->getIdx() == index)
+                if (node->leftChild() && node->leftChild()->getIndex() == index)
                 {
                     removedData = *node->leftChild()->getData();
                     if (node->leftChild()->isLeaf())
@@ -146,7 +157,7 @@ template <class T> class Tree
                     return;
                 }
 
-                if (node->rightChild() && node->rightChild()->getIdx() == index)
+                if (node->rightChild() && node->rightChild()->getIndex() == index)
                 {
 
                     removedData = *node->rightChild()->getData();
@@ -167,57 +178,55 @@ template <class T> class Tree
         return removedData;
     }
 
-    bool isEmpty()
-    {
-        return !_root;
-    }
+    [[nodiscard]] bool isEmpty() const { return !_root; }
 
-    [[nodiscard]] const Node<T> &viewNode(unsigned int index) const
-    {
-        // TODO
-        return *_root;
-    }
+    // TODO
+    [[nodiscard]] T &getDataAt(unsigned int index) { return *_root->getData(); }
 
-    [[nodiscard]] T &getDataAt(unsigned int index)
-    {
-        // TODO
-        return *_root->getData();
-    }
+    // TODO
+    [[nodiscard]] const T &getDataAt(unsigned int index) const { return *_root->getData(); }
 
-    [[nodiscard]] const T &viewDataAt(unsigned int index) const
-    {
-        // TODO
-        return *_root->getData();
-    }
+    [[nodiscard]] const Node<T> *getRoot() const { return _root.get(); }
 
-    [[nodiscard]] Node<T> &viewRoot()
-    {
-        return *_root;
-    }
+    [[nodiscard]] Node<T> *getRoot() { return _root.get(); }
 
-    [[nodiscard]]   Node<T> &getRoot()
+    void traverseDFS(Node<T> *node, const std::function<void(Node<T> *)> &func, DFSOrder order = DFSOrder::PRE)
     {
-        return *_root;
-    }
-
-    [[nodiscard]] const Node<T> &viewRoot() const
-    {
-        return *_root;
-    }
-
-    void traverseDFS(Node<T> *nextNode, const std::function<void(Node<T> *)> &func)
-    {
-
-        if (!_root)
+        if (!node)
             return;
 
-        func(nextNode);
+        if (order == DFSOrder::PRE)
+            func(node);
 
-        if (nextNode->leftChild())
-            traverseDFS(nextNode->leftChild(), func);
+        traverseDFS(node->leftChild(), func, order);
 
-        if (nextNode->rightChild())
-            traverseDFS(nextNode->rightChild(), func);
+        if (order == DFSOrder::IN)
+            func(node);
+
+        traverseDFS(node->rightChild(), func, order);
+
+        if (order == DFSOrder::POST)
+            func(node);
+    }
+
+    void traverseDFSWithDepth(Node<T> *node, const std::function<void(Node<T> *, int)> &func,
+                              DFSOrder order = DFSOrder::PRE, int depth = 0)
+    {
+        if (!node)
+            return;
+
+        if (order == DFSOrder::PRE)
+            func(node, depth);
+
+        traverseDFSWithDepth(node->leftChild(), func, order, depth + 1);
+
+        if (order == DFSOrder::IN)
+            func(node, depth);
+
+        traverseDFSWithDepth(node->rightChild(), func, order, depth + 1);
+
+        if (order == DFSOrder::POST)
+            func(node, depth);
     }
 
     void traverseBFS(const std::function<void(Node<T> *)> &func)
@@ -242,25 +251,25 @@ template <class T> class Tree
         }
     }
 
-    std::vector<Node<T>*> listOfNodes()
+    std::vector<Node<T> *> listAllNodes()
     {
-        std::vector<Node<T>*> allNodes;
+        std::vector<Node<T> *> allNodes;
 
         if (_root)
-            traverseDFS(_root.get(), [&allNodes](Node<T> *node) {  allNodes.push_back(node); });
+            traverseDFS(getRoot(), [&allNodes](Node<T> *node) { allNodes.push_back(node); });
 
         return allNodes;
     }
 
     Node<T> *findNodeByIdx(unsigned int index)
     {
-        if (_root->getIdx() == index)
+        if (_root->getIndex() == index)
         {
             return _root.get();
         }
         Node<T> *found = nullptr;
-        traverseDFS(_root.get(), [&found, index](Node<T> *node) {
-            if (node->getIdx() == index)
+        traverseDFS(getRoot(), [&found, index](Node<T> *node) {
+            if (node->getIndex() == index)
             {
                 found = node;
                 return;
@@ -272,7 +281,9 @@ template <class T> class Tree
 
     std::vector<Node<T> *> findNodeByString(const std::string &str)
     {
-        // Will return a vector with pointers to all nodes containing a string = str
+        // Will return a vector with pointers to all nodes containing str
+        // This will require the node-data to have a member-function "contains"
+        // which checks for str in the data
         std::vector<Node<T> *> nodes;
         if (!_root)
         {
@@ -280,7 +291,7 @@ template <class T> class Tree
         }
 
         Node<T> *found = nullptr;
-        _root->traverseDFS([&found, str, &nodes](Node<T> *node) {
+        traverseDFS(getRoot(), [&found, str, &nodes](Node<T> *node) {
             if (node->getData()->contains(str))
                 nodes.push_back(node);
         });

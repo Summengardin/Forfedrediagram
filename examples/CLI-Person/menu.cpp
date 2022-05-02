@@ -5,30 +5,15 @@ Menu::Menu(std::string title, std::vector<MenuItem> menuItems, bool loop)
 {
 }
 
-auto Menu::getTitle() const noexcept
-{
-    return _title;
-}
+auto Menu::getTitle() const noexcept { return _title; }
 
-bool Menu::isEmpty() const
-{
-    return _menuItems.empty();
-}
+bool Menu::isEmpty() const { return _menuItems.empty(); }
 
-size_t Menu::size() const
-{
-    return _menuItems.size();
-}
+size_t Menu::size() const { return _menuItems.size(); }
 
-void Menu::setTitle(const std::string &t)
-{
-    _title = t;
-}
+void Menu::setTitle(const std::string &t) { _title = t; }
 
-void Menu::setLoop(bool loop)
-{
-    _loop = loop;
-}
+void Menu::setLoop(bool loop) { _loop = loop; }
 
 void Menu::show()
 {

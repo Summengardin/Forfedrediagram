@@ -13,7 +13,22 @@ using json = nlohmann::json;
 template <class T> class Node
 {
   public:
-    explicit Node(const json &jsonFile)
+    enum DFSOrder
+    {
+        IN,
+        PRE,
+        POST
+    };
+
+    explicit Node(const json &jsonFile) { this->fromJson(jsonFile); }
+
+    explicit Node(const T &p)
+    {
+        _data = std::make_shared<T>(p);
+        _treeIndex = TreeId();
+    }
+
+    void fromJson(const json &jsonFile)
     {
         _data = std::make_shared<T>(jsonFile["data"]);
 
@@ -28,22 +43,16 @@ template <class T> class Node
         }
     }
 
-    explicit Node(const T &p)
-    {
-        _data = std::make_shared<T>(p);
-        _treeIndex = TreeId();
-    }
-
     [[nodiscard]] json toJson() const
     {
         int leftIndex, rightIndex;
-        if (_leftChildNode)
-            leftIndex = _leftChildNode->_treeIndex;
+        if (_leftChild)
+            leftIndex = _leftChild->_treeIndex;
         else
             leftIndex = -1;
 
-        if (_rightChildNode)
-            rightIndex = _rightChildNode->_treeIndex;
+        if (_rightChild)
+            rightIndex = _rightChild->_treeIndex;
         else
             rightIndex = -1;
 
@@ -55,156 +64,61 @@ template <class T> class Node
         return j;
     }
 
-    void setData(const T &p)
-    {
-        _data = std::make_shared<T>(p);
-    }
+    void setData(const T &p) { _data = std::make_shared<T>(p); }
 
     bool addChild(std::shared_ptr<Node> n)
     {
         // Returns true if successfully added child, false if not.
 
-        if (!_leftChildNode)
-            _leftChildNode = n;
-        else if (!_rightChildNode)
-            _rightChildNode = n;
+        if (!_leftChild)
+            _leftChild = n;
+        else if (!_rightChild)
+            _rightChild = n;
         else
             return false;
-
         return true;
     }
 
     bool addChild(const T &p)
     {
         // Returns true if successfully added child, false if not.
-
-        if (!_leftChildNode)
-        {
-            _leftChildNode = std::make_shared<Node>(Node(p));
-            return true;
-        }
-        else if (!_rightChildNode)
-        {
-            _rightChildNode = std::make_shared<Node>(Node(p));
-            return true;
-        }
-
-        return false;
+        auto child = std::make_shared<Node>(Node(p));
+        return addChild(child);
     }
 
-    void traverseDFS(const std::function<void(Node *)> &f)
-    {
-        // DepthFirst - PreOrder
+    void setRootFlag(bool rootFlag) { _isRoot = rootFlag; }
 
-        f(this);
+    void setLeft(std::shared_ptr<Node> node) { _leftChild = node; }
 
-        if (_leftChildNode)
-            _leftChildNode->traverseDFS(f);
+    void setRight(std::shared_ptr<Node> node) { _rightChild = node; }
 
-        if (_rightChildNode)
-            _rightChildNode->traverseDFS(f);
-    }
+    void updateIndex() { _treeIndex = TreeId(); }
 
-    void traverseDFSWithDepth(const std::function<void(Node *, int)> &f, int depth = 0)
-    {
-        // DepthFirst - PreOrder. Used for printing with depth information
+    [[nodiscard]] unsigned int getIndex() const { return _treeIndex; }
 
-        f(this, depth);
+    [[nodiscard]] const T *getData() const { return _data.get(); }
 
-        if (_leftChildNode)
-            _leftChildNode->traverseDFSWithDepth(f, depth + 1);
+    [[nodiscard]] T *getData() { return _data.get(); }
 
-        if (_rightChildNode)
-            _rightChildNode->traverseDFSWithDepth(f, depth + 1);
-    }
+    [[nodiscard]] const Node *leftChild() const { return _leftChild.get(); }
 
-    void traverseBFS(const std::function<void(Node *)> &f)
-    {
-    }
+    [[nodiscard]] Node *leftChild() { return _leftChild.get(); }
 
-    void setRootFlag(bool rootFlag)
-    {
-        _isRoot = rootFlag;
-    }
+    [[nodiscard]] const Node *rightChild() const { return _rightChild.get(); }
 
-    void setLeft(std::shared_ptr<Node> node)
-    {
-        _leftChildNode = node;
-    }
+    [[nodiscard]] Node *rightChild() { return _rightChild.get(); }
 
-    void setRight(std::shared_ptr<Node> node)
-    {
-        _rightChildNode = node;
-    }
+    [[nodiscard]] std::shared_ptr<Node> leftChildOwnership() { return _leftChild; }
 
-    void setIdx(unsigned int index)
-    {
-        _treeIndex = index;
-    }
+    [[nodiscard]] std::shared_ptr<Node> rightChildOwnership() { return _rightChild; }
 
-    [[nodiscard]] unsigned int getIdx() const
-    {
-        return _treeIndex;
-    }
+    [[nodiscard]] bool isLeaf() const { return (!_leftChild && !_rightChild); }
 
-    [[nodiscard]] const T *viewData() const
-    {
-        return _data.get();
-    }
-
-    [[nodiscard]] T *getData()
-    {
-        return _data.get();
-    }
-
-    [[nodiscard]] Node &getLeft()
-    {
-        return *_leftChildNode;
-    }
-
-    [[nodiscard]] const Node &viewLeft() const
-    {
-        return *_leftChildNode;
-    }
-
-    [[nodiscard]] Node *leftChild() const
-    {
-        return _leftChildNode.get();
-    }
-
-    [[nodiscard]] Node &getRight()
-    {
-        return *_rightChildNode;
-    }
-
-    [[nodiscard]] const Node &viewRight() const
-    {
-        return *_rightChildNode;
-    }
-
-    [[nodiscard]] Node *rightChild() const
-    {
-        return _rightChildNode.get();
-    }
-
-    [[nodiscard]] bool isLeaf() const
-    {
-        return (!_leftChildNode && !_rightChildNode);
-    }
-
-    [[nodiscard]] bool isRoot() const
-    {
-        return _isRoot;
-    }
-
-    std::pair<std::shared_ptr<Node>, std::shared_ptr<Node>> getParents()
-    {
-        return {_leftChildNode, _rightChildNode};
-    };
+    [[nodiscard]] bool isRoot() const { return _isRoot; }
 
     friend std::ostream &operator<<(std::ostream &os, Node &n)
     {
-        os << "[Node] Idx: " << n.getIdx() << ", contains: " << *n.viewData();
+        os << "[Node] Idx: " << n.getIndex() << ", contains: " << *n.getData();
         return os;
     }
 
@@ -212,8 +126,8 @@ template <class T> class Node
     bool _isRoot{false};
     unsigned int _treeIndex;
     std::shared_ptr<T> _data;
-    std::shared_ptr<Node> _leftChildNode;
-    std::shared_ptr<Node> _rightChildNode;
+    std::shared_ptr<Node> _leftChild;
+    std::shared_ptr<Node> _rightChild;
 };
 
 // FORFEDREDIAGRAM_NODE_HPP

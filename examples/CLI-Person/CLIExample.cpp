@@ -2,11 +2,11 @@
 #include <memory>
 
 #include "CLI_functions.h"
+#include "CLIhelpers.hpp"
 #include "menu.hpp"
 #include "node.hpp"
 #include "person.hpp"
 #include "tree.hpp"
-#include "CLIhelpers.hpp"
 
 int main()
 {
@@ -32,7 +32,7 @@ int main()
     std::cout << "\n--------------------------------" << std::endl;
     std::cout << "|   Hello there family tree!   |" << std::endl;
     std::cout << "--------------------------------\n" << std::endl;
-    std::cout << "\nToday is " << today().toString() << "," << std::endl;
+    std::cout << "\nToday is " << Date::today().toString() << "," << std::endl;
     std::cout << "make it the best!" << std::endl;
 
     mainMenu.show();

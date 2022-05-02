@@ -98,7 +98,7 @@ void addPerson(Tree<Person> &tree)
         if (attemptCounter >= 2)
         {
             std::cout << "Do you need help? Here are all people listed in the tree" << std::endl;
-            for (const auto &node : tree.listOfNodes())
+            for (const auto &node : tree.listAllNodes())
             {
                 std::cout << *node->getData() << std::endl;
             }
@@ -151,7 +151,7 @@ void removePerson(Tree<Person> &tree)
     }
     else if (matchingPeople.size() == 1)
     {
-        tree.removeNode(matchingPeople[0]->getIdx());
+        tree.removeNode(matchingPeople[0]->getIndex());
     }
     else
     {
@@ -162,11 +162,11 @@ void removePerson(Tree<Person> &tree)
 
         for (auto &node : matchingPeople)
         {
-            std::cout << node->getIdx();
+            std::cout << node->getIndex();
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
                                (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
-            peopleMenu.append({personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIdx()); }});
+            peopleMenu.append({personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIndex()); }});
         }
         peopleMenu.show();
     }
@@ -189,7 +189,7 @@ void showPeople(Tree<Person> &tree)
             auto currentPerson = node->getData();
 
             // Name [index]
-            ssPerson << "\n" << currentPerson->getFullName() << " [" << node->getIdx() << "]";
+            ssPerson << "\n" << currentPerson->getFullName() << " [" << node->getIndex() << "]";
             // B: Birth
             auto birthValid = currentPerson->getBirth().isValid();
             if (birthValid)
@@ -206,10 +206,10 @@ void showPeople(Tree<Person> &tree)
             if (node->leftChild() || node->rightChild())
             {
                 if (node->leftChild())
-                    ssPerson << "   " << node->getLeft().getData()->getFullName() << " [" << node->leftChild()->getIdx()
+                    ssPerson << "   " << node->rightChild()->getData()->getFullName() << " [" << node->leftChild()->getIndex()
                              << "]";
                 if (node->rightChild())
-                    ssPerson << "   " << node->getRight().getData()->getFullName() << " [" << node->rightChild()->getIdx()
+                    ssPerson << "   " << node->rightChild()->getData()->getFullName() << " [" << node->rightChild()->getIndex()
                              << "]";
             }
             else
@@ -301,7 +301,7 @@ void showTree(Tree<Person> &tree)
     }
 
     int indent = 4;
-    tree.getRoot().traverseDFSWithDepth([indent](Node<Person> *node, int depth) {
+    tree.traverseDFSWithDepth(tree.getRoot(), [indent](Node<Person> *node, int depth) {
         for (int i = 0; i < depth; ++i)
         {
             for (int space = 0; space < indent; ++space)
@@ -309,7 +309,7 @@ void showTree(Tree<Person> &tree)
                 std::cout << " ";
             }
         }
-        std::cout << *node->viewData() << std::endl;
+        std::cout << *node->getData() << std::endl;
     });
 }
 } // namespace CLI

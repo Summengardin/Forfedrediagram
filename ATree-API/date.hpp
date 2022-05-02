@@ -96,6 +96,19 @@ class Date
             return 0;
     }
 
+    static Date today(){
+        auto nowPtr = std::chrono::system_clock::now();
+        std::time_t now = std::chrono::system_clock::to_time_t(nowPtr);
+
+
+        std::tm localTime = *std::localtime(&now);
+        auto day = localTime.tm_mday;
+        auto month = localTime.tm_mon + 1;
+        auto year = localTime.tm_year + 1900;
+
+        return {day, month, year};
+    }
+
   protected:
     int _day = 0;
     int _month = 0;
@@ -123,6 +136,8 @@ class Today : public Date
         _day = localTime.tm_mday;
         _month = localTime.tm_mon + 1;
         _year = localTime.tm_year + 1900;
+
+
     }
 };
 
