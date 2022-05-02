@@ -27,7 +27,7 @@ int main() {
     Node<Person> momNode = Node(mom);
 
     familyTree.addNode(std::make_shared<Node<Person>>(root));
-    familyTree.addParent(1, std::make_shared<Node<Person>>(momNode));
+    familyTree.addChild(1, std::make_shared<Node<Person>>(momNode));
     familyTree.addNode(std::make_shared<Node<Person>>(dad));
 
 

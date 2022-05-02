@@ -56,7 +56,7 @@ template <class T> class Node
         else
             rightIndex = -1;
 
-        json j = json{{"_data", _data->toJson()},
+        json j = json{{"data", _data->toJson()},
                       {"treeIndex", _treeIndex},
                       {"leftIdx", leftIndex},
                       {"rightIdx", rightIndex},

@@ -190,6 +190,8 @@ template <class T> class Tree
 
     [[nodiscard]] Node<T> *getRoot() { return _root.get(); }
 
+    [[nodiscard]] std::shared_ptr<Node<T>> getRootOwnership() { return _root; }
+
     void traverseDFS(Node<T> *node, const std::function<void(Node<T> *)> &func, DFSOrder order = DFSOrder::PRE)
     {
         if (!node)
@@ -299,11 +301,10 @@ template <class T> class Tree
         return nodes;
     }
 
-    void addParent(int childIndex, std::shared_ptr<Node<T>> node)
+    void addChild(int nodeIndex, std::shared_ptr<Node<T>> node)
     {
-        Node<T> &childNode = findNodeByIdx(childIndex);
-        if (childNode.addChild(std::shared_ptr<Node<T>>(node)))
-            ++_size;
+        Node<T> childNode = findNodeByIdx(nodeIndex);
+        childNode->addChild(std::shared_ptr<Node<T>>(node));
     }
 
     void addNode(std::shared_ptr<Node<T>> node)

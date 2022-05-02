@@ -3,21 +3,23 @@
 #include <iostream>
 
 #include "catch.hpp"
-#include "Person.hpp"
+#include "person.hpp"
 
 TEST_CASE("Getters Person"){
-    std::string fName = "Martin";
-    std::string lName = "Simengard";
+    std::string firstName = "For";
+    std::string middleName = "Mellom";
+    std::string lastName = "Etter";
+    Date birth{22,6,1999};
 
     enum gender{
         unknown,
         male,
         female
     };
-    Person Martin = Person(fName, lName);
+    Person Martin = Person(firstName, lastName);
 
-    REQUIRE(fName == Martin.getFirstName());
-    REQUIRE(lName == Martin.getLastName());
+    REQUIRE(firstName == Martin.getFirstName());
+    REQUIRE(lastName == Martin.getLastName());
 }
 
 TEST_CASE("Get _age"){

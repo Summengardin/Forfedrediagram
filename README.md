@@ -14,45 +14,47 @@ Example .JSON-file:
  {
     "nodes": [
         {
-            "_data": {
+            "data": {
                 "birth": "22-06-1999",
                 "death": null,
                 "firstName": "Me",
                 "middleName": "Myself",
                 "lastName": "Fatherson",
-                "age" : 22,
-                "isDead" : false
+                "isAlive" : false
             },
-            "treeIdx" : 1,
-            "leftIdx": 2,
-            "rightIdx": 3
+            "treeIndex" : 1,
+            "leftIndex": 2,
+            "rightIndex": 3,
+            "isRoot": true
         },
         {
-            "_data": {
+            "data": {
                 "birth": "11-03-1968",
                 "death": null,
                 "firstName": "Mom",
                 "lastName": "Mother",
                 "age" : null,
-                "isDead" : false
+                "isAlive" : false
             },
-            "treeIdx" : 2,
-            "leftIdx": null,
-            "rightIdx": null
+            "treeIndex" : 2,
+            "leftIndex": null,
+            "rightIndex": null,
+            "isRoot": false
         },
         {
-            "_data": {
+            "data": {
                 "birth": "08-02-1965",
                 "death": null,
                 "firstName": "Dad",
                 "middleName": "Daddy",
                 "lastName": "Dadsen",
                 "age" : null,
-                "isDead" : false
+                "isAlive" : false
             },
-            "treeIdx" : 3,
-            "leftIdx": null,
-            "rightIdx": null
+            "treeIndex" : 3,
+            "leftIndex": null,
+            "rightIndex": null
+            // No "isRoot" property means isRoot = false
         },
         
     ],
