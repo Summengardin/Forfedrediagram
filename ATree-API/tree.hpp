@@ -303,8 +303,9 @@ template <class T> class Tree
 
     void addChild(int nodeIndex, std::shared_ptr<Node<T>> node)
     {
-        Node<T> childNode = findNodeByIdx(nodeIndex);
+        Node<T> *childNode = findNodeByIdx(nodeIndex);
         childNode->addChild(std::shared_ptr<Node<T>>(node));
+
     }
 
     void addNode(std::shared_ptr<Node<T>> node)
