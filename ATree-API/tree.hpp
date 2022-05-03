@@ -22,9 +22,9 @@ template <class T> class Tree
   public:
     enum DFSOrder
     {
-        PRE,
-        IN,
-        POST
+        PRE_ORDER,
+        IN_ORDER,
+        POST_ORDER,
     };
 
     void fillFromJson(const json &treeJson)
@@ -192,42 +192,42 @@ template <class T> class Tree
 
     [[nodiscard]] std::shared_ptr<Node<T>> getRootOwnership() { return _root; }
 
-    void traverseDFS(Node<T> *node, const std::function<void(Node<T> *)> &func, DFSOrder order = DFSOrder::PRE)
+    void traverseDFS(Node<T> *node, const std::function<void(Node<T> *)> &func, DFSOrder order = DFSOrder::PRE_ORDER)
     {
         if (!node)
             return;
 
-        if (order == DFSOrder::PRE)
+        if (order == DFSOrder::PRE_ORDER)
             func(node);
 
         traverseDFS(node->leftChild(), func, order);
 
-        if (order == DFSOrder::IN)
+        if (order == DFSOrder::IN_ORDER)
             func(node);
 
         traverseDFS(node->rightChild(), func, order);
 
-        if (order == DFSOrder::POST)
+        if (order == DFSOrder::POST_ORDER)
             func(node);
     }
 
     void traverseDFSWithDepth(Node<T> *node, const std::function<void(Node<T> *, int)> &func,
-                              DFSOrder order = DFSOrder::PRE, int depth = 0)
+                              DFSOrder order = DFSOrder::PRE_ORDER, int depth = 0)
     {
         if (!node)
             return;
 
-        if (order == DFSOrder::PRE)
+        if (order == DFSOrder::PRE_ORDER)
             func(node, depth);
 
         traverseDFSWithDepth(node->leftChild(), func, order, depth + 1);
 
-        if (order == DFSOrder::IN)
+        if (order == DFSOrder::IN_ORDER)
             func(node, depth);
 
         traverseDFSWithDepth(node->rightChild(), func, order, depth + 1);
 
-        if (order == DFSOrder::POST)
+        if (order == DFSOrder::POST_ORDER)
             func(node, depth);
     }
 
