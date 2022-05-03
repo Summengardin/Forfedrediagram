@@ -1,12 +1,10 @@
 #include <iostream>
-#include <memory>
 
-#include "CLI_functions.h"
-#include "CLIhelpers.hpp"
+#include "CLI_functions.hpp"
 #include "menu.hpp"
-#include "node.hpp"
 #include "person.hpp"
 #include "tree.hpp"
+
 
 int main()
 {

@@ -4,10 +4,9 @@
 #include <memory>
 
 #include "menu.hpp"
-#include "node.hpp"
 #include "person.hpp"
 #include "tree.hpp"
-#include "CLIhelpers.hpp"
+#include "node.hpp"
 
 namespace CLI
 {
@@ -38,7 +37,7 @@ void editPerson(Person &personToEdit)
     if (newLastName != "-")
         personToEdit.setLastName(newLastName);
 
-    auto newGender = COM::getString("Gender (male, female, other): ", true);
+    auto newGender = COM::getString("Gender (male, FEMALE, OTHER): ", true);
     if (newGender != "-")
         personToEdit.setGender(newGender);
 

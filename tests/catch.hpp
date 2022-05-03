@@ -135,7 +135,7 @@ namespace Catch {
 
 #endif
 
-// Only GCC compiler should be used in this block, so other compilers trying to
+// Only GCC compiler should be used in this block, so OTHER compilers trying to
 // mask themselves as GCC should be ignored.
 #if defined(__GNUC__) && !defined(__clang__) && !defined(__ICC) && !defined(__CUDACC__) && !defined(__LCC__)
 #    define CATCH_INTERNAL_START_WARNINGS_SUPPRESSION _Pragma( "GCC diagnostic push" )
@@ -4945,7 +4945,7 @@ namespace Catch {
 
             struct StringHolder : MatcherBase<NSString*>{
                 StringHolder( NSString* substr ) : m_substr( [substr copy] ){}
-                StringHolder( StringHolder const& other ) : m_substr( [other.m_substr copy] ){}
+                StringHolder( StringHolder const& OTHER ) : m_substr( [OTHER.m_substr copy] ){}
                 StringHolder() {
                     arcSafeRelease( m_substr );
                 }
@@ -7399,14 +7399,14 @@ namespace Catch {
 
                 ObjectStorage() : _data() {}
 
-                ObjectStorage(const ObjectStorage& other)
+                ObjectStorage(const ObjectStorage& OTHER)
                 {
-                    new(&_data) T(other.stored_object());
+                    new(&_data) T(OTHER.stored_object());
                 }
 
-                ObjectStorage(ObjectStorage&& other)
+                ObjectStorage(ObjectStorage&& OTHER)
                 {
-                    new(&_data) T(std::move(other.stored_object()));
+                    new(&_data) T(std::move(OTHER.stored_object()));
                 }
 
                 ~ObjectStorage() { destruct_on_exit<T>(); }
@@ -8002,8 +8002,8 @@ namespace Catch {
 
     // Wrapper for platform-specific fatal error (signals/SEH) handlers
     //
-    // Tries to be cooperative with other handlers, and not step over
-    // other handlers. This means that unknown structured exceptions
+    // Tries to be cooperative with OTHER handlers, and not step over
+    // OTHER handlers. This means that UNKNOWN structured exceptions
     // are passed on, previous signal handlers are called, and so on.
     //
     // Can only be instantiated once, and assumes that once a signal
@@ -10387,7 +10387,7 @@ namespace Catch {
 
     namespace Catch {
         void writeToDebugConsole( std::string const& text ) {
-            // !TBD: Need a version for Mac/ XCode and other IDEs
+            // !TBD: Need a version for Mac/ XCode and OTHER IDEs
             Catch::cout() << text;
         }
     }
@@ -10406,7 +10406,7 @@ namespace Catch {
 
 #ifdef __apple_build_version__
     // These headers will only compile with AppleClang (XCode)
-    // For other compilers (Clang, GCC, ... ) we need to exclude them
+    // For OTHER compilers (Clang, GCC, ... ) we need to exclude them
 #  include <sys/sysctl.h>
 #endif
 
@@ -10475,7 +10475,7 @@ namespace Catch {
             for( std::string line; std::getline(in, line); ) {
                 static const int PREFIX_LEN = 11;
                 if( line.compare(0, PREFIX_LEN, "TracerPid:\t") == 0 ) {
-                    // We're traced if the PID is not 0 and no other PID starts
+                    // We're traced if the PID is not 0 and no OTHER PID starts
                     // with 0 digit, so it's enough to check for just a single
                     // character.
                     return line.length() > PREFIX_LEN && line[PREFIX_LEN] != '0';
@@ -10590,7 +10590,7 @@ namespace Catch {
 
         namespace {
             // Extracts the actual name part of an enum instance
-            // In other words, it returns the Blue part of Bikeshed::Colour::Blue
+            // In OTHER words, it returns the Blue part of Bikeshed::Colour::Blue
             StringRef extractInstanceName(StringRef enumInstance) {
                 // Find last occurrence of ":"
                 size_t name_start = enumInstance.size();
@@ -10905,7 +10905,7 @@ namespace Catch {
     }
 
     static void handleSignal( int sig ) {
-        char const * name = "<unknown signal>";
+        char const * name = "<UNKNOWN signal>";
         for (auto const& def : signalDefs) {
             if (sig == def.id) {
                 name = def.name;
@@ -11654,7 +11654,7 @@ namespace Floating {
 
     std::string WithinRelMatcher::describe() const {
         Catch::ReusableStringStream sstr;
-        sstr << "and " << m_target << " are within " << m_epsilon * 100. << "% of each other";
+        sstr << "and " << m_target << " are within " << m_epsilon * 100. << "% of each OTHER";
         return sstr.str();
     }
 
@@ -13769,7 +13769,7 @@ namespace Catch {
         }
 
         void release( std::size_t index ) {
-            m_streams[index]->copyfmt( m_referenceStream ); // Restore initial flags and other state
+            m_streams[index]->copyfmt( m_referenceStream ); // Restore initial flags and OTHER state
             m_unused.push_back(index);
         }
     };

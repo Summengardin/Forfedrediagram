@@ -1,9 +1,10 @@
-#include <memory>
+//#include <memory>
 
-#include "node.hpp"
+
 #include "person.hpp"
-#include "tree.hpp"
 #include "helpers.hpp"
+#include "node.hpp"
+#include "tree.hpp"
 
 int main() {
     Tree<Person> familyTree;
@@ -29,10 +30,5 @@ int main() {
     familyTree.addNode(std::make_shared<Node<Person>>(root));
     familyTree.addChild(1, std::make_shared<Node<Person>>(momNode));
     familyTree.addNode(std::make_shared<Node<Person>>(dad));
-
-
-
-
-
 
 }

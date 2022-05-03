@@ -2398,7 +2398,7 @@ using is_detected_convertible =
 #if defined(__clang__)
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Wdocumentation"
-    #pragma clang diagnostic ignored "-Wdocumentation-unknown-command"
+    #pragma clang diagnostic ignored "-Wdocumentation-UNKNOWN-command"
 #endif
 
 // allow disabling exceptions
@@ -3000,7 +3000,7 @@ class out_of_range : public exception
     out_of_range(int id_, const char* what_arg) : exception(id_, what_arg) {}
 };
 
-/// @brief exception indicating other library errors
+/// @brief exception indicating OTHER library errors
 /// @sa https://json.nlohmann.me/api/basic_json/other_error/
 class other_error : public exception
 {
@@ -3564,7 +3564,7 @@ struct is_range
 
     // to be 100% correct, it should use https://en.cppreference.com/w/cpp/iterator/input_or_output_iterator
     // and https://en.cppreference.com/w/cpp/iterator/sentinel_for
-    // but reimplementing these would be too much work, as a lot of other concepts are used underneath
+    // but reimplementing these would be too much work, as a lot of OTHER concepts are used underneath
     static constexpr auto is_iterator_begin =
         is_iterator_traits<iterator_traits<iterator>>::value;
 
@@ -5421,7 +5421,7 @@ struct wide_string_input_helper<BaseInputAdapter, 4>
             }
             else
             {
-                // unknown character
+                // UNKNOWN character
                 utf8_bytes[0] = static_cast<std::char_traits<char>::int_type>(wc);
                 utf8_bytes_filled = 1;
             }
@@ -5775,7 +5775,7 @@ struct json_sax
 
     /*!
     @brief the beginning of an object was read
-    @param[in] elements  number of object elements or -1 if unknown
+    @param[in] elements  number of object elements or -1 if UNKNOWN
     @return whether parsing should proceed
     @note binary formats may report the number of elements
     */
@@ -5797,7 +5797,7 @@ struct json_sax
 
     /*!
     @brief the beginning of an array was read
-    @param[in] elements  number of array elements or -1 if unknown
+    @param[in] elements  number of array elements or -1 if UNKNOWN
     @return whether parsing should proceed
     @note binary formats may report the number of elements
     */
@@ -6499,7 +6499,7 @@ class lexer_base
                 return "'[', '{', or a literal";
             // LCOV_EXCL_START
             default: // catch non-enum values
-                return "unknown token";
+                return "UNKNOWN token";
                 // LCOV_EXCL_STOP
         }
     }
@@ -6812,7 +6812,7 @@ class lexer : public lexer_base<BasicJsonType>
                             break;
                         }
 
-                        // other characters after escape
+                        // OTHER characters after escape
                         default:
                             error_message = "invalid string: forbidden character after backslash";
                             return token_type::parse_error;
@@ -7406,7 +7406,7 @@ class lexer : public lexer_base<BasicJsonType>
                 goto scan_number_any1;
             }
 
-            // all other characters are rejected outside scan_number()
+            // all OTHER characters are rejected outside scan_number()
             default:            // LCOV_EXCL_LINE
                 JSON_ASSERT(false); // NOLINT(cert-dcl03-c,hicpp-static-assert,misc-static-assert) LCOV_EXCL_LINE
         }
@@ -9043,7 +9043,7 @@ class binary_reader
                 return get_number(input_format_t::cbor, number) && sax->number_float(static_cast<number_float_t>(number), "");
             }
 
-            default: // anything else (0xFF is handled inside the other types)
+            default: // anything else (0xFF is handled inside the OTHER types)
             {
                 auto last_token = get_token_string();
                 return sax->parse_error(chars_read, last_token, parse_error::create(112, chars_read, exception_message(input_format_t::cbor, "invalid byte: 0x" + last_token, "value"), BasicJsonType()));
@@ -11351,7 +11351,7 @@ template<typename BasicJsonType> struct internal_iterator
     typename BasicJsonType::object_t::iterator object_iterator {};
     /// iterator for JSON arrays
     typename BasicJsonType::array_t::iterator array_iterator {};
-    /// generic iterator for all other types
+    /// generic iterator for all OTHER types
     primitive_iterator_t primitive_iterator {};
 };
 }  // namespace detail
@@ -11511,7 +11511,7 @@ class iter_impl // NOLINT(cppcoreguidelines-special-member-functions,hicpp-speci
     @brief converting assignment
     @param[in] other const iterator to copy from
     @return const/non-const iterator
-    @note It is not checked whether @a other is initialized.
+    @note It is not checked whether @a OTHER is initialized.
     */
     iter_impl& operator=(const iter_impl<const BasicJsonType>& other) noexcept
     {
@@ -11526,7 +11526,7 @@ class iter_impl // NOLINT(cppcoreguidelines-special-member-functions,hicpp-speci
     /*!
     @brief converting constructor
     @param[in] other  non-const iterator to copy from
-    @note It is not checked whether @a other is initialized.
+    @note It is not checked whether @a OTHER is initialized.
     */
     iter_impl(const iter_impl<typename std::remove_const<BasicJsonType>::type>& other) noexcept
         : m_object(other.m_object), m_it(other.m_it)
@@ -11536,7 +11536,7 @@ class iter_impl // NOLINT(cppcoreguidelines-special-member-functions,hicpp-speci
     @brief converting assignment
     @param[in] other  non-const iterator to copy from
     @return const/non-const iterator
-    @note It is not checked whether @a other is initialized.
+    @note It is not checked whether @a OTHER is initialized.
     */
     iter_impl& operator=(const iter_impl<typename std::remove_const<BasicJsonType>::type>& other) noexcept // NOLINT(cert-oop54-cpp)
     {
@@ -12810,7 +12810,7 @@ class json_pointer
                         {
                             if (JSON_HEDLEY_UNLIKELY(!('0' <= reference_token[i] && reference_token[i] <= '9')))
                             {
-                                // other char should be between '0' and '9'
+                                // OTHER char should be between '0' and '9'
                                 return false;
                             }
                         }
@@ -15836,7 +15836,7 @@ void grisu2(char* buf, int& len, int& decimal_exponent, FloatType value)
     // says "value is converted to a string as if by std::sprintf in the default ("C") locale"
     // and since sprintf promotes floats to doubles, I think this is exactly what 'std::to_chars'
     // does.
-    // On the other hand, the documentation for 'std::to_chars' requires that "parsing the
+    // On the OTHER hand, the documentation for 'std::to_chars' requires that "parsing the
     // representation using the corresponding std::from_chars function recovers value exactly". That
     // indicates that single precision floating-point numbers should be recovered using
     // 'std::strtof'.
@@ -16412,7 +16412,7 @@ class serializer
     @brief dump escaped string
 
     Escape a string by replacing certain special characters by a sequence of an
-    escape character (backslash) and another character and other control
+    escape character (backslash) and another character and OTHER control
     characters by a sequence of "\u" followed by a four-digit hex
     representation. The escaped string is written to output stream @a o.
 
@@ -17378,7 +17378,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     /////////////////////
 
     /// @name container types
-    /// The canonic container types to use @ref basic_json like any other STL
+    /// The canonic container types to use @ref basic_json like any OTHER STL
     /// container.
     /// @{
 
@@ -17449,7 +17449,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 #elif defined __unix__
         result["platform"] = "unix";
 #else
-        result["platform"] = "unknown";
+        result["platform"] = "UNKNOWN";
 #endif
 
 #if defined(__ICC) || defined(__INTEL_COMPILER)
@@ -17469,13 +17469,13 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 #elif defined(__SUNPRO_CC)
         result["compiler"] = {{"family", "sunpro"}, {"version", __SUNPRO_CC}};
 #else
-        result["compiler"] = {{"family", "unknown"}, {"version", "unknown"}};
+        result["compiler"] = {{"family", "UNKNOWN"}, {"version", "UNKNOWN"}};
 #endif
 
 #ifdef __cplusplus
         result["compiler"]["c++"] = std::to_string(__cplusplus);
 #else
-        result["compiler"]["c++"] = "unknown";
+        result["compiler"]["c++"] = "UNKNOWN";
 #endif
         return result;
     }
@@ -18288,7 +18288,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
 
 
     ///////////////////////////////////////
-    // other constructors and destructor //
+    // OTHER constructors and destructor //
     ///////////////////////////////////////
 
     template<typename JsonRef,
@@ -18744,7 +18744,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     @throw what @ref json_serializer<ValueType> `from_json()` method throws
 
     @liveexample{The example below shows several conversions from JSON values
-    to other types. There a few things to note: (1) Floating-point numbers can
+    to OTHER types. There a few things to note: (1) Floating-point numbers can
     be converted to integers\, (2) A JSON array can be converted to a standard
     `std::vector<short>`\, (3) A JSON object can be converted to C++
     associative containers such as `std::unordered_map<std::string\,
@@ -19023,7 +19023,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
     @complexity Linear in the size of the JSON value.
 
     @liveexample{The example below shows several conversions from JSON values
-    to other types. There a few things to note: (1) Floating-point numbers can
+    to OTHER types. There a few things to note: (1) Floating-point numbers can
     be converted to integers\, (2) A JSON array can be converted to a standard
     `std::vector<short>`\, (3) A JSON object can be converted to C++
     associative containers such as `std::unordered_map<std::string\,
@@ -19831,7 +19831,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             case value_t::discarded:
             default:
             {
-                // all other types are nonempty
+                // all OTHER types are nonempty
                 return false;
             }
         }
@@ -19870,7 +19870,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             case value_t::discarded:
             default:
             {
-                // all other types have size 1
+                // all OTHER types have size 1
                 return 1;
             }
         }
@@ -19904,7 +19904,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
             case value_t::discarded:
             default:
             {
-                // all other types have max_size() == size()
+                // all OTHER types have max_size() == size()
                 return size();
             }
         }
@@ -21713,7 +21713,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                     ++i;
                 }
 
-                // add other remaining elements
+                // add OTHER remaining elements
                 while (i < target.size())
                 {
                     result.push_back(
@@ -21752,7 +21752,7 @@ class basic_json // NOLINT(cppcoreguidelines-special-member-functions,hicpp-spec
                     }
                 }
 
-                // second pass: traverse other object's elements
+                // second pass: traverse OTHER object's elements
                 for (auto it = target.cbegin(); it != target.cend(); ++it)
                 {
                     if (source.find(it.key()) == source.end())
