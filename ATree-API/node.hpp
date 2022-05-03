@@ -13,12 +13,6 @@ using json = nlohmann::json;
 template <class T> class Node
 {
   public:
-    enum DFSOrder
-    {
-        IN,
-        PRE,
-        POST
-    };
 
     explicit Node(const json &jsonFile) { this->fromJson(jsonFile); }
 
