@@ -109,6 +109,10 @@ class Date
         return {day, month, year};
     }
 
+    bool operator ==(const Date &other ) const{
+        return (other._year == this->_year && other._month == this->_month && other._day == this->_day);
+    }
+
   protected:
     int _day = 0;
     int _month = 0;

@@ -1,14 +1,14 @@
 #pragma once // FORFEDREDIAGRAM_PERSON_HPP
 
 #include <iostream>
-#include <sstream>
 #include <optional>
 #include <regex>
+#include <sstream>
 #include <utility>
 #include <variant>
 
-#include "helpers.hpp"
 #include "globals.hpp"
+#include "helpers.hpp"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -26,10 +26,26 @@ class Person
 
     Person() = default;
 
-    Person(const std::string &firstName, const std::string &lastName)
+    Person(std::string firstName, std::string lastName)
+        : _firstName(std::move(firstName)), _lastName(std::move(lastName))
     {
-        setFirstName(firstName);
-        setLastName(lastName);
+    }
+
+    Person(std::string firstName, std::string middleName, std::string lastName)
+        : _firstName(std::move(firstName)), _middleName(std::move(middleName)), _lastName(std::move(lastName))
+    {
+    }
+
+    Person(std::string firstName, std::string middleName, std::string lastName, Date birth)
+        : _firstName(std::move(firstName)), _middleName(std::move(middleName)), _lastName(std::move(lastName)),
+          _birth(birth), _isAlive(true)
+    {
+    }
+
+    Person(std::string firstName, std::string middleName, std::string lastName, Date birth, Date death)
+        : _firstName(std::move(firstName)), _middleName(std::move(middleName)), _lastName(std::move(lastName)),
+          _birth(birth), _death(death), _isAlive(false)
+    {
     }
 
     explicit Person(const json &jsonFile)
@@ -130,7 +146,11 @@ class Person
 
     void setBirth(const std::string &birth) { _birth = Date(birth); }
 
+    void setBirth(Date birth) { _birth = birth; }
+
     void setDeath(const std::string &death) { _death = Date(death); }
+
+    void setDeath(Date death) { _death = death; }
 
     void setGender(const std::string &gender)
     {
@@ -150,8 +170,8 @@ class Person
     {
         std::string validLetters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ ";
 
-        bool checkAllLetters = std::all_of(str.begin(), str.end(),
-                                           [&validLetters](char c) { return validLetters.find(c) != std::string::npos; });
+        bool checkAllLetters = std::all_of(
+            str.begin(), str.end(), [&validLetters](char c) { return validLetters.find(c) != std::string::npos; });
         return checkAllLetters;
     }
 
@@ -166,7 +186,6 @@ class Person
     GenderType _gender{GenderType::UNKNOWN};
     bool _isAlive{true};
 };
-
 
 std::ostream &operator<<(std::ostream &os, const Person &p)
 {
