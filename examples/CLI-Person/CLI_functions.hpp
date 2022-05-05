@@ -15,9 +15,6 @@ namespace
 {
 void editPerson(Person &personToEdit)
 {
-    std::cout << "\n--- EDITING ---\n" << personToEdit << std::endl;
-
-    std::cout << "\nFor every entry, \"-\" will leave value unchanged" << std::endl;
 
     auto newFirstName = COM::getString("First name: ");
     while (!Person::validateName(newFirstName) && (newFirstName != "-"))
@@ -51,9 +48,10 @@ void editPerson(Person &personToEdit)
     auto aliveAnswer = COM::getString("Is " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " alive? (y/n)");
     while (aliveAnswer != "y" && aliveAnswer != "Y" && aliveAnswer != "n" && aliveAnswer != "N" && aliveAnswer != "-")
         aliveAnswer = COM::getString("You have to answer 'y', 'n' or '-'\nTry again: ");
+
     if (aliveAnswer == "y" || aliveAnswer == "Y")
         personToEdit.setAliveFlag(true);
-    else if (aliveAnswer == "n" && aliveAnswer == "N")
+    else if (aliveAnswer == "n" || aliveAnswer == "N")
     {
         personToEdit.setAliveFlag(false);
 
@@ -72,6 +70,7 @@ void editPerson(Person &personToEdit)
 
 void addPerson(Tree<Person> &tree)
 {
+    std::cout << "\n--- CREATE NEW PERSON ---\n" << std::endl;
 
     // Generate the new person and create node with this person
     Person newPerson;
@@ -253,6 +252,8 @@ void editPerson(Tree<Person> &tree)
     }
 
     // Edit person
+    std::cout << "\n--- EDITING ---\n" << *personToEdit << std::endl;
+    std::cout << "\nFor every entry, \"-\" will leave value unchanged" << std::endl;
     editPerson(*personToEdit);
 }
 

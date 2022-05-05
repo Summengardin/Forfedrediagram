@@ -110,11 +110,11 @@ class Person
         case MALE:
             return "male";
         case FEMALE:
-            return "FEMALE";
+            return "female";
         case OTHER:
-            return "OTHER";
+            return "other";
         default:
-            return "UNKNOWN";
+            return "unknown";
         }
     }
 
@@ -136,9 +136,9 @@ class Person
     {
         if (gender == "male")
             _gender = MALE;
-        else if (gender == "FEMALE")
+        else if (gender == "female")
             _gender = FEMALE;
-        else if (gender == "OTHER")
+        else if (gender == "other")
             _gender = OTHER;
         else
             _gender = UNKNOWN;

@@ -9,7 +9,7 @@ add_test(NAME TestTree COMMAND TestTree)
 add_executable(TestPerson test_person.cpp)
 add_test(NAME TestPerson COMMAND TestPerson)
 target_include_directories(TestPerson
-        PUBLIC "${CMAKE_SOURCE_DIR}/examples/CLI-Person/include")
+        PUBLIC "${CMAKE_SOURCE_DIR}/examples/include")
 
 add_executable(TestUsefulFunctions test_helpers.cpp)
 add_test(NAME TestUsefulFunctions COMMAND TestUsefulFunctions)
