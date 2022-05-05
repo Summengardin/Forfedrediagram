@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "globals.hpp"
+#include "../include/ATree/globals.hpp"
 #include "json.hpp"
 
 using json = nlohmann::json;

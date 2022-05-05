@@ -1,6 +1,6 @@
 add_executable(NoCLIExample
-        NoCLIExample.cpp)
+        no_CLI.cpp)
 
 target_include_directories(NoCLIExample
         PUBLIC
-        "${CMAKE_SOURCE_DIR}/examples/CLI-Person")
+        "${CMAKE_SOURCE_DIR}/include")

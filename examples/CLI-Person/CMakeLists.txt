@@ -1,6 +1,6 @@
 
 add_executable(CLIPersonExample
-        CLIExample.cpp)
+        ../../src/familytree_CLI.cpp)
 
 
 #target_include_directories(CLIPersonExample PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")

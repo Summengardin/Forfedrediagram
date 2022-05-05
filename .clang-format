@@ -43,7 +43,7 @@ BreakBeforeBraces: Custom
 #IndentPPDirectives: None
 #IndentWidth: 4
 #KeepEmptyLinesAtTheStartOfBlocks: true
-#MaxEmptyLinesToKeep: 2
+MaxEmptyLinesToKeep: 2
 #NamespaceIndentation: All
 #ObjCSpaceAfterProperty: false
 #ObjCSpaceBeforeProtocolList: true

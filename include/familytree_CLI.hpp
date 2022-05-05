@@ -3,72 +3,171 @@
 #include <iostream>
 #include <memory>
 
-#include "menu.hpp"
-#include "person.hpp"
-#include "tree.hpp"
-#include "node.hpp"
-
-namespace CLI
-{
+#include "atree/ancestor_tree.hpp"
+#include "menu/menu.hpp"
+#include "person/person.hpp"
 
 namespace
 {
+
 void editPerson(Person &personToEdit)
 {
 
     auto newFirstName = COM::getString("First name: ");
     while (!Person::validateName(newFirstName) && (newFirstName != "-"))
-        newFirstName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+        newFirstName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newFirstName != "-")
         personToEdit.setFirstName(newFirstName);
 
+
     auto newMiddleName = COM::getString("Middle name: ", true);
     while (!newMiddleName.empty() && !Person::validateName(newMiddleName) && (newMiddleName != "-"))
-        newMiddleName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+        newMiddleName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newMiddleName != "-")
         personToEdit.setMiddleName(newMiddleName);
 
+
     auto newLastName = COM::getString("Last name: ");
     while (!Person::validateName(newLastName) && (newLastName != "-"))
-        newLastName = COM::getString("Bare tillat med bokstaver på navn [a-å], prøv igjen: ");
+        newLastName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newLastName != "-")
         personToEdit.setLastName(newLastName);
 
-    auto newGender = COM::getString("Gender (male, FEMALE, OTHER): ", true);
+
+    auto newGender = COM::getString("Gender (male, female, other): ", true);
     if (newGender != "-")
         personToEdit.setGender(newGender);
 
-    auto birthAsString =
-        COM::getString("When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " born? [DD-MM-YYYY]: ", true);
+
+    auto birthAsString = COM::getString(
+        "When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " born? [DD-MM-YYYY]: ", true);
     while (!birthAsString.empty() && !Date::validateStringFormat(birthAsString) && (birthAsString != "-"))
         birthAsString = COM::getString("That was not a valid date, format must be [DD-MM-YYYY].\nTry again: ");
     if (birthAsString != "-")
         personToEdit.setBirth(birthAsString);
 
-    auto aliveAnswer = COM::getString("Is " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " alive? (y/n)");
+
+    auto aliveAnswer =
+        COM::getString("Is " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " alive? (y/n)");
     while (aliveAnswer != "y" && aliveAnswer != "Y" && aliveAnswer != "n" && aliveAnswer != "N" && aliveAnswer != "-")
         aliveAnswer = COM::getString("You have to answer 'y', 'n' or '-'\nTry again: ");
-
     if (aliveAnswer == "y" || aliveAnswer == "Y")
         personToEdit.setAliveFlag(true);
     else if (aliveAnswer == "n" || aliveAnswer == "N")
     {
         personToEdit.setAliveFlag(false);
 
-        auto deathAsString =
-            COM::getString("When did " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " pass away? [DD-MM-YYYY]: ");
+        auto deathAsString = COM::getString("When did " + personToEdit.getFirstName() + " " +
+                                            personToEdit.getMiddleName() + " pass away? [DD-MM-YYYY]: ");
         while (!deathAsString.empty() && !Date::validateStringFormat(deathAsString) && (deathAsString != "-"))
         {
-            deathAsString = COM::getString("That was not a valid date [DD-MM-YYYY]. Prøv igjen: ");
+            deathAsString = COM::getString("That was not a valid date [DD-MM-YYYY].\nTry again: ");
         }
         if (deathAsString != "-")
             personToEdit.setDeath(deathAsString);
     }
 }
 
+void writeOutNode(ATree::Node<Person> *node)
+{
+    std::stringstream ssPerson;
+    auto person = node->getData();
+
+    // Name [index]
+    ssPerson << "\n" << person->getFullName() << " [" << node->getIndex() << "]";
+    // B: Birth
+    auto birthValid = person->getBirth().isValid();
+    if (birthValid)
+        ssPerson << "\nB: " << person->getBirth().toString();
+    // D: Death
+    auto deathValid = person->getDeath().isValid();
+    if (!person->isAlive() && deathValid)
+        ssPerson << "\nD: " << person->getDeath().toString();
+    // Gender:
+    ssPerson << "\nGender is " << person->getGenderString();
+
+    // Parents
+    if (node->leftChild() || node->rightChild())
+    {
+        ssPerson << "\nParents are\n";
+        if (node->leftChild())
+            ssPerson << "   " << node->leftChild()->getData()->getFullName() << " [" << node->leftChild()->getIndex()
+                     << "]";
+        if (node->rightChild())
+            ssPerson << "   " << node->rightChild()->getData()->getFullName() << " [" << node->rightChild()->getIndex()
+                     << "]";
+    }
+
+
+    std::cout << ssPerson.str() << "\n";
+}
+
 } // namespace
 
-void addPerson(Tree<Person> &tree)
+
+void showTree(ATree::Tree<Person> &tree)
+{
+    if (tree.isEmpty())
+    {
+        std::cout << "The tree is empty, start filling it up" << std::endl;
+        return;
+    }
+
+    int indent = tree.getSettingIndent();
+    tree.traverseDFSWithDepth(tree.getRoot(), [indent](ATree::Node<Person> *node, int depth) {
+        for (int i = 0; i < depth; ++i)
+        {
+            for (int space = 0; space < indent; ++space)
+            {
+                std::cout << " ";
+            }
+        }
+        std::cout << *node->getData() << std::endl;
+    });
+}
+
+
+void showPeople(ATree::Tree<Person> &tree)
+{
+    auto name = COM::getString("Who would you like to get a detailed view of?");
+    auto people = tree.findNodeByString(name);
+
+    if (people.empty())
+    {
+        std::cout << "Could not find any person containing \"" << name << "\"" << std::endl;
+        return;
+    }
+    else if (people.size() == 1)
+    {
+        writeOutNode(people[0]);
+    }
+
+
+    Menu sortMode{"Found multiple people with your searh-term.\nHow would you sort the list?",
+                  {{"By index in tree",
+                    [&people]() {
+                        std::sort(people.begin(), people.end(), [](ATree::Node<Person> *n1, ATree::Node<Person> *n2) {
+                            return n1->getIndex() < n2->getIndex();
+                        });
+                    }},
+                   {"By firstname",
+                    [&people]() {
+                        std::sort(people.begin(), people.end(), [](ATree::Node<Person> *n1, ATree::Node<Person> *n2) {
+                            return n1->getData()->getFirstName() < n2->getData()->getFirstName();
+                        });
+                    }}},
+                  false};
+
+    sortMode.show();
+
+    for (auto &node : people)
+    {
+        writeOutNode(node);
+    }
+}
+
+
+void addPerson(ATree::Tree<Person> &tree)
 {
     std::cout << "\n--- CREATE NEW PERSON ---\n" << std::endl;
 
@@ -76,9 +175,9 @@ void addPerson(Tree<Person> &tree)
     Person newPerson;
 
     editPerson(newPerson);
-    std::unique_ptr<Node<Person>> newNode = std::make_unique<Node<Person>>(newPerson);
+    std::unique_ptr<ATree::Node<Person>> newNode = std::make_unique<ATree::Node<Person>>(newPerson);
 
-    // Set new node as root if Tree has no root
+    // Set new node as root if ATree::Tree has no root
     if (tree.isEmpty())
     {
         tree.setRoot(std::move(newNode));
@@ -87,7 +186,7 @@ void addPerson(Tree<Person> &tree)
 
     // Choose relation of new node
     auto name = COM::getString("Skriv navnet på barnet til " + newPerson.getFirstName());
-    std::vector<Node<Person> *> matchingNodes = tree.findNodeByString(name);
+    std::vector<ATree::Node<Person> *> matchingNodes = tree.findNodeByString(name);
 
     int attemptCounter = 0;
 
@@ -121,7 +220,7 @@ void addPerson(Tree<Person> &tree)
     else
     {
         // Creates new menu to choose between all matching Nodes with their _data as text
-        Node<Person> *parentNode;
+        ATree::Node<Person> *parentNode;
         Menu matchesMenu;
         matchesMenu.setTitle("Velg person som skal være forelder");
         for (auto node : tree.findNodeByString(name))
@@ -137,7 +236,8 @@ void addPerson(Tree<Person> &tree)
     }
 }
 
-void removePerson(Tree<Person> &tree)
+
+void removePerson(ATree::Tree<Person> &tree)
 {
     // Choose person to remove
     auto searchTerm = COM::getString("Who would you like to remove from the tree?");
@@ -170,60 +270,13 @@ void removePerson(Tree<Person> &tree)
     }
 }
 
-void showPeople(Tree<Person> &tree)
-{
-    auto name = COM::getString("Who would you like to get a detailed view of?");
-    auto people = tree.findNodeByString(name);
 
-    if (people.empty())
-    {
-        std::cout << "Could not find any person containing \"" << name << "\"" << std::endl;
-    }
-    else
-    {
-        for (auto &node : people)
-        {
-            std::stringstream ssPerson;
-            auto currentPerson = node->getData();
-
-            // Name [index]
-            ssPerson << "\n" << currentPerson->getFullName() << " [" << node->getIndex() << "]";
-            // B: Birth
-            auto birthValid = currentPerson->getBirth().isValid();
-            if (birthValid)
-                ssPerson << "\nB: " << currentPerson->getBirth().toString();
-            // D: Death
-            auto deathValid = currentPerson->getDeath().isValid();
-            if (!currentPerson->isAlive() && deathValid)
-                ssPerson << "\nD: " << currentPerson->getDeath().toString();
-            // Gender:
-            ssPerson << "\nGender is " << currentPerson->getGenderString();
-
-            // Parents
-            ssPerson << "\nParents are\n";
-            if (node->leftChild() || node->rightChild())
-            {
-                if (node->leftChild())
-                    ssPerson << "   " << node->rightChild()->getData()->getFullName() << " [" << node->leftChild()->getIndex()
-                             << "]";
-                if (node->rightChild())
-                    ssPerson << "   " << node->rightChild()->getData()->getFullName() << " [" << node->rightChild()->getIndex()
-                             << "]";
-            }
-            else
-                ssPerson << "... not stored in this tree";
-
-            std::cout << ssPerson.str() << "\n";
-        }
-    }
-}
-
-void editPerson(Tree<Person> &tree)
+void editPerson(ATree::Tree<Person> &tree)
 {
 
     // Choose person to edit
     auto searchTerm = COM::getString("Type in name of the person you want to edit");
-    std::vector<Node<Person> *> people = tree.findNodeByString(searchTerm);
+    std::vector<ATree::Node<Person> *> people = tree.findNodeByString(searchTerm);
 
     Person *personToEdit;
     if (people.empty())
@@ -257,9 +310,10 @@ void editPerson(Tree<Person> &tree)
     editPerson(*personToEdit);
 }
 
-void loadTree(Tree<Person> &tree)
+
+void loadTreeFromJson(ATree::Tree<Person> &tree)
 {
-    // Henter fil å lese fra (Kan byttes ut med input fra bruker)
+    // Select file to load tree from
     std::string fromFile = COM::getString("Type in full filepath (.json): ");
     std::optional<json> treeData;
     while (true)
@@ -281,10 +335,11 @@ void loadTree(Tree<Person> &tree)
     }
 
     tree.fillFromJson(treeData.value());
-    std::cout << "Tree is loaded" << std::endl;
+    std::cout << "ATree::Tree is loaded" << std::endl;
 }
 
-void saveTree(Tree<Person> &tree)
+
+void saveTreeToJson(ATree::Tree<Person> &tree)
 {
     auto fileName = COM::getString("Name of file:");
     std::ofstream outputFile(fileName);
@@ -292,26 +347,5 @@ void saveTree(Tree<Person> &tree)
     outputFile << tree.toJson().dump(4);
 }
 
-void showTree(Tree<Person> &tree)
-{
-    if (tree.isEmpty())
-    {
-        std::cout << "The tree is empty, start filling it up" << std::endl;
-        return;
-    }
-
-    int indent = 4;
-    tree.traverseDFSWithDepth(tree.getRoot(), [indent](Node<Person> *node, int depth) {
-        for (int i = 0; i < depth; ++i)
-        {
-            for (int space = 0; space < indent; ++space)
-            {
-                std::cout << " ";
-            }
-        }
-        std::cout << *node->getData() << std::endl;
-    });
-}
-} // namespace CLI
 
 // FORFEDREDIAGRAM_CLI_FUNCTIONS_H
