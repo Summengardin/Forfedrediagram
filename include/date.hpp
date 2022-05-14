@@ -26,12 +26,6 @@ public:
     }
 
 
-    [[nodiscard]] Date getDate() const
-    {
-        //TODO
-        return *this;
-    }
-
 
     [[nodiscard]] bool validate() const
     {
@@ -95,20 +89,58 @@ public:
         return std::regex_match(dateAsString, match, format);
     }
 
-    [[nodiscard]] static int yearsBetween(const Date &date1, const Date &date2)
-    {
-        if (date1._year > 0 && date2._year > 0)
-        {
-            return date1._year - date2._year;
-        } else
-            return 0;
+
+    [[nodiscard]] static unsigned int calculateAge(const Date &birthDate, const Date &presentDate){
+        unsigned int age = presentDate._year - birthDate._year;
+        if(birthDate._month > presentDate._month || (birthDate._month == presentDate._month && birthDate._day > presentDate._day)) {
+            return age - 1;
+        }
+        else {
+            return age;
+        }
+
     }
 
 
+    [[nodiscard]] static bool isFuturDate(const Date &birthDate, const Date &presentDate){
+        unsigned int age = presentDate._year - birthDate._year;
+        if (birthDate._month < presentDate._month) || (birthDate._year < birthDate._year){
+           return true;
+           else {
+               return age;
+           }
+        }
+
+
+
+
+
+
+    }
+
+
+    int LeapYear() {
+        std::cout << "enter a year:";
+        std::cin >> _year;
+
+        if (_year % 400 == 0) {
+            std::cout << _year << "is a leap year.";
+
+        }
+        else if (_year % 4 == 0) {
+            std::cout << _year << " is a leap year.";
+
+        }
+        else {
+            std::cout << _year << "is not a leap year.";
+        }
+        return 0;
+    }
+
 protected:
-    int _day = 0;
-    int _month = 0;
-    int _year = 0;
+    unsigned int _day = 0;
+    unsigned int _month = 0;
+    unsigned int _year = 0;
 
     std::array<unsigned int, 12> daysInMonth = {31, 30, 28, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 };
@@ -119,7 +151,7 @@ public:
     Date operator()()
     {
         update();
-        return getDate();
+        return *this;
     }
 
     void update()
@@ -133,6 +165,9 @@ public:
         _month = localTime.tm_mon + 1;
         _year = localTime.tm_year + 1900;
     }
+
+
+
 };
 
 

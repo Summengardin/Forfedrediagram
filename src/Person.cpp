@@ -222,7 +222,7 @@ std::string Person::getGenderString() const
         case other:
             return "other";
             break;
-        case unknown:
+        default:
             return "unknown";
             break;
     }

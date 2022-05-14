@@ -13,3 +13,6 @@ add_test(NAME TestPerson COMMAND TestPerson)
 
 add_executable(TestUsefulFunctions test_usefulFunctions.cpp)
 add_test(NAME TestUsefulFunctions COMMAND TestUsefulFunctions)
+
+add_executable(TestDate test_date.cpp)
+add_test(NAME TestDate COMMAND TestDate)
