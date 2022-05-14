@@ -9,7 +9,7 @@ int main()
 {
     ATree::Tree<Person> familyTree;
 
-    // Generate menu with its functions
+    // Generate mainMenu
     Menu mainMenu{"HOVEDMENY",
                   {{"Show full tree", [&familyTree]() { showTree(familyTree); }},
 
@@ -25,7 +25,7 @@ int main()
 
                    {"Save tree to .json-file", [&familyTree]() { saveTreeToJson(familyTree); }}}};
 
-    // Overskrift
+    // Main title
     std::cout << "\n--------------------------------" << std::endl;
     std::cout << "|   Hello there family tree!   |" << std::endl;
     std::cout << "--------------------------------\n" << std::endl;
