@@ -6,5 +6,3 @@
 TEST_CASE("Get data data from file"){
 
 }
-
-TEST_CASE()
