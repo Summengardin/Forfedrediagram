@@ -1,6 +1,6 @@
 #pragma once // FORFEDREDIAGRAM_GLOBALS_HPP
 
-#include "date.hpp"
+#include "date/date.hpp"
 
 class uuid
 {
@@ -21,6 +21,5 @@ class uuid
 
 inline uuid TreeId;
 inline uuid DummyId;
-inline Today today;
 
 // FORFEDREDIAGRAM_GLOBALS_HPP

@@ -20,14 +20,14 @@
 #include <variant>
 #include <vector>
 
-#include "helpers.hpp"
+#include "../helpers.hpp"
 
 class Menu
 {
   private:
     struct MenuItem
     {
-        std::string name;
+        std::string title;
         std::variant<std::function<void()>, Menu *> action;
     };
 
@@ -108,7 +108,7 @@ class Menu
         ssMenu << "\n" << this->getTitle() << "\n" << std::endl;
 
         for (size_t i = 0U; i < this->_menuItems.size(); ++i)
-            ssMenu << i + 1 << ")  " << this->_menuItems[i].name << "\n";
+            ssMenu << i + 1 << ")  " << this->_menuItems[i].title << "\n";
 
         ssMenu << "0)  Back/Exit\n\nChoose option:";
 

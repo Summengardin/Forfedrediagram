@@ -17,7 +17,7 @@ AllowShortFunctionsOnASingleLine: All
 #AlwaysBreakAfterReturnType: None
 #AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeBraces: Custom
-#BraceWrapping:
+BraceWrapping:
 #  AfterCaseLabel: false
 #  AfterClass: true
 #  AfterControlStatement: Always
@@ -29,8 +29,8 @@ BreakBeforeBraces: Custom
 #  BeforeElse: false
 #  BeforeLambdaBody: true
 #  IndentBraces: false
-#  SplitEmptyFunction: false
-#  SplitEmptyRecord: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
 #BreakBeforeBinaryOperators: None
 #BreakBeforeTernaryOperators: true
 #BreakConstructorInitializers: AfterColon
@@ -43,7 +43,7 @@ BreakBeforeBraces: Custom
 #IndentPPDirectives: None
 #IndentWidth: 4
 #KeepEmptyLinesAtTheStartOfBlocks: true
-#MaxEmptyLinesToKeep: 2
+MaxEmptyLinesToKeep: 2
 #NamespaceIndentation: All
 #ObjCSpaceAfterProperty: false
 #ObjCSpaceBeforeProtocolList: true

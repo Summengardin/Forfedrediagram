@@ -1,5 +1,8 @@
 # Forfedrediagram
 Mappeinnlevering AIS1002 - Forfedretre <br>
+Gruppe 
+
+* Ancestor tree to keep track of your roots
 
 * Tillater bare to foreldre
 

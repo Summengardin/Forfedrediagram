@@ -7,9 +7,10 @@
 #include <utility>
 #include <variant>
 
-#include "globals.hpp"
+//#include "atree/globals.hpp"
+#include "date/date.hpp"
 #include "helpers.hpp"
-#include "json.hpp"
+#include "json/json.hpp"
 
 using json = nlohmann::json;
 
@@ -26,26 +27,45 @@ class Person
 
     Person() = default;
 
-    Person(std::string firstName, std::string lastName)
-        : _firstName(std::move(firstName)), _lastName(std::move(lastName))
-    {
-    }
+    Person(const std::string &firstName, const std::string &lastName)
+        : Person(firstName, "", lastName, UNKNOWN, {00, 00, 0000}, {00, 00, 0000})
+    {}
 
-    Person(std::string firstName, std::string middleName, std::string lastName)
-        : _firstName(std::move(firstName)), _middleName(std::move(middleName)), _lastName(std::move(lastName))
-    {
-    }
+    Person(const std::string &firstName, const std::string &lastName, GenderType gender)
+        : Person(firstName, "", lastName, gender, {00, 00, 0000}, {00, 00, 0000})
+    {}
 
-    Person(std::string firstName, std::string middleName, std::string lastName, Date birth)
-        : _firstName(std::move(firstName)), _middleName(std::move(middleName)), _lastName(std::move(lastName)),
-          _birth(birth), _isAlive(true)
-    {
-    }
+    Person(const std::string &firstName, const std::string &middleName, const std::string &lastName)
+        : Person(firstName, middleName, lastName, UNKNOWN, {00, 00, 0000}, {00, 00, 0000})
+    {}
 
-    Person(std::string firstName, std::string middleName, std::string lastName, Date birth, Date death)
-        : _firstName(std::move(firstName)), _middleName(std::move(middleName)), _lastName(std::move(lastName)),
-          _birth(birth), _death(death), _isAlive(false)
+    Person(const std::string &firstName, const std::string &middleName, const std::string &lastName, GenderType gender)
+        : Person(firstName, middleName, lastName, gender, {00, 00, 0000}, {00, 00, 0000})
+    {}
+
+    Person(const std::string &firstName, const std::string &middleName, const std::string &lastName, Date birth)
+        : Person(firstName, middleName, lastName, UNKNOWN, birth, {00, 00, 0000})
+    {}
+
+    Person(const std::string &firstName, const std::string &middleName, const std::string &lastName, GenderType gender,
+           Date birth)
+        : Person(firstName, middleName, lastName, gender, birth, {00, 00, 0000})
+    {}
+
+    Person(const std::string &firstName, const std::string &middleName, const std::string &lastName, Date birth,
+           Date death)
+        : Person(firstName, middleName, lastName, UNKNOWN, birth, death)
+    {}
+
+    Person(const std::string &firstName, const std::string &middleName, const std::string &lastName, GenderType gender,
+           Date birth, Date death)
     {
+        setFirstName(firstName);
+        setMiddleName(middleName);
+        setLastName(lastName);
+        setGender(gender);
+        setBirth(birth);
+        setDeath(death);
     }
 
     explicit Person(const json &jsonFile)
@@ -60,7 +80,11 @@ class Person
             _lastName = jsonFile.at("lastName");
 
         if (jsonFile.contains("gender") && jsonFile.at("gender").is_string())
-            setGender(jsonFile.at("lastName"));
+        {
+            std::string genderAsString = jsonFile.at("gender");
+            setGender(genderAsString);
+        }
+
 
         if (jsonFile.contains("birth") && jsonFile.at("birth").is_string())
         {
@@ -115,7 +139,15 @@ class Person
 
     [[nodiscard]] const Date &getDeath() const { return _death; }
 
-    [[nodiscard]] int getAge() const { return Date::yearsBetween(Date::today(), _birth); }
+    [[nodiscard]] unsigned int getAge() const
+    {
+        if (_death.isValid())
+            return Date::calculateAge(_birth, _death);
+        else if(_birth.isValid())
+            return Date::calculateAge(_birth);
+
+        return 0;
+    }
 
     [[nodiscard]] GenderType getGender() const { return _gender; }
 
@@ -138,19 +170,40 @@ class Person
 
     [[nodiscard]] bool contains(const std::string &str) const { return (getFullName().find(str) != std::string::npos); }
 
-    void setFirstName(const std::string &firstName) { _firstName = firstName; }
+    void setFirstName(const std::string &firstName)
+    {
+        if (validateName(firstName))
+            _firstName = firstName;
+    }
 
-    void setMiddleName(const std::string &middleName) { _middleName = middleName; }
+    void setMiddleName(const std::string &middleName)
+    {
+        if (validateName(middleName))
+            _middleName = middleName;
+    }
 
-    void setLastName(const std::string &lastName) { _lastName = lastName; }
+    void setLastName(const std::string &lastName)
+    {
+        if (validateName(lastName))
+            _lastName = lastName;
+    }
 
-    void setBirth(const std::string &birth) { _birth = Date(birth); }
+    void setBirth(const Date &birth)
+    {
+        if (!birth.isFutureDate() && birth.isValid())
+            _birth = birth;
+    }
 
-    void setBirth(Date birth) { _birth = birth; }
+    void setBirth(const std::string &birth) { setBirth(Date(birth)); }
 
-    void setDeath(const std::string &death) { _death = Date(death); }
+    void setDeath(Date death)
+    {
+        _death = death;
+        if (_death.isValid())
+            setAliveFlag(_death.isFutureDate());
+    }
 
-    void setDeath(Date death) { _death = death; }
+    void setDeath(const std::string &death) { setDeath(Date(death)); }
 
     void setGender(const std::string &gender)
     {
@@ -163,6 +216,8 @@ class Person
         else
             _gender = UNKNOWN;
     }
+
+    void setGender(GenderType gender) { _gender = gender; }
 
     void setAliveFlag(bool alive) { _isAlive = alive; }
 
