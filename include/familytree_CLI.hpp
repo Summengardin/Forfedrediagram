@@ -124,6 +124,8 @@ void showTree(ATree::Tree<Person> &tree)
         }
         std::cout << *node->getData() << std::endl;
     });
+
+   // std::cout << "Tree size is: " << tree.getSize() << std::endl;
 }
 
 
@@ -140,10 +142,11 @@ void showPeople(ATree::Tree<Person> &tree)
     else if (people.size() == 1)
     {
         writeOutNode(people[0]);
+        return;
     }
 
 
-    Menu sortMode{"Found multiple people with your searh-term.\nHow would you sort the list?",
+    Menu sortModeSelection{"Found multiple people with your searh-term.\nHow would you sort the list?",
                   {{"By index in tree",
                     [&people]() {
                         std::sort(people.begin(), people.end(), [](ATree::Node<Person> *n1, ATree::Node<Person> *n2) {
@@ -158,7 +161,7 @@ void showPeople(ATree::Tree<Person> &tree)
                     }}},
                   false};
 
-    sortMode.show();
+    sortModeSelection.show();
 
     for (auto &node : people)
     {
@@ -254,9 +257,9 @@ void removePerson(ATree::Tree<Person> &tree)
     else
     {
         // Creates new menu to choose between all people matching search-term
-        Menu peopleMenu;
-        peopleMenu.setTitle("There are multiple people with that name.\nPick the one you want to remove:");
-        peopleMenu.setLoop(false);
+        Menu matchesSelection;
+        matchesSelection.setTitle("There are multiple people with that name.\nPick the one you want to remove:");
+        matchesSelection.setLoop(false);
 
         for (auto &node : matchingPeople)
         {
@@ -264,9 +267,9 @@ void removePerson(ATree::Tree<Person> &tree)
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
                                (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
-            peopleMenu.append({personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIndex()); }});
+            matchesSelection.append({personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIndex()); }});
         }
-        peopleMenu.show();
+        matchesSelection.show();
     }
 }
 
@@ -291,17 +294,17 @@ void editPerson(ATree::Tree<Person> &tree)
     else
     {
         // Creates new menu to choose between all people with searchTerm
-        Menu peopleMenu;
-        peopleMenu.setTitle("Found multiple people containing " + searchTerm + ".\nChoose which one:");
+        Menu matchesSelection;
+        matchesSelection.setTitle("Found multiple people containing " + searchTerm + ".\nChoose which one:");
 
         for (auto &node : tree.findNodeByString(searchTerm))
         {
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
                                (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
-            peopleMenu.append({personTitle, [&personToEdit, &currentPerson]() { personToEdit = currentPerson; }});
+            matchesSelection.append({personTitle, [&personToEdit, &currentPerson]() { personToEdit = currentPerson; }});
         }
-        peopleMenu.show();
+        matchesSelection.show();
     }
 
     // Edit person

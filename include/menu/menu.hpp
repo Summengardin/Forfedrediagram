@@ -20,7 +20,7 @@
 #include <variant>
 #include <vector>
 
-#include "../helpers.hpp"
+#include "helpers.hpp"
 
 class Menu
 {
@@ -36,8 +36,7 @@ class Menu
 
     Menu(std::string title, std::vector<MenuItem> menuItems, bool loop = true)
         : _title(std::move(title)), _menuItems(std::move(menuItems)), _loop(loop)
-    {
-    }
+    {}
 
     [[nodiscard]] auto getTitle() const noexcept { return _title; }
 
