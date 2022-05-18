@@ -1,17 +1,24 @@
-# Forfedrediagram
+# Ancestor tree
 Mappeinnlevering AIS1002 - Forfedretre <br>
-Gruppe 
+Gruppe 11 <br>
+Kandidat 10014 og ?????
 
-* Ancestor tree to keep track of your roots
+This tool to allows a user to generate an ancestor diagram. 
+You can either use the example console application to build a tree, or 
+use the library to build your own application. 
+The tree is template based, which means you are not forced to create an ancestor tree of people. 
+Maybe you want to track organize the ancestors of your dog?
+You can either build up from scratch or load an existing tree stored in a .JSON-file. <br>
 
-* Tillater bare to foreldre
-
-## Description
+## Limitations
+* This tree only allows for two parents
+## User instructions
 
 ---
-Tool to build your family tree. Build up from scratch or load an existing tree stored in a .JSON-file. <br>
 
-Example .JSON-file:
+As mentioned, you are able to load and save the tree to a json-file. 
+Here is an example of what that would look like:
+
 
 ``` json
  {

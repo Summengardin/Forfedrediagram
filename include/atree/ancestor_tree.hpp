@@ -1,18 +1,16 @@
 #pragma once // FORFEDREDIAGRAM_TREE_HPP
 
-
-//#include <fstream>
 #include <functional>
 #include <iostream>
 #include <memory>
 #include <queue>
+#include <sstream>
 #include <string>
 #include <unordered_map>
-//#include <utility>
 #include <vector>
 
-#include "helpers.hpp"
 #include "globals.hpp"
+#include "helpers.hpp"
 
 #include "json/json.hpp"
 using json = nlohmann::json;
@@ -24,21 +22,17 @@ namespace ATree
 template <class T> class Node
 {
   public:
-    explicit Node(const json &jsonFile) { this->fromJson(jsonFile); }
+    explicit Node(const T &data) : _data(std::make_shared<T>(data)), _treeIndex(TreeId()) {}
 
 
-    explicit Node(const T &p)
-    {
-        _data = std::make_shared<T>(p);
-        _treeIndex = TreeId();
-    }
+    explicit Node(const json &jsonFile) : _treeIndex(TreeId()) { this->fromJson(jsonFile); }
 
 
     void fromJson(const json &jsonFile)
     {
         _data = std::make_shared<T>(jsonFile["data"]);
 
-        if (jsonFile.contains("treeIndex") && jsonFile.at("treeIndex").is_number_integer())
+        /*if (jsonFile.contains("treeIndex") && jsonFile.at("treeIndex").is_number_integer())
         {
             _treeIndex = jsonFile.at("treeIndex");
             TreeId.update(_treeIndex);
@@ -46,7 +40,7 @@ template <class T> class Node
         else
         {
             _treeIndex = TreeId();
-        }
+        }*/
     }
 
 
@@ -141,6 +135,14 @@ template <class T> class Node
 
     [[nodiscard]] bool isRoot() const { return _isRoot; }
 
+    [[nodiscard]] bool contains(const std::string &str) const
+    {
+        std::ostringstream nodeData;
+        nodeData << *getData();
+
+        return nodeData.str().find(str) != std::string::npos;
+    }
+
 
     friend std::ostream &operator<<(std::ostream &os, Node &n)
     {
@@ -156,6 +158,7 @@ template <class T> class Node
     std::shared_ptr<Node> _leftChild;
     std::shared_ptr<Node> _rightChild;
 };
+
 
 template <class T> class Tree
 {
@@ -384,14 +387,10 @@ template <class T> class Tree
     }
 
 
-    [[nodiscard]] int getSettingIndent() const {
-        return globalIndent;
-    }
+    [[nodiscard]] int getSettingIndent() const { return globalIndent; }
 
 
-    void setSettingIndent(int indent) {
-        globalIndent = indent;
-    }
+    void setSettingIndent(int indent) { globalIndent = indent; }
 
 
     void traverseBFS(const std::function<void(Node<T> *)> &func)
@@ -428,7 +427,7 @@ template <class T> class Tree
     }
 
 
-    Node<T> *findNodeByIdx(unsigned int index)
+    Node<T> *findNodeByIndex(unsigned int index)
     {
         if (_root->getIndex() == index)
         {
@@ -450,8 +449,7 @@ template <class T> class Tree
     std::vector<Node<T> *> findNodeByString(const std::string &str)
     {
         // Will return a vector with pointers to all nodes containing str
-        // This will require the node-data to have a member-function "contains"
-        // which checks for str in the data
+
         std::vector<Node<T> *> nodes;
         if (!_root)
         {
@@ -459,8 +457,8 @@ template <class T> class Tree
         }
 
         Node<T> *found = nullptr;
-        traverseDFS(getRoot(), [&found, str, &nodes](Node<T> *node) {
-            if (node->getData()->contains(str))
+        traverseBFS([&found, str, &nodes](Node<T> *node) {
+            if (node->contains(str))
                 nodes.push_back(node);
         });
 
@@ -468,9 +466,17 @@ template <class T> class Tree
     }
 
 
+/*    [[nodiscard]] size_t getSize() const
+    {
+        int size = 0;
+        traverseDFS(getRoot(), [&size](Node<T> *node) { size++; });
+        return size;
+    };*/
+
+
     void addChild(int nodeIndex, std::shared_ptr<Node<T>> node)
     {
-        Node<T> *childNode = findNodeByIdx(nodeIndex);
+        Node<T> *childNode = findNodeByIndex(nodeIndex);
         childNode->addChild(std::shared_ptr<Node<T>>(node));
     }
 

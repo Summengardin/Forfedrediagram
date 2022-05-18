@@ -1,6 +1,5 @@
 #pragma once // FORFEDREDIAGRAM_GLOBALS_HPP
 
-#include "date/date.hpp"
 
 class uuid
 {
@@ -16,6 +15,11 @@ class uuid
         {
             nextFreeIdx = otherIdx;
         }
+    }
+
+    inline void reset()
+    {
+        nextFreeIdx = 0;
     }
 };
 
