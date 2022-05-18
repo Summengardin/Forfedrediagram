@@ -245,7 +245,7 @@ class Person
 std::ostream &operator<<(std::ostream &os, const Person &p)
 {
     if (p.getFullName().empty())
-        os << "Empty person";
+        os << "";
     else
         os << p.getFullName();
 

@@ -213,3 +213,34 @@ TEST_CASE("Traversal")
         CHECK(expected == actual);
     }
 }
+
+TEST_CASE("Basic functions")
+{
+    ATree::Tree<int> integerTree;
+    TreeId.reset(); // Need to reset the indexing for every section
+
+    int root = 1;
+    int parent1 = 11;
+    int parent2 = 134;
+    int grandparent1 = 111;
+    int grandparent2 = 112;
+    int grandparent3 = 121;
+    int grandparent4 = 122;
+
+    auto rootNode = std::make_shared<ATree::Node<int>>(root);
+    auto p1Node = std::make_shared<ATree::Node<int>>(parent1);
+    auto p2Node = std::make_shared<ATree::Node<int>>(parent2);
+    auto gp1Node = std::make_shared<ATree::Node<int>>(grandparent1);
+    auto gp2Node = std::make_shared<ATree::Node<int>>(grandparent2);
+    auto gp3Node = std::make_shared<ATree::Node<int>>(grandparent3);
+    auto gp4Node = std::make_shared<ATree::Node<int>>(grandparent4);
+
+
+    integerTree.setRoot(rootNode);
+    rootNode->addChild(p1Node);
+    rootNode->addChild(p2Node);
+    p1Node->addChild(gp1Node);
+    p1Node->addChild(gp2Node);
+    p2Node->addChild(gp3Node);
+    p2Node->addChild(gp4Node);
+}

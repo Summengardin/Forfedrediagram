@@ -13,34 +13,34 @@ namespace
 void editPerson(Person &personToEdit)
 {
 
-    auto newFirstName = COM::getString("First name: ");
+    auto newFirstName = COM::getString("First name: (" + personToEdit.getFirstName() + ")");
     while (!Person::validateName(newFirstName) && (newFirstName != "-"))
         newFirstName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newFirstName != "-")
         personToEdit.setFirstName(newFirstName);
 
 
-    auto newMiddleName = COM::getString("Middle name: ", true);
+    auto newMiddleName = COM::getString("Middle name: (" + personToEdit.getMiddleName() + ")", true);
     while (!newMiddleName.empty() && !Person::validateName(newMiddleName) && (newMiddleName != "-"))
         newMiddleName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newMiddleName != "-")
         personToEdit.setMiddleName(newMiddleName);
 
 
-    auto newLastName = COM::getString("Last name: ");
+    auto newLastName = COM::getString("Last name: (" + personToEdit.getLastName() + ")");
     while (!Person::validateName(newLastName) && (newLastName != "-"))
         newLastName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newLastName != "-")
         personToEdit.setLastName(newLastName);
 
 
-    auto newGender = COM::getString("Gender (male, female, other): ", true);
+    auto newGender = COM::getString("Gender (male, female, other): (" + personToEdit.getGenderString() + ")", true);
     if (newGender != "-")
         personToEdit.setGender(newGender);
 
 
     auto birthAsString = COM::getString(
-        "When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " born? [DD-MM-YYYY]: ", true);
+        "When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " born? [DD-MM-YYYY]: (" + personToEdit.getBirth().toString() + ")", true);
     while (!birthAsString.empty() && !Date::validateStringFormat(birthAsString) && (birthAsString != "-"))
         birthAsString = COM::getString("That was not a valid date, format must be [DD-MM-YYYY].\nTry again: ");
     if (birthAsString != "-")
@@ -127,6 +127,8 @@ void showTree(ATree::Tree<Person> &tree)
             std::cout << *node->getData() << " [" << std::to_string(node->getIndex()) << "]" << std::endl;
         },
         ATree::DFSOrder::IN_ORDER);
+
+    std::cout << "Tree size : " << tree.getSize() << std::endl;
 }
 
 
@@ -311,8 +313,9 @@ void editPerson(ATree::Tree<Person> &tree)
     }
 
     // Edit person
-    std::cout << "\n--- EDITING ---\n" << *personToEdit << std::endl;
-    std::cout << "\nFor every entry, \"-\" will leave value unchanged" << std::endl;
+    std::cout << "\n--- EDITING ---\n" << *personToEdit << "\n";
+    std::cout << "\nFor every entry, \"-\" will leave value unchanged" << "\n";
+    std::cout << "Values in parentheses is current value\n" << std::endl;
     editPerson(*personToEdit);
 }
 

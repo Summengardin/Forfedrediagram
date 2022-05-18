@@ -468,12 +468,12 @@ template <class T> class Tree
     }
 
 
-/*    [[nodiscard]] size_t getSize() const
+    [[nodiscard]] size_t getSize()
     {
         int size = 0;
         traverseDFS(getRoot(), [&size](Node<T> *node) { size++; });
         return size;
-    };*/
+    };
 
 
     void addChild(int nodeIndex, std::shared_ptr<Node<T>> node)
