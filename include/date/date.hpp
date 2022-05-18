@@ -76,7 +76,6 @@ class Date
         if (age < 0)
             return 0;
 
-
         if (birth.getMonth() > death.getMonth() ||
             (birth.getMonth() == death.getMonth() && birth.getDay() > death.getDay()))
         {

@@ -1,7 +1,7 @@
 # Ancestor tree
 Mappeinnlevering AIS1002 - Forfedretre <br>
 Gruppe 11 <br>
-Kandidat 10014 og ?????
+Kandidat 10014 og 10016
 
 This tool to allows a user to generate an ancestor diagram. 
 You can either use the example console application to build a tree, or 

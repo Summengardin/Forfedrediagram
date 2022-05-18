@@ -159,17 +159,18 @@ template <class T> class Node
     std::shared_ptr<Node> _rightChild;
 };
 
+enum DFSOrder
+{
+    PRE_ORDER,
+    IN_ORDER,
+    POST_ORDER,
+};
 
 template <class T> class Tree
 {
 
   public:
-    enum DFSOrder
-    {
-        PRE_ORDER,
-        IN_ORDER,
-        POST_ORDER,
-    };
+
 
 
     void fillFromJson(const json &treeJson)
@@ -271,9 +272,10 @@ template <class T> class Tree
 
         size_t prevIndex = _root->getIndex();
 
+
         if (prevIndex == index)
         {
-            // If root has index searched for
+            // If root has the index searched for
 
             removedData = *_root->getData();
             if (_root->isLeaf())
@@ -282,7 +284,7 @@ template <class T> class Tree
             }
             else
             {
-                T dummy("Dummy", std::to_string(DummyId()));
+                T dummy{};
                 _root->setData(dummy);
             }
         }
@@ -298,7 +300,7 @@ template <class T> class Tree
                     }
                     else
                     {
-                        T dummy("Dummy", std::to_string(DummyId()));
+                        T dummy{};
                         node->leftChild()->setData(dummy);
                     }
                     return;
@@ -314,7 +316,7 @@ template <class T> class Tree
                     }
                     else
                     {
-                        T dummy("Dummy", std::to_string(DummyId()));
+                        T dummy{};
                         node->rightChild()->setData(dummy);
                     }
                     return;

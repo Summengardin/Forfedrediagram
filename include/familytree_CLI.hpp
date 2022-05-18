@@ -122,10 +122,9 @@ void showTree(ATree::Tree<Person> &tree)
                 std::cout << " ";
             }
         }
-        std::cout << *node->getData() << std::endl;
-    });
+        std::cout << *node->getData() << " [" << std::to_string(node->getIndex()) << "]" << std::endl;
+    }, ATree::DFSOrder::IN_ORDER);
 
-   // std::cout << "Tree size is: " << tree.getSize() << std::endl;
 }
 
 
