@@ -60,6 +60,8 @@ TEST_CASE("Build up int-tree")
         auto expected6 = 6;
         auto expected7 = 7;
 
+
+
         REQUIRE(rootNode->getIndex() == expected1);
         REQUIRE(p1Node->getIndex() == expected2);
         REQUIRE(p2Node->getIndex() == expected3);
@@ -67,6 +69,8 @@ TEST_CASE("Build up int-tree")
         REQUIRE(gp2Node->getIndex() == expected5);
         REQUIRE(gp3Node->getIndex() == expected6);
         REQUIRE(gp4Node->getIndex() == expected7);
+
+
     }
 
     SECTION("Find node by index")
