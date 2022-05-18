@@ -170,9 +170,6 @@ template <class T> class Tree
 {
 
   public:
-
-
-
     void fromJson(const json &treeJson)
     {
         // Fill tree from json-file. Must be compatible, preferably exported from tree
@@ -261,7 +258,6 @@ template <class T> class Tree
 
         size_t prevIndex = _root->getIndex();
 
-
         if (prevIndex == index)
         {
             // If root has the index searched for
@@ -320,14 +316,6 @@ template <class T> class Tree
     [[nodiscard]] bool isEmpty() const { return !_root; }
 
 
-    // TODO
-    [[nodiscard]] T &getDataAt(unsigned int index) { return *_root->getData(); }
-
-
-    // TODO
-    [[nodiscard]] const T &getDataAt(unsigned int index) const { return *_root->getData(); }
-
-
     [[nodiscard]] const Node<T> *getRoot() const { return _root.get(); }
 
 
@@ -378,12 +366,6 @@ template <class T> class Tree
     }
 
 
-    [[nodiscard]] int getSettingIndent() const { return globalIndent; }
-
-
-    void setSettingIndent(int indent) { globalIndent = indent; }
-
-
     void traverseBFS(const std::function<void(Node<T> *)> &func)
     {
         std::queue<Node<T> *> Q;
@@ -405,6 +387,12 @@ template <class T> class Tree
             Q.pop();
         }
     }
+
+
+    [[nodiscard]] int getSettingIndent() const { return globalIndent; }
+
+
+    void setSettingIndent(int indent) { globalIndent = indent; }
 
 
     std::vector<Node<T> *> listAllNodes()
@@ -469,12 +457,6 @@ template <class T> class Tree
     {
         Node<T> *childNode = findNodeByIndex(nodeIndex);
         childNode->addChild(std::shared_ptr<Node<T>>(node));
-    }
-
-
-    void addNode(std::shared_ptr<Node<T>> node)
-    {
-        // TODO
     }
 
 

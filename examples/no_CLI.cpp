@@ -26,8 +26,6 @@ int main() {
     ATree::Node<Person> root = ATree::Node(rootPerson);
     ATree::Node<Person> momNode = ATree::Node(mom);
 
-    familyTree.addNode(std::make_shared<ATree::Node<Person>>(root));
     familyTree.addChild(1, std::make_shared<ATree::Node<Person>>(momNode));
-    familyTree.addNode(std::make_shared<ATree::Node<Person>>(dad));
 
 }
