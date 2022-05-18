@@ -114,17 +114,19 @@ void showTree(ATree::Tree<Person> &tree)
     }
 
     int indent = tree.getSettingIndent();
-    tree.traverseDFSWithDepth(tree.getRoot(), [indent](ATree::Node<Person> *node, int depth) {
-        for (int i = 0; i < depth; ++i)
-        {
-            for (int space = 0; space < indent; ++space)
+    tree.traverseDFSWithDepth(
+        tree.getRoot(),
+        [indent](ATree::Node<Person> *node, int depth) {
+            for (int i = 0; i < depth; ++i)
             {
-                std::cout << " ";
+                for (int space = 0; space < indent; ++space)
+                {
+                    std::cout << " ";
+                }
             }
-        }
-        std::cout << *node->getData() << " [" << std::to_string(node->getIndex()) << "]" << std::endl;
-    }, ATree::DFSOrder::IN_ORDER);
-
+            std::cout << *node->getData() << " [" << std::to_string(node->getIndex()) << "]" << std::endl;
+        },
+        ATree::DFSOrder::IN_ORDER);
 }
 
 
@@ -145,20 +147,21 @@ void showPeople(ATree::Tree<Person> &tree)
     }
 
 
-    Menu sortModeSelection{"Found multiple people with your searh-term.\nHow would you sort the list?",
-                  {{"By index in tree",
-                    [&people]() {
-                        std::sort(people.begin(), people.end(), [](ATree::Node<Person> *n1, ATree::Node<Person> *n2) {
-                            return n1->getIndex() < n2->getIndex();
-                        });
-                    }},
-                   {"By firstname",
-                    [&people]() {
-                        std::sort(people.begin(), people.end(), [](ATree::Node<Person> *n1, ATree::Node<Person> *n2) {
-                            return n1->getData()->getFirstName() < n2->getData()->getFirstName();
-                        });
-                    }}},
-                  false};
+    Menu sortModeSelection{
+        "Found multiple people with your searh-term.\nHow would you sort the list?",
+        {{"By index in tree",
+          [&people]() {
+              std::sort(people.begin(), people.end(), [](ATree::Node<Person> *n1, ATree::Node<Person> *n2) {
+                  return n1->getIndex() < n2->getIndex();
+              });
+          }},
+         {"By firstname",
+          [&people]() {
+              std::sort(people.begin(), people.end(), [](ATree::Node<Person> *n1, ATree::Node<Person> *n2) {
+                  return n1->getData()->getFirstName() < n2->getData()->getFirstName();
+              });
+          }}},
+        false};
 
     sortModeSelection.show();
 
@@ -266,7 +269,8 @@ void removePerson(ATree::Tree<Person> &tree)
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
                                (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
-            matchesSelection.append({personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIndex()); }});
+            matchesSelection.append(
+                {personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIndex()); }});
         }
         matchesSelection.show();
     }

@@ -181,6 +181,7 @@ TEST_CASE("Traversal")
                                 [&actual](ATree::Node<int> *nodePtr) { actual.push_back(nodePtr); });
         CHECK(expected == actual);
     }
+
     SECTION("Traverse Depth First, In-order")
     {
         std::vector<ATree::Node<int> *> expected = {gp1Node.get(), p1Node.get(), gp2Node.get(), rootNode.get(),
@@ -191,6 +192,7 @@ TEST_CASE("Traversal")
             ATree::DFSOrder::IN_ORDER);
         CHECK(expected == actual);
     }
+
     SECTION("Traverse Depth First, Post-order")
     {
         std::vector<ATree::Node<int> *> expected = {gp1Node.get(), gp2Node.get(), p1Node.get(),  gp3Node.get(),
@@ -199,6 +201,15 @@ TEST_CASE("Traversal")
         integerTree.traverseDFS(
             integerTree.getRoot(), [&actual](ATree::Node<int> *nodePtr) { actual.push_back(nodePtr); },
             ATree::DFSOrder::POST_ORDER);
+        CHECK(expected == actual);
+    }
+
+    SECTION("Traverse Breadth First")
+    {
+        std::vector<ATree::Node<int> *> expected = {rootNode.get(), p1Node.get(),  p2Node.get(), gp1Node.get(),
+                                                    gp2Node.get(),  gp3Node.get(), gp4Node.get()};
+        std::vector<ATree::Node<int> *> actual;
+        integerTree.traverseBFS([&actual](ATree::Node<int> *nodePtr) { actual.push_back(nodePtr); });
         CHECK(expected == actual);
     }
 }
