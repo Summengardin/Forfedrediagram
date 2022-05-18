@@ -1,11 +1,12 @@
 //#include <memory>
 
 
-#include "person/person.hpp"
-#include "helpers.hpp"
 #include "atree/ancestor_tree.hpp"
+#include "helpers.hpp"
+#include "person/person.hpp"
 
-int main() {
+int main()
+{
     ATree::Tree<Person> familyTree;
 
     Person rootPerson("Per", "Lillegutt");
@@ -27,5 +28,4 @@ int main() {
     ATree::Node<Person> momNode = ATree::Node(mom);
 
     familyTree.addChild(1, std::make_shared<ATree::Node<Person>>(momNode));
-
 }

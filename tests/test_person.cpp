@@ -135,7 +135,7 @@ TEST_CASE("Setters and Getters")
     // Birth
     aPerson.setBirth("22-06-1999");
     bPerson.setBirth("22-06-99");
-    cPerson.setBirth(Date{2,5,2024});
+    cPerson.setBirth(Date{2, 5, 2024});
     dPerson.setBirth(Date{23, 9, 2011});
     CHECK("22-06-1999" == aPerson.getBirth().toString());
     CHECK("22-06-99" != bPerson.getBirth().toString());
@@ -146,12 +146,12 @@ TEST_CASE("Setters and Getters")
     // Death
     aPerson.setDeath("22-06-2099");
     bPerson.setDeath("22-06-99");
-    cPerson.setDeath(Date{2,5,2024});
+    cPerson.setDeath(Date{2, 5, 2024});
     dPerson.setDeath(Date{23, 9, 2019});
-    CHECK(Date{22,6,2099} == aPerson.getDeath());
-    CHECK(Date{22,6,99} != bPerson.getDeath());
-    CHECK(Date{2,5,2024} == cPerson.getDeath());
-    CHECK(Date{23,9,2019} == dPerson.getDeath());
+    CHECK(Date{22, 6, 2099} == aPerson.getDeath());
+    CHECK(Date{22, 6, 99} != bPerson.getDeath());
+    CHECK(Date{2, 5, 2024} == cPerson.getDeath());
+    CHECK(Date{23, 9, 2019} == dPerson.getDeath());
 
     // Age
     aPerson.setBirth("22-06-1999");

@@ -28,20 +28,7 @@ template <class T> class Node
     explicit Node(const json &jsonFile) : _treeIndex(TreeId()) { this->fromJson(jsonFile); }
 
 
-    void fromJson(const json &jsonFile)
-    {
-        _data = std::make_shared<T>(jsonFile["data"]);
-
-        /*if (jsonFile.contains("treeIndex") && jsonFile.at("treeIndex").is_number_integer())
-        {
-            _treeIndex = jsonFile.at("treeIndex");
-            TreeId.update(_treeIndex);
-        }
-        else
-        {
-            _treeIndex = TreeId();
-        }*/
-    }
+    void fromJson(const json &jsonFile) { _data = std::make_shared<T>(jsonFile["data"]); }
 
 
     [[nodiscard]] json toJson() const
@@ -233,7 +220,8 @@ template <class T> class Tree
 
         // clang-format off
         json j = json{
-                    {"nodes", nodes},
+                    {"nodes",
+                        nodes},
                     {"tree", {
                         {"settings", {
                             {"globalIndent", globalIndent}
@@ -322,7 +310,7 @@ template <class T> class Tree
     [[nodiscard]] Node<T> *getRoot() { return _root.get(); }
 
 
-    [[nodiscard]] std::shared_ptr<Node<T>> getRootOwnership() { return _root; }
+    [[nodiscard]] std::shared_ptr<Node<T>> accessRootOwnership() { return _root; }
 
 
     void traverseDFS(Node<T> *node, const std::function<void(Node<T> *)> &func, DFSOrder order = DFSOrder::PRE_ORDER)

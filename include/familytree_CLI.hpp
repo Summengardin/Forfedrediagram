@@ -115,18 +115,16 @@ void showTree(ATree::Tree<Person> &tree)
     }
 
     int indent = tree.getSettingIndent();
-    tree.traverseDFSWithDepth(
-        tree.getRoot(),
-        [indent](ATree::Node<Person> *node, int depth) {
-            for (int i = 0; i < depth; ++i)
+    tree.traverseDFSWithDepth(tree.getRoot(), [indent](ATree::Node<Person> *node, int depth) {
+        for (int i = 0; i < depth; ++i)
+        {
+            for (int space = 0; space < indent; ++space)
             {
-                for (int space = 0; space < indent; ++space)
-                {
-                    std::cout << " ";
-                }
+                std::cout << " ";
             }
-            std::cout << *node->getData() << " [" << std::to_string(node->getIndex()) << "]" << std::endl;
-        });
+        }
+        std::cout << *node->getData() << " [" << std::to_string(node->getIndex()) << "]" << std::endl;
+    });
 
     std::cout << "Tree size : " << tree.getSize() << std::endl;
 }
@@ -328,11 +326,12 @@ void editPerson(ATree::Tree<Person> &tree)
 void loadTreeFromJson(ATree::Tree<Person> &tree)
 {
     std::string fromFile;
-    Menu fileOptions{"For demo purposes we have provided you with an example file,\ndo you want to use that?",
-        {
-            {"Use demo file", [&fromFile](){fromFile = R"(D:\Data\Dev\AncestorTree\test_files\hidden\FirstTree.json)";}},
-            {"Use other file", [&fromFile](){fromFile = COM::getString("Type in full filepath (.json): ");}}
-        }, false};
+    Menu fileOptions{
+        "For demo purposes we have provided you with an example file,\ndo you want to use that?",
+        {{"Use demo file",
+          [&fromFile]() { fromFile = R"(D:\Data\Dev\AncestorTree\test_files\hidden\FirstTree.json)"; }},
+         {"Use other file", [&fromFile]() { fromFile = COM::getString("Type in full filepath (.json): "); }}},
+        false};
     fileOptions.show();
 
     std::optional<json> treeData;
