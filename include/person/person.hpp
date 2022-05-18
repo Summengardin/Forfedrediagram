@@ -105,7 +105,7 @@ class Person
     [[nodiscard]] json toJson() const
     {
         // clang-format off
-    json j = json{
+        json j = json{
                 {"firstName", _firstName},
                 {"lastName", _lastName},
                 {"middleName", _middleName},

@@ -1,22 +1,33 @@
-#Coding convention<br><br>
+#Coding convention<br>
 
 
-####Name styling:
+###Name styling:
 
 |||
-|---|---|
-| Variable name |camelCase|
-| Class private member name | _camelCase|
+|---|----------------|
+| Va camelCase      me | camelCase      |
+| Class private member name | _camelCase     |
 | Class name | UpperCamelCase |
-| Constants | ALL_CAPS |
-| File naming | UpperCamelCase.xxx |
+| Constants | ALL_CAPS       |
+| File naming | lower_case.xxx |
 
 
-#### <br><br>Naming:
+### <br><br>Naming:
 Variable naming shall be describing and in english. <br>
 
-Use verbs to describe functionality, example: <br>
+Use verbs in front of names to describe functionality, example: <br>
 
 * "setName" and "getName"
 * "isRoot" or "hasChildren" for booleans
+
+### <br><br>Code style:
+Using clang-format base on Microsoft with a few modifications:
+``` .clang-format
+BasedOnStyle: Microsoft
+BreakBeforeBraces: Custom
+BraceWrapping:
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+MaxEmptyLinesToKeep: 2
+```
 
