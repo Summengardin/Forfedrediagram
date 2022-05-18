@@ -123,24 +123,6 @@ public:
     }
 
 
-    int LeapYear() {
-        std::cout << "enter a year:";
-        std::cin >> _year;
-
-        if (_year % 400 == 0) {
-            std::cout << _year << "is a leap year.";
-
-        }
-        else if (_year % 4 == 0) {
-            std::cout << _year << " is a leap year.";
-
-        }
-        else {
-            std::cout << _year << "is not a leap year.";
-        }
-        return 0;
-    }
-
 protected:
     unsigned int _day = 0;
     unsigned int _month = 0;

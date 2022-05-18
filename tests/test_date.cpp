@@ -70,14 +70,14 @@ TEST_CASE("isfuturDate"){
 
 
 
-    CHECK(Date::calculateAge(martinBirthday)== martinActualAge );
-    CHECK(Date::calculateAge(mahammedBirthday)== mahammedActualAge );
-    CHECK(Date::calculateAge(amalieBirthday) == amalieActualAge );
-    CHECK(Date::calculateAge(henrikBirthday) == henrikActualAge );
-    CHECK(Date::calculateAge(hassanBirthday) == hassanActualAge );
-    CHECK(Date::calculateAge(yallaBirthday) == yallaActualAge );
-    CHECK(Date::calculateAge(henningBirthday) == henningActualAge );
-    CHECK(Date::calculateAge(joachimBirthday) == joachimActualAge );
+    CHECK(Date::isFuturDate(martinBirthday)== martinActualAge );
+    CHECK(Date::isFuturDate(mahammedBirthday)== mahammedActualAge );
+    CHECK(Date::isFuturDate(amalieBirthday) == amalieActualAge );
+    CHECK(Date::isFuturDate(henrikBirthday) == henrikActualAge );
+    CHECK(Date::isFuturDate(hassanBirthday) == hassanActualAge );
+    CHECK(Date::isFuturDate(yallaBirthday) == yallaActualAge );
+    CHECK(Date::isFuturDate(henningBirthday) == henningActualAge );
+    CHECK(Date::isFuturDate(joachimBirthday) == joachimActualAge );
 
 
 }
