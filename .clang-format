@@ -18,17 +18,17 @@ AllowShortFunctionsOnASingleLine: All
 #AlwaysBreakTemplateDeclarations: Yes
 BreakBeforeBraces: Custom
 BraceWrapping:
-#  AfterCaseLabel: false
-#  AfterClass: true
-#  AfterControlStatement: Always
-#  AfterEnum: true
-#  AfterFunction: true
-#  AfterNamespace: true
-#  AfterUnion: true
-#  BeforeCatch: false
-#  BeforeElse: false
-#  BeforeLambdaBody: true
-#  IndentBraces: false
+  #  AfterCaseLabel: false
+  #  AfterClass: true
+  #  AfterControlStatement: Always
+  #  AfterEnum: true
+  #  AfterFunction: true
+  #  AfterNamespace: true
+  #  AfterUnion: true
+  #  BeforeCatch: false
+  #  BeforeElse: false
+  #  BeforeLambdaBody: true
+  #  IndentBraces: false
   SplitEmptyFunction: false
   SplitEmptyRecord: false
 #BreakBeforeBinaryOperators: None

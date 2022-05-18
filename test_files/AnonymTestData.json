@@ -6,10 +6,10 @@
         "deathDate": null,
         "firstName": "Rot",
         "lastName": "Rotesen",
-        "age" : 22,
-        "isDead" : false
+        "age": 22,
+        "isDead": false
       },
-      "treeIdx" : 1,
+      "treeIdx": 1,
       "leftIdx": 2,
       "rightIdx": 3
     },
@@ -19,10 +19,10 @@
         "deathDate": null,
         "firstName": "Mor",
         "lastName": "Morsen",
-        "age" : null,
-        "isDead" : false
+        "age": null,
+        "isDead": false
       },
-      "treeIdx" : 2,
+      "treeIdx": 2,
       "leftIdx": 5,
       "rightIdx": 4
     },
@@ -33,10 +33,10 @@
         "firstName": "Far",
         "middleName": "Faren",
         "lastName": "Farsen",
-        "age" : null,
-        "isDead" : false
+        "age": null,
+        "isDead": false
       },
-      "treeIdx" : 3,
+      "treeIdx": 3,
       "leftIdx": 6,
       "rightIdx": 7
     },
@@ -47,10 +47,10 @@
         "firstName": "Bestefar",
         "middleName": "",
         "lastName": "Bestefarsen",
-        "age" : null,
-        "isDead" : false
+        "age": null,
+        "isDead": false
       },
-      "treeIdx" : 4,
+      "treeIdx": 4,
       "leftIdx": null,
       "rightIdx": null
     },
@@ -61,10 +61,10 @@
         "firstName": "Mormor",
         "middleName": "Besta",
         "lastName": "Bestemorsen",
-        "age" : null,
-        "isDead" : false
+        "age": null,
+        "isDead": false
       },
-      "treeIdx" : 5,
+      "treeIdx": 5,
       "leftIdx": 8,
       "rightIdx": 9
     },
@@ -74,10 +74,10 @@
         "deathDate": null,
         "firstName": "Farfar",
         "lastName": "Farfarsen",
-        "age" : null,
-        "isDead" : true
+        "age": null,
+        "isDead": true
       },
-      "treeIdx" : 6,
+      "treeIdx": 6,
       "leftIdx": null,
       "rightIdx": null
     },
@@ -87,10 +87,10 @@
         "deathDate": null,
         "firstName": "Farmor",
         "lastName": "Farmorsen",
-        "age" : null,
-        "isDead" : true
+        "age": null,
+        "isDead": true
       },
-      "treeIdx" : 7,
+      "treeIdx": 7,
       "leftIdx": null,
       "rightIdx": null
     },
@@ -100,10 +100,10 @@
         "deathDate": null,
         "firstName": "Oldemor",
         "lastName": "Oldemorsen",
-        "age" : null,
-        "isDead" : true
+        "age": null,
+        "isDead": true
       },
-      "treeIdx" : 8,
+      "treeIdx": 8,
       "leftIdx": null,
       "rightIdx": null
     },
@@ -114,14 +114,13 @@
         "firstName": "Oldefar",
         "middleName": "Oldingen",
         "lastName": "Oldefarsen",
-        "age" : null,
-        "isDead" : true
+        "age": null,
+        "isDead": true
       },
-      "treeIdx" : 9,
+      "treeIdx": 9,
       "leftIdx": null,
       "rightIdx": null
     }
-
   ],
   "tree": {
     "settings": {

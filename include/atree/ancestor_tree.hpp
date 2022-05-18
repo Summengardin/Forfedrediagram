@@ -28,20 +28,7 @@ template <class T> class Node
     explicit Node(const json &jsonFile) : _treeIndex(TreeId()) { this->fromJson(jsonFile); }
 
 
-    void fromJson(const json &jsonFile)
-    {
-        _data = std::make_shared<T>(jsonFile["data"]);
-
-        /*if (jsonFile.contains("treeIndex") && jsonFile.at("treeIndex").is_number_integer())
-        {
-            _treeIndex = jsonFile.at("treeIndex");
-            TreeId.update(_treeIndex);
-        }
-        else
-        {
-            _treeIndex = TreeId();
-        }*/
-    }
+    void fromJson(const json &jsonFile) { _data = std::make_shared<T>(jsonFile["data"]); }
 
 
     [[nodiscard]] json toJson() const
@@ -170,14 +157,11 @@ template <class T> class Tree
 {
 
   public:
-
-
-
-    void fillFromJson(const json &treeJson)
+    void fromJson(const json &treeJson)
     {
         // Fill tree from json-file. Must be compatible, preferably exported from tree
         // It is done by first extracting all nodes from the tree into a map.
-        // Then looping through the indexes and assigning children based on the indexes
+        // Then looping through the indexes and assigning children based on their indexes
 
         // Tree settings
         if (treeJson["tree"]["settings"]["globalIndent"] != nullptr)
@@ -196,13 +180,8 @@ template <class T> class Tree
         {
             std::shared_ptr<Node<T>> newNode{std::make_shared<Node<T>>(nodeData)};
 
-            std::cout << *newNode << std::endl;
-
             if (nodeData.contains("isRoot") && nodeData.at("isRoot").is_boolean() && nodeData.at("isRoot"))
-            {
                 setRoot(newNode);
-                _size++;
-            }
 
             nodes[nodeData["treeIndex"]] = newNode;
 
@@ -227,15 +206,9 @@ template <class T> class Tree
 
             // Add parents if they exist
             if (leftChildIdx != -1)
-            {
                 node->setLeft(nodes.at(leftChildIdx));
-                ++_size;
-            }
             if (rightChildIdx != -1)
-            {
                 node->setRight(nodes.at(rightChildIdx));
-                ++_size;
-            }
         }
     }
 
@@ -247,7 +220,8 @@ template <class T> class Tree
 
         // clang-format off
         json j = json{
-                    {"nodes", nodes},
+                    {"nodes",
+                        nodes},
                     {"tree", {
                         {"settings", {
                             {"globalIndent", globalIndent}
@@ -271,7 +245,6 @@ template <class T> class Tree
         T removedData;
 
         size_t prevIndex = _root->getIndex();
-
 
         if (prevIndex == index)
         {
@@ -331,21 +304,13 @@ template <class T> class Tree
     [[nodiscard]] bool isEmpty() const { return !_root; }
 
 
-    // TODO
-    [[nodiscard]] T &getDataAt(unsigned int index) { return *_root->getData(); }
-
-
-    // TODO
-    [[nodiscard]] const T &getDataAt(unsigned int index) const { return *_root->getData(); }
-
-
     [[nodiscard]] const Node<T> *getRoot() const { return _root.get(); }
 
 
     [[nodiscard]] Node<T> *getRoot() { return _root.get(); }
 
 
-    [[nodiscard]] std::shared_ptr<Node<T>> getRootOwnership() { return _root; }
+    [[nodiscard]] std::shared_ptr<Node<T>> accessRootOwnership() { return _root; }
 
 
     void traverseDFS(Node<T> *node, const std::function<void(Node<T> *)> &func, DFSOrder order = DFSOrder::PRE_ORDER)
@@ -389,12 +354,6 @@ template <class T> class Tree
     }
 
 
-    [[nodiscard]] int getSettingIndent() const { return globalIndent; }
-
-
-    void setSettingIndent(int indent) { globalIndent = indent; }
-
-
     void traverseBFS(const std::function<void(Node<T> *)> &func)
     {
         std::queue<Node<T> *> Q;
@@ -416,6 +375,12 @@ template <class T> class Tree
             Q.pop();
         }
     }
+
+
+    [[nodiscard]] int getSettingIndent() const { return globalIndent; }
+
+
+    void setSettingIndent(int indent) { globalIndent = indent; }
 
 
     std::vector<Node<T> *> listAllNodes()
@@ -468,24 +433,18 @@ template <class T> class Tree
     }
 
 
-/*    [[nodiscard]] size_t getSize() const
+    [[nodiscard]] size_t getSize()
     {
         int size = 0;
         traverseDFS(getRoot(), [&size](Node<T> *node) { size++; });
         return size;
-    };*/
+    };
 
 
     void addChild(int nodeIndex, std::shared_ptr<Node<T>> node)
     {
         Node<T> *childNode = findNodeByIndex(nodeIndex);
         childNode->addChild(std::shared_ptr<Node<T>>(node));
-    }
-
-
-    void addNode(std::shared_ptr<Node<T>> node)
-    {
-        // TODO
     }
 
 

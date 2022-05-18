@@ -17,10 +17,7 @@ class uuid
         }
     }
 
-    inline void reset()
-    {
-        nextFreeIdx = 0;
-    }
+    inline void reset() { nextFreeIdx = 0; }
 };
 
 inline uuid TreeId;

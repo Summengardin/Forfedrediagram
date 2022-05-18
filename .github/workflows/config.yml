@@ -1,6 +1,6 @@
 name: Build
 
-on: [workflow_dispatch, push]
+on: [ workflow_dispatch, push ]
 
 jobs:
   build-on-linux:
@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ ubuntu-latest ]
 
     steps:
       - uses: actions/checkout@v3
@@ -18,19 +18,19 @@ jobs:
         run: |
           cmake . -B build
           cmake --build build
-          
+
       - name: Test
         run: |
           cd build/tests
           ctest --output-on-failure
-          
+
   build-on-macos:
 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest]
+        os: [ macos-latest ]
 
     steps:
       - uses: actions/checkout@v3
@@ -39,20 +39,20 @@ jobs:
         run: |
           cmake . -B build
           cmake --build build
-          
+
       - name: Test
         run: |
           cd build/tests
           ctest --output-on-failure
-          
-          
+  
+
   build-on-windows:
 
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2019]
+        os: [ windows-2019 ]
 
     steps:
       - uses: actions/checkout@v3
@@ -61,7 +61,7 @@ jobs:
         run: |
           cmake . -B build -A x64
           cmake --build build --config Release
-          
+
       - name: Test
         run: |
           cd build/tests

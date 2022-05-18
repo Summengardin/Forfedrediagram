@@ -1,7 +1,6 @@
-#Coding convention<br>
+# Coding convention<br>
 
-
-###Name styling:
+### Name styling:
 
 |||
 |---|----------------|
@@ -11,8 +10,8 @@
 | Constants | ALL_CAPS       |
 | File naming | lower_case.xxx |
 
-
 ### <br><br>Naming:
+
 Variable naming shall be describing and in english. <br>
 
 Use verbs in front of names to describe functionality, example: <br>
@@ -21,7 +20,9 @@ Use verbs in front of names to describe functionality, example: <br>
 * "isRoot" or "hasChildren" for booleans
 
 ### <br><br>Code style:
+
 Using clang-format base on Microsoft with a few modifications:
+
 ``` .clang-format
 BasedOnStyle: Microsoft
 BreakBeforeBraces: Custom
