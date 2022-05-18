@@ -23,7 +23,6 @@ public:
 };
 
 inline uuid TreeId;
-inline Today today;
 
 
 //FORFEDREDIAGRAM_GLOBALS_HPP

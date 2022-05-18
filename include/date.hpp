@@ -90,32 +90,36 @@ public:
     }
 
 
-    [[nodiscard]] static unsigned int calculateAge(const Date &birthDate, const Date &presentDate){
-        unsigned int age = presentDate._year - birthDate._year;
-        if(birthDate._month > presentDate._month || (birthDate._month == presentDate._month && birthDate._day > presentDate._day)) {
+    [[nodiscard]] static unsigned int calculateAge(const Date &date){
+        unsigned int age = today()._year - date._year;
+        if(date._month > today()._month || (date._month == today()._month && date._day > today()._day)) {
             return age - 1;
         }
-        else {
-            return age;
-        }
-
+        return age;
     }
 
 
-    [[nodiscard]] static bool isFuturDate(const Date &birthDate, const Date &presentDate){
-        unsigned int age = presentDate._year - birthDate._year;
-        if (birthDate._month < presentDate._month) || (birthDate._year < birthDate._year){
-           return true;
+    [[nodiscard]] static bool isFuturDate(const Date &date){
+        unsigned int age = today()._year - date._year;
+        if (date._month < today()._month || date._day < today()._day || date._year < today()._year) {
+            return true;
+        }
            else {
                return age;
            }
         }
 
+    static Date today(){
+        // Used for updating TODAY-date
+        auto nowPtr = std::chrono::system_clock::now();
+        std::time_t now = std::chrono::system_clock::to_time_t(nowPtr);
 
+        std::tm localTime = *std::localtime(&now);
+       auto day = localTime.tm_mday;
+       auto month = localTime.tm_mon + 1;
+       auto year = localTime.tm_year + 1900;
 
-
-
-
+       return {day, month, year};
     }
 
 
@@ -145,30 +149,6 @@ protected:
     std::array<unsigned int, 12> daysInMonth = {31, 30, 28, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 };
 
-class Today : public Date
-{
-public:
-    Date operator()()
-    {
-        update();
-        return *this;
-    }
-
-    void update()
-    {
-        // Used for updating TODAY-date
-        auto nowPtr = std::chrono::system_clock::now();
-        std::time_t now = std::chrono::system_clock::to_time_t(nowPtr);
-
-        std::tm localTime = *std::localtime(&now);
-        _day = localTime.tm_mday;
-        _month = localTime.tm_mon + 1;
-        _year = localTime.tm_year + 1900;
-    }
-
-
-
-};
 
 
 //FORFEDREDIAGRAM_DATE_HPP

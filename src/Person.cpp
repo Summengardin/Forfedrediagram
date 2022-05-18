@@ -116,7 +116,7 @@ const Date &Person::getBirth() const
 
 int Person::getAge() const
 {
-    return Date::yearsBetween(today(), _birth);
+    return Date::calculateAge( _birth);
 }
 
 bool Person::isAlive() const
