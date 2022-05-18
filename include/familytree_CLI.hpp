@@ -39,8 +39,9 @@ void editPerson(Person &personToEdit)
         personToEdit.setGender(newGender);
 
 
-    auto birthAsString = COM::getString(
-        "When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " born? [DD-MM-YYYY]: (" + personToEdit.getBirth().toString() + ")", true);
+    auto birthAsString = COM::getString("When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() +
+                                            " born? [DD-MM-YYYY]: (" + personToEdit.getBirth().toString() + ")",
+                                        true);
     while (!birthAsString.empty() && !Date::validateStringFormat(birthAsString) && (birthAsString != "-"))
         birthAsString = COM::getString("That was not a valid date, format must be [DD-MM-YYYY].\nTry again: ");
     if (birthAsString != "-")
@@ -125,8 +126,7 @@ void showTree(ATree::Tree<Person> &tree)
                 }
             }
             std::cout << *node->getData() << " [" << std::to_string(node->getIndex()) << "]" << std::endl;
-        },
-        ATree::DFSOrder::IN_ORDER);
+        });
 
     std::cout << "Tree size : " << tree.getSize() << std::endl;
 }
@@ -281,20 +281,24 @@ void removePerson(ATree::Tree<Person> &tree)
 
 void editPerson(ATree::Tree<Person> &tree)
 {
+    auto searchTerm = COM::getString("Type in name or tree-index of the person you want to edit");
+    std::vector<ATree::Node<Person> *> matches;
 
-    // Choose person to edit
-    auto searchTerm = COM::getString("Type in name of the person you want to edit");
-    std::vector<ATree::Node<Person> *> people = tree.findNodeByString(searchTerm);
+    if (COM::isNumber(searchTerm))
+        matches.push_back(tree.findNodeByIndex(std::stoi(searchTerm)));
+    else
+        matches = tree.findNodeByString(searchTerm);
+
 
     Person *personToEdit;
-    if (people.empty())
+    if (matches.empty())
     {
         std::cout << "\nCould not find anyone with search-term \"" << searchTerm << "\"" << std::endl;
         return;
     }
-    else if (people.size() == 1)
+    else if (matches.size() == 1)
     {
-        personToEdit = people[0]->getData();
+        personToEdit = matches[0]->getData();
     }
     else
     {
@@ -314,7 +318,8 @@ void editPerson(ATree::Tree<Person> &tree)
 
     // Edit person
     std::cout << "\n--- EDITING ---\n" << *personToEdit << "\n";
-    std::cout << "\nFor every entry, \"-\" will leave value unchanged" << "\n";
+    std::cout << "\nFor every entry, \"-\" will leave value unchanged"
+              << "\n";
     std::cout << "Values in parentheses is current value\n" << std::endl;
     editPerson(*personToEdit);
 }
@@ -322,8 +327,14 @@ void editPerson(ATree::Tree<Person> &tree)
 
 void loadTreeFromJson(ATree::Tree<Person> &tree)
 {
-    // Select file to load tree from
-    std::string fromFile = COM::getString("Type in full filepath (.json): ");
+    std::string fromFile;
+    Menu fileOptions{"For demo purposes we have provided you with an example file,\ndo you want to use that?",
+        {
+            {"Use demo file", [&fromFile](){fromFile = R"(D:\Data\Dev\AncestorTree\test_files\hidden\FirstTree.json)";}},
+            {"Use other file", [&fromFile](){fromFile = COM::getString("Type in full filepath (.json): ");}}
+        }, false};
+    fileOptions.show();
+
     std::optional<json> treeData;
     while (true)
     {
@@ -343,8 +354,8 @@ void loadTreeFromJson(ATree::Tree<Person> &tree)
         break;
     }
 
-    tree.fillFromJson(treeData.value());
-    std::cout << "ATree::Tree is loaded" << std::endl;
+    tree.fromJson(treeData.value());
+    std::cout << "Tree is successfully loaded" << std::endl;
 }
 
 
