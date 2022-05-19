@@ -3,5 +3,5 @@ include_directories(PUBLIC
 
 
 add_executable(FamilyTree
-        familytree_CLI.cpp)
+        AncestorTreeCLI.cpp)
 

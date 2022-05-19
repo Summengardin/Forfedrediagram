@@ -3,10 +3,10 @@
 #include <iostream>
 #include <memory>
 
-#include "atree/ancestor_tree.hpp"
-#include "menu/menu.hpp"
-#include "person/person.hpp"
-#include "json/jsonParser.hpp"
+#include "atree/AncestorTree.hpp"
+#include "menu/Menu.hpp"
+#include "person/Person.hpp"
+#include "json/JsonParser.hpp"
 
 namespace
 {

@@ -4,7 +4,7 @@
 #include <string>
 
 #include "catch.hpp"
-#include "helpers.hpp"
+#include "Helpers.hpp"
 
 TEST_CASE("Split string")
 {

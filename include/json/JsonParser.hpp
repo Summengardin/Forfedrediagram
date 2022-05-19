@@ -2,8 +2,8 @@
 
 #include <filesystem>
 
-#include "atree/ancestor_tree.hpp"
-#include "person/person.hpp"
+#include "atree/AncestorTree.hpp"
+#include "person/Person.hpp"
 
 #include "json.hpp"
 using json = nlohmann::json;

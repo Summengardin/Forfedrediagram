@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "catch.hpp"
-#include "person/person.hpp"
+#include "person/Person.hpp"
 
 TEST_CASE("Constructors")
 {

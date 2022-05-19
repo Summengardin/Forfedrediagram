@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include "atree/ancestor_tree.hpp"
-#include "familytree_CLI.hpp"
-#include "menu/menu.hpp"
-#include "person/person.hpp"
+#include "atree/AncestorTree.hpp"
+#include "AncestorTreeCLI.hpp"
+#include "menu/Menu.hpp"
+#include "person/Person.hpp"
 
 int main()
 {

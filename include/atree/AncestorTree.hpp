@@ -9,8 +9,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include "globals.hpp"
-#include "helpers.hpp"
+#include "Globals.hpp"
+#include "Helpers.hpp"
 
 #include "json/json.hpp"
 using json = nlohmann::json;

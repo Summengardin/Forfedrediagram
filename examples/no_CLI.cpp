@@ -1,9 +1,9 @@
 //#include <memory>
 
 
-#include "atree/ancestor_tree.hpp"
-#include "helpers.hpp"
-#include "person/person.hpp"
+#include "atree/AncestorTree.hpp"
+#include "Helpers.hpp"
+#include "person/Person.hpp"
 
 int main()
 {

@@ -4,11 +4,10 @@
 #include <iostream>
 
 #include "catch.hpp"
-#include "date/date.hpp"
+#include "date/Date.hpp"
 
 TEST_CASE("calculateAge")
 {
-
 
     Date date1{19, 5, 1999}; // testing one on same date as the test
     Date date2{5, 5, 1999};  // testing one before the test date

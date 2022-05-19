@@ -7,8 +7,8 @@
 #include <utility>
 #include <variant>
 
-#include "date/date.hpp"
-#include "helpers.hpp"
+#include "date/Date.hpp"
+#include "Helpers.hpp"
 
 
 class Person

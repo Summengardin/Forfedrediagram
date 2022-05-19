@@ -1,8 +1,8 @@
 #define CATCH_CONFIG_MAIN
 
-#include "atree/ancestor_tree.hpp"
+#include "atree/AncestorTree.hpp"
 #include "catch.hpp"
-#include "person/person.hpp"
+#include "person/Person.hpp"
 
 TEST_CASE("Build up int-tree")
 {
