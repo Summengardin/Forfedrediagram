@@ -10,43 +10,45 @@
 namespace
 {
 
-void editPerson(Person &personToEdit)
+void editPerson(Person &personToEdit, bool newPersonFlag = false)
 {
 
-    auto newFirstName = COM::getString("First name: (" + personToEdit.getFirstName() + ")");
+
+    auto firstNamePrompt = "First name: " + (newPersonFlag ?  "" : "(" + personToEdit.getFirstName() + ")");
+    auto newFirstName = COM::getString(firstNamePrompt);
     while (!Person::validateName(newFirstName) && (newFirstName != "-"))
         newFirstName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newFirstName != "-")
         personToEdit.setFirstName(newFirstName);
 
-
-    auto newMiddleName = COM::getString("Middle name: (" + personToEdit.getMiddleName() + ")", true);
+    auto middleNamePrompt = "Middle name: " + (newPersonFlag ?  "" : "(" + personToEdit.getMiddleName() + ")");
+    auto newMiddleName = COM::getString(middleNamePrompt, true);
     while (!newMiddleName.empty() && !Person::validateName(newMiddleName) && (newMiddleName != "-"))
         newMiddleName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newMiddleName != "-")
         personToEdit.setMiddleName(newMiddleName);
 
-
-    auto newLastName = COM::getString("Last name: (" + personToEdit.getLastName() + ")");
+    auto lastNamePrompt = "Last name: " + (newPersonFlag ?  "" : "(" + personToEdit.getLastName() + ")");
+    auto newLastName = COM::getString(lastNamePrompt);
     while (!Person::validateName(newLastName) && (newLastName != "-"))
         newLastName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newLastName != "-")
         personToEdit.setLastName(newLastName);
 
-
-    auto newGender = COM::getString("Gender (male, female, other): (" + personToEdit.getGenderString() + ")", true);
+    auto genderPrompt = "Gender(male, female or other): " + (newPersonFlag ?  "" : "(" + personToEdit.getGenderString() + ")");
+    auto newGender = COM::getString(genderPrompt, true);
+    while(newGender != "male" && newGender != "female" && newGender != "other" && newGender != "-")
+        newGender = COM::getString("That was not a valid gender. \nTry again:");
     if (newGender != "-")
         personToEdit.setGender(newGender);
 
+    auto birthPrompt = "When was " +  personToEdit.getFirstName() + " born? [DD-MM-YYYY]: " + (newPersonFlag ? "" : "(" + personToEdit.getBirth().toString() + ")");
+    auto birthAsString = COM::getString(birthPrompt, true);
 
-    auto birthAsString = COM::getString("When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() +
-                                            " born? [DD-MM-YYYY]: (" + personToEdit.getBirth().toString() + ")",
-                                        true);
     while (!birthAsString.empty() && !Date::validateStringFormat(birthAsString) && (birthAsString != "-"))
         birthAsString = COM::getString("That was not a valid date, format must be [DD-MM-YYYY].\nTry again: ");
     if (birthAsString != "-")
         personToEdit.setBirth(birthAsString);
-
 
     auto aliveAnswer =
         COM::getString("Is " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " alive? (y/n)");
@@ -179,7 +181,7 @@ void addPerson(ATree::Tree<Person> &tree)
     // Generate the new person and create node with this person
     Person newPerson;
 
-    editPerson(newPerson);
+    editPerson(newPerson, true);
     std::unique_ptr<ATree::Node<Person>> newNode = std::make_unique<ATree::Node<Person>>(newPerson);
 
     // Set new node as root if ATree::Tree has no root
@@ -190,7 +192,7 @@ void addPerson(ATree::Tree<Person> &tree)
     }
 
     // Choose relation of new node
-    auto name = COM::getString("Skriv navnet på barnet til " + newPerson.getFirstName());
+    auto name = COM::getString("Write the name of the child to " + newPerson.getFirstName());
     std::vector<ATree::Node<Person> *> matchingNodes = tree.findNodeByString(name);
 
     int attemptCounter = 0;
@@ -208,13 +210,13 @@ void addPerson(ATree::Tree<Person> &tree)
         }
         else
         {
-            std::cout << "\nFant ingen person med navn \"" << name << "\"\n"
-                      << "Prøv igjen:" << std::endl;
+            std::cout << "\nfound no person with the name \"" << name << "\"\n"
+                      << "Try again:" << std::endl;
 
             attemptCounter++;
         }
 
-        name = COM::getString("Skriv navnet på barnet til " + newPerson.getFirstName());
+        name = COM::getString("Write the name of the child " + newPerson.getFirstName());
         matchingNodes = tree.findNodeByString(name);
     }
 
@@ -227,7 +229,7 @@ void addPerson(ATree::Tree<Person> &tree)
         // Creates new menu to choose between all matching Nodes with their _data as text
         ATree::Node<Person> *parentNode;
         Menu matchesMenu;
-        matchesMenu.setTitle("Velg person som skal være forelder");
+        matchesMenu.setTitle("Choose the person who is the parent");
         for (auto node : tree.findNodeByString(name))
         {
             matchesMenu.append(

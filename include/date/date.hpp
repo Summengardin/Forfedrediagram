@@ -67,6 +67,8 @@ class Date
         std::smatch match;
         return std::regex_match(dateAsString, match, format);
     }
+    [[nodiscard]] static bool isDateValid(const Date &date) { return dayIsValid(date) && monthIsValid(date); }
+
 
     [[nodiscard]] static unsigned int calculateAge(const Date &birth) { return calculateAge(birth, today()); }
 
@@ -102,13 +104,13 @@ class Date
 
     [[nodiscard]] bool isFutureDate() const { return isFutureDate(*this); }
 
-    [[nodiscard]] bool validateDay(const Date &date) const
+    [[nodiscard]] static bool dayIsValid(const Date &date) const
     {
         unsigned int monthIndex = date.getMonth() - 1;
         return date.getDay() <= DAYS_IN_MONTH[monthIndex];
     }
 
-    [[nodiscard]] bool validateMonth(const Date &date) const { return date.getMonth() <= MONTHS_IN_YEAR; }
+    [[nodiscard]] static bool monthIsValid(const Date &date) const { return date.getMonth() <= MONTHS_IN_YEAR; }
 
     [[nodiscard]] static unsigned int yearsBetween(const Date &date1, const Date &date2)
     {
@@ -150,8 +152,8 @@ class Date
     unsigned int _month = 0;
     unsigned int _year = 0;
 
-    std::array<unsigned int, 12> DAYS_IN_MONTH = {31, 30, 28, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    unsigned int MONTHS_IN_YEAR = 12;
+    static inline const std::array<unsigned int, 12> DAYS_IN_MONTH = {31, 30, 28, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    static inline const unsigned int MONTHS_IN_YEAR = 12;
 };
 
 
