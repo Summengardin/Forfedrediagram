@@ -1,5 +1,4 @@
-include_directories(
-        PUBLIC
+include_directories(PUBLIC
         "${CMAKE_SOURCE_DIR}/include")
 
 

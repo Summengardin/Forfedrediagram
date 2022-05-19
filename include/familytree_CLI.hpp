@@ -6,14 +6,16 @@
 #include "atree/ancestor_tree.hpp"
 #include "menu/menu.hpp"
 #include "person/person.hpp"
+#include "json/jsonParser.hpp"
 
 namespace
 {
 
-void editPerson(Person &personToEdit)
+void editPerson(Person &personToEdit, bool newPersonFlag = false)
 {
 
-    auto newFirstName = COM::getString("First name: (" + personToEdit.getFirstName() + ")");
+    auto firstNamePrompt = "First name: " + (newPersonFlag ? "" : " (" + personToEdit.getFirstName() + ")");
+    auto newFirstName = COM::getString(firstNamePrompt);
     while (!Person::validateName(newFirstName) && (newFirstName != "-"))
         newFirstName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newFirstName != "-")
@@ -179,7 +181,7 @@ void addPerson(ATree::Tree<Person> &tree)
     // Generate the new person and create node with this person
     Person newPerson;
 
-    editPerson(newPerson);
+    editPerson(newPerson, true);
     std::unique_ptr<ATree::Node<Person>> newNode = std::make_unique<ATree::Node<Person>>(newPerson);
 
     // Set new node as root if ATree::Tree has no root
@@ -325,45 +327,78 @@ void editPerson(ATree::Tree<Person> &tree)
 
 void loadTreeFromJson(ATree::Tree<Person> &tree)
 {
-    std::string fromFile;
+    std::filesystem::path demoFile;
+
     Menu fileOptions{
         "For demo purposes we have provided you with an example file,\ndo you want to use that?",
         {{"Use demo file",
-          [&fromFile]() { fromFile = R"(D:\Data\Dev\AncestorTree\test_files\hidden\FirstTree.json)"; }},
-         {"Use other file", [&fromFile]() { fromFile = COM::getString("Type in full filepath (.json): "); }}},
+          [&demoFile]() { demoFile = std::filesystem::absolute(R"(..\..\test_files\hidden\FirstTree.json)"); }},
+         {"Use anonymous file",
+          [&demoFile]() { demoFile = std::filesystem::absolute(R"(..\..\test_files\AnonymTestData.json)"); }},
+         {"Use other file", [&demoFile]() { demoFile = COM::getString("Type in full filepath (.json): "); }}},
         false};
+
     fileOptions.show();
 
-    std::optional<json> treeData;
+    std::cout << demoFile << std::endl;
+
     while (true)
     {
-        if (!COM::fileExists(fromFile))
+        if (!exists(demoFile))
         {
-            fromFile = COM::getString("Sorry, could not find the file\nCheck spelling: ");
+            demoFile = COM::getString("Sorry, could not find the file\nCheck spelling: ");
             continue;
         }
 
-        treeData = COM::openFileAsJson(fromFile);
-
-        if (!treeData)
+        if (!JsonParser::isJson(demoFile))
         {
-            fromFile = COM::getString("Filetype must be \".json\", try again:  ");
+            demoFile = COM::getString("Filetype must be \".json\", try again:  ");
             continue;
         }
+
         break;
     }
 
-    tree.fromJson(treeData.value());
-    std::cout << "Tree is successfully loaded" << std::endl;
+
+    try
+    {
+        json treeData = JsonParser::jsonFromFile(demoFile);
+        JsonParser::fromJson(treeData, tree);
+        std::cout << "Tree is successfully loaded" << std::endl;
+    }
+    catch (const std::invalid_argument &error)
+    {
+        std::cout << "Woops, seems like that file was invalid.\nError message:" << error.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cout << "Sorry, unexpected error occurred. Could not build tree from that file" << std::endl;
+    }
 }
 
 
 void saveTreeToJson(ATree::Tree<Person> &tree)
 {
-    auto fileName = COM::getString("Name of file:");
-    std::ofstream outputFile(fileName);
+    std::filesystem::path fileName = COM::getString("Tree will be stored as a .json-file\nName of file:");
 
-    outputFile << tree.toJson().dump(4);
+    while (fileName.has_extension() && fileName.extension() != ".json")
+        fileName = COM::getString("Filename should be without extension or with .json-extension. Try again:");
+
+    if (!fileName.has_extension())
+        fileName += ".json";
+
+    std::filesystem::path outputPath = std::filesystem::absolute("..\\Output");
+
+    if (!exists(outputPath))
+        std::filesystem::create_directories(outputPath);
+
+    outputPath /= fileName;
+
+    std::ofstream outputFile{outputPath};
+    outputFile << JsonParser::toJson(tree).dump(4);
+
+    std::cout << "\n" << fileName << " was saved\n";
+    std::cout << "Located at: " << outputPath.string() << std::endl;
 }
 
 

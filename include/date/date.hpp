@@ -110,15 +110,6 @@ class Date
 
     [[nodiscard]] bool validateMonth(const Date &date) const { return date.getMonth() <= MONTHS_IN_YEAR; }
 
-    [[nodiscard]] static unsigned int yearsBetween(const Date &date1, const Date &date2)
-    {
-        if (date1._year > 0 && date2._year > 0)
-        {
-            return date1._year - date2._year;
-        }
-        else
-            return 0;
-    }
 
     static Date today()
     {

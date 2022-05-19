@@ -111,18 +111,11 @@ inline bool isAlphaNumeric(const std::string &str)
     return std::regex_match(str, format);
 }
 
-inline bool fileIsType(const std::string &mainStr, const std::string &filetype)
+inline bool fileIsType(const std::string &filepath, const std::string &filetype)
 {
-    if (!isAlphaNumeric(filetype))
-    {
-        std::cout << "Filetype: " << filetype << " is not alphanumeric" << std::endl;
-        return false;
-    }
-    std::string testStr = "(\\." + filetype + ")\\z";
-    std::cout << "testStr is: " << testStr << std::endl;
-    std::regex format{testStr}; // Example (\.json)\z
-    std::smatch match;
-    return std::regex_match(mainStr, format);
+    std::filesystem::path file = filepath;
+
+    return (file.extension() == ("." + filetype));
 }
 
 inline bool stringHasEnding(const std::string &mainStr, const std::string &ending)

@@ -10,7 +10,7 @@ BasedOnStyle: Microsoft
 #AllowAllParametersOfDeclarationOnNextLine: false
 #AllowShortBlocksOnASingleLine: Never
 #AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: None
 #AllowShortIfStatementsOnASingleLine: Always
 #AllowShortLambdasOnASingleLine: None
 #AllowShortLoopsOnASingleLine: true
@@ -33,7 +33,7 @@ BraceWrapping:
   SplitEmptyRecord: false
 #BreakBeforeBinaryOperators: None
 #BreakBeforeTernaryOperators: true
-#BreakConstructorInitializers: AfterColon
+BreakConstructorInitializers: BeforeComma
 #BreakInheritanceList: AfterColon
 #ColumnLimit: 0
 #CompactNamespaces: false
