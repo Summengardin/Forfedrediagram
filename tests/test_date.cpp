@@ -8,76 +8,37 @@
 TEST_CASE("calculateAge") {
 
 
-    Date martinBirthday{22,6,1999};
-    Date mahammedBirthday{15,5,1999};
-    Date amalieBirthday{ 21, 8, 1998};
-    Date henrikBirthday{29, 10, 2001};
-    Date yallaBirthday{25, 1, 2003};
-    Date hassanBirthday{13, 5, 2009};
-    Date henningBirthday{29, 1, 1999};
-    Date joachimBirthday{5,5,1999};
+
+    Date date1{19, 5, 1999};    // testing one on same date as the test
+    Date date2{5,5,1999};       // testing one before the test date
     
 
 
-
-
-
-    unsigned int martinActualAge = 22;
-    unsigned int mahammedActualAge = 23;
-    unsigned int amalieActualAge = 23;
-    unsigned int henrikActualAge = 20;
-    unsigned int yallaActualAge = 19;
-    unsigned int hassanActualAge = 13;
-    unsigned int henningActualAge = 23;
-    unsigned int joachimActualAge = 23;
+    unsigned int date1ActualAge = 23;
+    unsigned int date2ActualAge = 23;
     
     
 
+6
 
 
-    CHECK(Date::calculateAge(martinBirthday) == martinActualAge );
-    CHECK(Date::calculateAge(mahammedBirthday) == mahammedActualAge );
-    CHECK(Date::calculateAge(amalieBirthday) == amalieActualAge );
-    CHECK(Date::calculateAge(henrikBirthday) == henrikActualAge );
-   // CHECK(Date::calculateAge(hassanBirthday) == hassanActualAge );
-    CHECK(Date::calculateAge(yallaBirthday) == yallaActualAge );
-   // CHECK(Date::calculateAge(henningBirthday) == henningActualAge );
-    //CHECK(Date::calculateAge(joachimBirthday) == joachimActualAge );
+    CHECK(Date::calculateAge(date1) == date1ActualAge );
+    CHECK(Date::calculateAge(date2) == date2ActualAge );
     
 
-
-    }
+}
 
 TEST_CASE("isfuturDate"){
-    Date martinBirthday{22,6,1999};
-    Date mahammedBirthday{15,5,1999};
-    Date amalieBirthday{ 21, 8, 1998};
-    Date henrikBirthday{29, 10, 2001};
-    Date yallaBirthday{25, 1, 2003};
-    Date hassanBirthday{18, 5, 2022}; //testing one on the test date
-    Date henningBirthday{29, 7, 2025}; // tesing on after the test dat
-    Date joachimBirthday{19,6,2024};
 
-
-    unsigned int martinActualAge = 22;
-    unsigned int mahammedActualAge = 23;
-    unsigned int amalieActualAge = 23;
-    unsigned int henrikActualAge = 20;
-    unsigned int yallaActualAge = 19;
-    unsigned int hassanActualAge = 12;
-    unsigned int henningActualAge = 23;
-    unsigned int joachimActualAge = 23;
+    Date date1{19, 5, 2000}; // testing one on the test date
+    Date date2{29, 7, 2025}; // tesing one after the test date
+    Date date3{19,5,2022};  // testing one before the test date
 
 
 
-    CHECK(Date::isFuturDate(martinBirthday)== martinActualAge );
-    CHECK(Date::isFuturDate(mahammedBirthday)== mahammedActualAge );
-    CHECK(Date::isFuturDate(amalieBirthday) == amalieActualAge );
-    CHECK(Date::isFuturDate(henrikBirthday) == henrikActualAge );
-    CHECK(Date::isFuturDate(hassanBirthday) == hassanActualAge );
-    CHECK(Date::isFuturDate(yallaBirthday) == yallaActualAge );
-    CHECK(Date::isFuturDate(henningBirthday) == henningActualAge );
-    CHECK(Date::isFuturDate(joachimBirthday) == joachimActualAge );
 
+    CHECK_FALSE(Date::isFuturDate(date1));
+    CHECK(Date::isFuturDate(date2));
+    CHECK(Date::isFuturDate(date3)) ;
 
 }

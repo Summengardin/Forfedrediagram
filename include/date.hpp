@@ -99,13 +99,14 @@ public:
     }
 
 
+
     [[nodiscard]] static bool isFuturDate(const Date &date){
         unsigned int age = today()._year - date._year;
         if (date._month < today()._month || date._day < today()._day || date._year < today()._year) {
-            return true;
+            return false;
         }
            else {
-               return age;
+               return true;
            }
         }
 
