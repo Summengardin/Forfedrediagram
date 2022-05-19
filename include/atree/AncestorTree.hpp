@@ -241,6 +241,7 @@ template <class T> class Tree
 {
   public:
     Tree() = default;
+
     void setRoot(std::shared_ptr<Node<T>> n);
 
     T removeNode(size_t index);
@@ -283,6 +284,12 @@ template <class T> class Tree
 
 template <class T> void Tree<T>::setRoot(std::shared_ptr<Node<T>> n)
 {
+    if(n == nullptr)
+    {
+        _root = n;
+        return;
+    }
+
     if (_root)
         _root->setRootFlag(false);
 

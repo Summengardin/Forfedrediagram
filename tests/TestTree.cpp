@@ -112,6 +112,16 @@ TEST_CASE("Removing")
 
 
     integerTree.setRoot(rootNode);
+
+    SECTION("Remove node from single-node-tree")
+    {
+        CHECK(integerTree.findNodeByString("1").size() == 1);
+        CHECK(integerTree.getSize() == 1);
+        auto nodeToRemoveIndex = integerTree.findNodeByString("1")[0]->getIndex();
+        integerTree.removeNode(nodeToRemoveIndex);
+        CHECK(integerTree.isEmpty());
+    }
+
     rootNode->addChild(p1Node);
     rootNode->addChild(p2Node);
     p1Node->addChild(gp1Node);

@@ -14,13 +14,25 @@ class Date
   public:
     Date() = default;
 
-    Date(int d, int m, int y) : _day(d), _month(m), _year(y){};
+    Date(int d, int m, int y)
+        : _day(d)
+        , _month(m)
+        , _year(y){};
 
-    explicit Date(const std::string &dateAsString) { setDate(dateAsString); }
+    explicit Date(const std::string &dateAsString)
+    {
+        setDate(dateAsString);
+    }
 
-    [[nodiscard]] Date getDate() const { return *this; }
+    [[nodiscard]] Date getDate() const
+    {
+        return *this;
+    }
 
-    [[nodiscard]] bool isValid() const { return !(_day == 0 || _month == 0 || _year == 0); }
+    [[nodiscard]] bool isValid() const
+    {
+        return !(_day == 0 || _month == 0 || _year == 0);
+    }
 
     [[nodiscard]] std::string toString() const
     {
@@ -41,11 +53,20 @@ class Date
         return "unknown date";
     }
 
-    [[nodiscard]] unsigned int getDay() const { return _day; }
+    [[nodiscard]] unsigned int getDay() const
+    {
+        return _day;
+    }
 
-    [[nodiscard]] unsigned int getMonth() const { return _month; }
+    [[nodiscard]] unsigned int getMonth() const
+    {
+        return _month;
+    }
 
-    [[nodiscard]] unsigned int getYear() const { return _year; }
+    [[nodiscard]] unsigned int getYear() const
+    {
+        return _year;
+    }
 
     bool setDate(const std::string &dateAsString)
     {
@@ -68,7 +89,29 @@ class Date
         return std::regex_match(dateAsString, match, format);
     }
 
-    [[nodiscard]] static unsigned int calculateAge(const Date &birth) { return calculateAge(birth, today()); }
+
+    [[nodiscard]] static bool dayIsValid(const Date &date)
+    {
+        unsigned int monthIndex = date.getMonth() - 1;
+        return date.getDay() <= DAYS_IN_MONTH[monthIndex];
+    }
+
+
+    [[nodiscard]] static bool monthIsValid(const Date &date)
+    {
+        return date.getMonth() <= MONTHS_IN_YEAR;
+    }
+
+    [[nodiscard]] static bool dateIsValid(const Date &date)
+    {
+        return dayIsValid(date) && monthIsValid(date);
+    }
+
+    [[nodiscard]] static unsigned int calculateAge(const Date &birth)
+    {
+        return calculateAge(birth, today());
+    }
+
 
     [[nodiscard]] static unsigned int calculateAge(const Date &birth, const Date &death)
     {
@@ -100,16 +143,10 @@ class Date
         return false;
     }
 
-    [[nodiscard]] bool isFutureDate() const { return isFutureDate(*this); }
-
-    [[nodiscard]] bool validateDay(const Date &date) const
+    [[nodiscard]] bool isFutureDate() const
     {
-        unsigned int monthIndex = date.getMonth() - 1;
-        return date.getDay() <= DAYS_IN_MONTH[monthIndex];
+        return isFutureDate(*this);
     }
-
-    [[nodiscard]] bool validateMonth(const Date &date) const { return date.getMonth() <= MONTHS_IN_YEAR; }
-
 
     static Date today()
     {
@@ -141,8 +178,8 @@ class Date
     unsigned int _month = 0;
     unsigned int _year = 0;
 
-    std::array<unsigned int, 12> DAYS_IN_MONTH = {31, 30, 28, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    unsigned int MONTHS_IN_YEAR = 12;
+    static inline const std::array<unsigned int, 12> DAYS_IN_MONTH = {31, 30, 28, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    static inline const unsigned int MONTHS_IN_YEAR = 12;
 };
 
 
