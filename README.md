@@ -103,7 +103,7 @@ As mentioned, you are able to load and save the tree to a json-file. Here is an 
 ```  
 
 ## UML
-
+![UML-diagram](.github/assets/UML_image.png)
 
 ## Credits
 
