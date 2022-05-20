@@ -1,14 +1,17 @@
 include_directories(PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
-add_executable(TestTree test_tree.cpp)
+add_executable(TestTree TestTree.cpp)
 add_test(NAME TestTree COMMAND TestTree)
 
-add_executable(TestPerson test_person.cpp)
+add_executable(TestPerson TestPerson.cpp)
 add_test(NAME TestPerson COMMAND TestPerson)
 
-add_executable(TestDate test_date.cpp)
+add_executable(TestDate TestDate.cpp)
 add_test(NAME TestDate COMMAND TestDate)
 
-add_executable(TestHelpers test_helpers.cpp)
+add_executable(TestJsonParser TestJsonParser.cpp)
+add_test(NAME TestJsonParser COMMAND TestJsonParser)
+
+add_executable(TestHelpers TestHelpers.cpp)
 add_test(NAME TestHelpers COMMAND TestHelpers)
 

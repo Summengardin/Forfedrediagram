@@ -3,49 +3,70 @@
 #include <iostream>
 #include <memory>
 
-#include "atree/ancestor_tree.hpp"
-#include "menu/menu.hpp"
-#include "person/person.hpp"
+#include "atree/AncestorTree.hpp"
+#include "menu/Menu.hpp"
+#include "person/Person.hpp"
+#include "json/JsonParser.hpp"
 
 namespace
 {
 
-void editPerson(Person &personToEdit)
+void editPerson(Person &personToEdit, bool newPersonFlag = false)
 {
 
-    auto newFirstName = COM::getString("First name: (" + personToEdit.getFirstName() + ")");
-    while (!Person::validateName(newFirstName) && (newFirstName != "-"))
+    auto firstNamePrompt = "First name: " + (newPersonFlag ? "" : "(" + personToEdit.getFirstName() + ")");
+    auto newFirstName = COM::getString(firstNamePrompt);
+    while (!Person::nameIsValid(newFirstName) && (newFirstName != "-"))
         newFirstName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newFirstName != "-")
         personToEdit.setFirstName(newFirstName);
 
-
-    auto newMiddleName = COM::getString("Middle name: (" + personToEdit.getMiddleName() + ")", true);
-    while (!newMiddleName.empty() && !Person::validateName(newMiddleName) && (newMiddleName != "-"))
+    auto middleNamePrompt = "Middle name: " + (newPersonFlag ? "" : "(" + personToEdit.getMiddleName() + ")");
+    auto newMiddleName = COM::getString(middleNamePrompt, true);
+    while (!newMiddleName.empty() && !Person::nameIsValid(newMiddleName) && (newMiddleName != "-"))
         newMiddleName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newMiddleName != "-")
         personToEdit.setMiddleName(newMiddleName);
 
-
-    auto newLastName = COM::getString("Last name: (" + personToEdit.getLastName() + ")");
-    while (!Person::validateName(newLastName) && (newLastName != "-"))
+    auto lastNamePrompt = "Last name: " + (newPersonFlag ? "" : "(" + personToEdit.getLastName() + ")");
+    auto newLastName = COM::getString(lastNamePrompt);
+    while (!Person::nameIsValid(newLastName) && (newLastName != "-"))
         newLastName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newLastName != "-")
         personToEdit.setLastName(newLastName);
 
-
-    auto newGender = COM::getString("Gender (male, female, other): (" + personToEdit.getGenderString() + ")", true);
+    auto genderPrompt =
+        "Gender(male, female or other): " + (newPersonFlag ? "" : "(" + personToEdit.getGenderString() + ")");
+    auto newGender = COM::getString(genderPrompt, true);
+    while (newGender != "male" && newGender != "female" && newGender != "other" && !newGender.empty() && !(!newPersonFlag && newGender != "-"))
+        newGender = COM::getString("That was not a valid gender. \nTry again:");
     if (newGender != "-")
         personToEdit.setGender(newGender);
 
 
-    auto birthAsString = COM::getString("When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() +
-                                            " born? [DD-MM-YYYY]: (" + personToEdit.getBirth().toString() + ")",
-                                        true);
-    while (!birthAsString.empty() && !Date::validateStringFormat(birthAsString) && (birthAsString != "-"))
-        birthAsString = COM::getString("That was not a valid date, format must be [DD-MM-YYYY].\nTry again: ");
-    if (birthAsString != "-")
-        personToEdit.setBirth(birthAsString);
+    auto birthPrompt = "When was " + personToEdit.getFirstName() +
+                       " born? [DD-MM-YYYY]: " + (newPersonFlag ? "" : "(" + personToEdit.getBirth().toString() + ")");
+    auto birthAsString = COM::getString(birthPrompt, true);
+    while(true)
+    {
+        if(birthAsString == "-")
+            break;
+
+        Date newBirth;
+        if(birthAsString.empty())
+            break;
+
+        if(Date::validateStringFormat(birthAsString))
+            newBirth.setDate(birthAsString);
+
+        if(newBirth.isReal() || newBirth.isFutureDate())
+        {
+            personToEdit.setBirth(newBirth);
+            break;
+        }
+        birthAsString = COM::getString(
+            "That was not a valid date, format must be [DD-MM-YYYY] and not a future date.\nTry again: ", true);
+    }
 
 
     auto aliveAnswer =
@@ -58,14 +79,29 @@ void editPerson(Person &personToEdit)
     {
         personToEdit.setAliveFlag(false);
 
-        auto deathAsString = COM::getString("When did " + personToEdit.getFirstName() + " " +
-                                            personToEdit.getMiddleName() + " pass away? [DD-MM-YYYY]: ");
-        while (!deathAsString.empty() && !Date::validateStringFormat(deathAsString) && (deathAsString != "-"))
+        auto deathPrompt = "When did " + personToEdit.getFirstName() +
+                           " die? [DD-MM-YYYY]: " + (newPersonFlag ? "" : "(" + personToEdit.getDeath().toString() + ")");
+        auto deathAsString = COM::getString(deathPrompt, true);
+        while(true)
         {
-            deathAsString = COM::getString("That was not a valid date [DD-MM-YYYY].\nTry again: ");
+            if(deathAsString == "-")
+                break;
+
+            Date newDeath;
+            if(deathAsString.empty())
+                break;
+
+            if(Date::validateStringFormat(deathAsString))
+                newDeath.setDate(deathAsString);
+
+            if((newDeath.isReal() || !newDeath.isFutureDate()) && (personToEdit.getBirth() <= newDeath))
+            {
+                personToEdit.setDeath(newDeath);
+                break;
+            }
+            deathAsString = COM::getString(
+                "That was not a valid date, format must be [DD-MM-YYYY], not a future date, and death can of course not come before birth.\nTry again: ", true);
         }
-        if (deathAsString != "-")
-            personToEdit.setDeath(deathAsString);
     }
 }
 
@@ -73,20 +109,23 @@ void writeOutNode(ATree::Node<Person> *node)
 {
     std::stringstream ssPerson;
     auto person = node->getData();
+    auto birthValid = person->getBirth().isReal();
+    auto deathValid = person->getDeath().isReal();
 
     // Name [index]
     ssPerson << "\n" << person->getFullName() << " [" << node->getIndex() << "]";
+    // Age: ##
+    if((birthValid && person->isAlive()) || (birthValid && (!person->isAlive() && deathValid)))
+        ssPerson << "\nAge: " << person->getAge();
     // B: Birth
-    auto birthValid = person->getBirth().isValid();
     if (birthValid)
         ssPerson << "\nB: " << person->getBirth().toString();
     // D: Death
-    auto deathValid = person->getDeath().isValid();
     if (!person->isAlive() && deathValid)
         ssPerson << "\nD: " << person->getDeath().toString();
     // Gender:
-    ssPerson << "\nGender is " << person->getGenderString();
-
+    if(person->getGender() != Person::UNKNOWN)
+        ssPerson << "\nGender is " << person->getGenderString();
     // Parents
     if (node->leftChild() || node->rightChild())
     {
@@ -98,7 +137,6 @@ void writeOutNode(ATree::Node<Person> *node)
             ssPerson << "   " << node->rightChild()->getData()->getFullName() << " [" << node->rightChild()->getIndex()
                      << "]";
     }
-
 
     std::cout << ssPerson.str() << "\n";
 }
@@ -179,7 +217,7 @@ void addPerson(ATree::Tree<Person> &tree)
     // Generate the new person and create node with this person
     Person newPerson;
 
-    editPerson(newPerson);
+    editPerson(newPerson, true);
     std::unique_ptr<ATree::Node<Person>> newNode = std::make_unique<ATree::Node<Person>>(newPerson);
 
     // Set new node as root if ATree::Tree has no root
@@ -232,7 +270,7 @@ void addPerson(ATree::Tree<Person> &tree)
         {
             matchesMenu.append(
                 {node->getData()->getFullName() + " " +
-                     (node->getData()->getBirth().isValid() ? node->getData()->getBirth().toString() : ""),
+                     (!node->getData()->getBirth().isNull() ? node->getData()->getBirth().toString() : ""),
                  [&node, &parentNode]() { parentNode = node; }});
         }
         matchesMenu.show();
@@ -268,7 +306,7 @@ void removePerson(ATree::Tree<Person> &tree)
             std::cout << node->getIndex();
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
-                               (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
+                               (!currentPerson->getBirth().isNull() ? currentPerson->getBirth().toString() : "");
             matchesSelection.append(
                 {personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIndex()); }});
         }
@@ -283,7 +321,11 @@ void editPerson(ATree::Tree<Person> &tree)
     std::vector<ATree::Node<Person> *> matches;
 
     if (COM::isNumber(searchTerm))
-        matches.push_back(tree.findNodeByIndex(std::stoi(searchTerm)));
+    {
+        auto match = tree.findNodeByIndex(std::stoi(searchTerm));
+        if(match)
+            matches.emplace_back(match);
+    }
     else
         matches = tree.findNodeByString(searchTerm);
 
@@ -303,12 +345,13 @@ void editPerson(ATree::Tree<Person> &tree)
         // Creates new menu to choose between all people with searchTerm
         Menu matchesSelection;
         matchesSelection.setTitle("Found multiple people containing " + searchTerm + ".\nChoose which one:");
+        matchesSelection.setLoop(false);
 
         for (auto &node : tree.findNodeByString(searchTerm))
         {
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
-                               (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
+                               (!currentPerson->getBirth().isNull() ? currentPerson->getBirth().toString() : "");
             matchesSelection.append({personTitle, [&personToEdit, &currentPerson]() { personToEdit = currentPerson; }});
         }
         matchesSelection.show();
@@ -325,45 +368,78 @@ void editPerson(ATree::Tree<Person> &tree)
 
 void loadTreeFromJson(ATree::Tree<Person> &tree)
 {
-    std::string fromFile;
+    std::filesystem::path demoFile;
+
     Menu fileOptions{
         "For demo purposes we have provided you with an example file,\ndo you want to use that?",
         {{"Use demo file",
-          [&fromFile]() { fromFile = R"(D:\Data\Dev\AncestorTree\test_files\hidden\FirstTree.json)"; }},
-         {"Use other file", [&fromFile]() { fromFile = COM::getString("Type in full filepath (.json): "); }}},
+          [&demoFile]() { demoFile = std::filesystem::absolute(R"(..\..\test_files\hidden\FirstTree.json)"); }},
+         {"Use anonymous file",
+          [&demoFile]() { demoFile = std::filesystem::absolute(R"(..\..\test_files\AnonymTestData.json)"); }},
+         {"Use other file", [&demoFile]() { demoFile = COM::getString("Type in full filepath (.json): "); }}},
         false};
+
     fileOptions.show();
 
-    std::optional<json> treeData;
+    std::cout << demoFile << std::endl;
+
     while (true)
     {
-        if (!COM::fileExists(fromFile))
+        if (!exists(demoFile))
         {
-            fromFile = COM::getString("Sorry, could not find the file\nCheck spelling: ");
+            demoFile = COM::getString("Sorry, could not find the file\nCheck spelling: ");
             continue;
         }
 
-        treeData = COM::openFileAsJson(fromFile);
-
-        if (!treeData)
+        if (!JsonParser::isJson(demoFile))
         {
-            fromFile = COM::getString("Filetype must be \".json\", try again:  ");
+            demoFile = COM::getString("Filetype must be \".json\", try again:  ");
             continue;
         }
+
         break;
     }
 
-    tree.fromJson(treeData.value());
-    std::cout << "Tree is successfully loaded" << std::endl;
+
+    try
+    {
+        json treeData = JsonParser::jsonFromFile(demoFile);
+        JsonParser::fromJson(treeData, tree);
+        std::cout << "Tree is successfully loaded" << std::endl;
+    }
+    catch (const std::invalid_argument &error)
+    {
+        std::cout << "Woops, seems like that file was invalid.\nError message: " << error.what() << std::endl;
+    }
+    catch (...)
+    {
+        std::cout << "Sorry, unexpected error occurred. Could not build tree from that file" << std::endl;
+    }
 }
 
 
 void saveTreeToJson(ATree::Tree<Person> &tree)
 {
-    auto fileName = COM::getString("Name of file:");
-    std::ofstream outputFile(fileName);
+    std::filesystem::path fileName = COM::getString("Tree will be stored as a .json-file\nName of file:");
 
-    outputFile << tree.toJson().dump(4);
+    while (fileName.has_extension() && fileName.extension() != ".json")
+        fileName = COM::getString("Filename should be without extension or with .json-extension. Try again:");
+
+    if (!fileName.has_extension())
+        fileName += ".json";
+
+    std::filesystem::path outputPath = std::filesystem::absolute("..\\Output");
+
+    if (!exists(outputPath))
+        std::filesystem::create_directories(outputPath);
+
+    outputPath /= fileName;
+
+    std::ofstream outputFile{outputPath};
+    outputFile << JsonParser::toJson(tree).dump(4);
+
+    std::cout << "\n" << fileName << " was saved\n";
+    std::cout << "Located at: " << outputPath.string() << std::endl;
 }
 
 

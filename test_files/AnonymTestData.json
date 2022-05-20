@@ -2,129 +2,130 @@
   "nodes": [
     {
       "data": {
-        "birthDate": "22-06-1999",
-        "deathDate": null,
+        "birth": "22-06-1999",
+        "death": null,
         "firstName": "Rot",
         "lastName": "Rotesen",
         "age": 22,
         "isDead": false
       },
-      "treeIdx": 1,
-      "leftIdx": 2,
-      "rightIdx": 3
+      "treeIndex": 1,
+      "leftIndex": 2,
+      "rightIndex": 3,
+      "isRoot": true
     },
     {
       "data": {
-        "birthDate": "11-03-1968",
-        "deathDate": null,
+        "birth": "11-03-1968",
+        "death": null,
         "firstName": "Mor",
         "lastName": "Morsen",
         "age": null,
         "isDead": false
       },
-      "treeIdx": 2,
-      "leftIdx": 5,
-      "rightIdx": 4
+      "treeIndex": 2,
+      "leftIndex": 5,
+      "rightIndex": 4
     },
     {
       "data": {
-        "birthDate": "08-02-1965",
-        "deathDate": null,
+        "birth": "08-02-1965",
+        "death": null,
         "firstName": "Far",
         "middleName": "Faren",
         "lastName": "Farsen",
         "age": null,
         "isDead": false
       },
-      "treeIdx": 3,
-      "leftIdx": 6,
-      "rightIdx": 7
+      "treeIndex": 3,
+      "leftIndex": 6,
+      "rightIndex": 7
     },
     {
       "data": {
-        "birthDate": null,
-        "deathDate": null,
+        "birth": null,
+        "death": null,
         "firstName": "Bestefar",
         "middleName": "",
         "lastName": "Bestefarsen",
         "age": null,
         "isDead": false
       },
-      "treeIdx": 4,
-      "leftIdx": null,
-      "rightIdx": null
+      "treeIndex": 4,
+      "leftIndex": null,
+      "rightIndex": null
     },
     {
       "data": {
-        "birthDate": null,
-        "deathDate": null,
+        "birth": null,
+        "death": null,
         "firstName": "Mormor",
         "middleName": "Besta",
         "lastName": "Bestemorsen",
         "age": null,
         "isDead": false
       },
-      "treeIdx": 5,
-      "leftIdx": 8,
-      "rightIdx": 9
+      "treeIndex": 5,
+      "leftIndex": 8,
+      "rightIndex": 9
     },
     {
       "data": {
-        "birthDate": null,
-        "deathDate": null,
+        "birth": null,
+        "death": null,
         "firstName": "Farfar",
         "lastName": "Farfarsen",
         "age": null,
         "isDead": true
       },
-      "treeIdx": 6,
-      "leftIdx": null,
-      "rightIdx": null
+      "treeIndex": 6,
+      "leftIndex": null,
+      "rightIndex": null
     },
     {
       "data": {
-        "birthDate": null,
-        "deathDate": null,
+        "birth": null,
+        "death": null,
         "firstName": "Farmor",
         "lastName": "Farmorsen",
         "age": null,
         "isDead": true
       },
-      "treeIdx": 7,
-      "leftIdx": null,
-      "rightIdx": null
+      "treeIndex": 7,
+      "leftIndex": null,
+      "rightIndex": null
     },
     {
       "data": {
-        "birthDate": null,
-        "deathDate": null,
+        "birth": null,
+        "death": null,
         "firstName": "Oldemor",
         "lastName": "Oldemorsen",
         "age": null,
         "isDead": true
       },
-      "treeIdx": 8,
-      "leftIdx": null,
-      "rightIdx": null
+      "treeIndex": 8,
+      "leftIndex": null,
+      "rightIndex": null
     },
     {
       "data": {
-        "birthDate": null,
-        "deathDate": null,
+        "birth": null,
+        "death": null,
         "firstName": "Oldefar",
         "middleName": "Oldingen",
         "lastName": "Oldefarsen",
         "age": null,
         "isDead": true
       },
-      "treeIdx": 9,
-      "leftIdx": null,
-      "rightIdx": null
+      "treeIndex": 9,
+      "leftIndex": null,
+      "rightIndex": null
     }
   ],
   "tree": {
     "settings": {
-      "globalIndent": 4
+      "globalIndent": 8
     }
   }
 }

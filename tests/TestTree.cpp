@@ -1,13 +1,13 @@
 #define CATCH_CONFIG_MAIN
 
-#include "atree/ancestor_tree.hpp"
+#include "atree/AncestorTree.hpp"
 #include "catch.hpp"
-#include "person/person.hpp"
+#include "person/Person.hpp"
 
 TEST_CASE("Build up int-tree")
 {
     ATree::Tree<int> integerTree;
-    TreeId.reset(); // Need to reset the indexing for every section
+    ATree::TreeId.reset(); // Need to reset the indexing for every section
 
     int root = 1;
     int parent1 = 11;
@@ -92,7 +92,7 @@ TEST_CASE("Build up int-tree")
 TEST_CASE("Removing")
 {
     ATree::Tree<int> integerTree;
-    TreeId.reset(); // Need to reset the indexing for every section
+    ATree::TreeId.reset(); // Need to reset the indexing for every section
 
     int root = 1;
     int parent1 = 11;
@@ -112,6 +112,16 @@ TEST_CASE("Removing")
 
 
     integerTree.setRoot(rootNode);
+
+    SECTION("Remove node from single-node-tree")
+    {
+        CHECK(integerTree.findNodeByString("1").size() == 1);
+        CHECK(integerTree.getSize() == 1);
+        auto nodeToRemoveIndex = integerTree.findNodeByString("1")[0]->getIndex();
+        integerTree.removeNode(nodeToRemoveIndex);
+        CHECK(integerTree.isEmpty());
+    }
+
     rootNode->addChild(p1Node);
     rootNode->addChild(p2Node);
     p1Node->addChild(gp1Node);
@@ -146,7 +156,7 @@ TEST_CASE("Removing")
 TEST_CASE("Traversal")
 {
     ATree::Tree<int> integerTree;
-    TreeId.reset(); // Need to reset the indexing for every section
+    ATree::TreeId.reset(); // Need to reset the indexing for every section
 
     int root = 1;
     int parent1 = 11;
@@ -217,7 +227,7 @@ TEST_CASE("Traversal")
 TEST_CASE("Basic functions")
 {
     ATree::Tree<int> integerTree;
-    TreeId.reset(); // Need to reset the indexing for every section
+    ATree::TreeId.reset(); // Need to reset the indexing for every section
 
     int root = 1;
     int parent1 = 11;

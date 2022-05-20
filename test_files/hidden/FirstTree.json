@@ -10,8 +10,8 @@
         "isDead": false
       },
       "treeIndex": 1,
-      "leftIdx": 2,
-      "rightIdx": 3,
+      "leftIndex": 2,
+      "rightIndex": 3,
       "isRoot": true
     },
     {
@@ -24,8 +24,8 @@
         "isDead": false
       },
       "treeIndex": 2,
-      "leftIdx": 5,
-      "rightIdx": 4
+      "leftIndex": 5,
+      "rightIndex": 4
     },
     {
       "data": {
@@ -38,22 +38,22 @@
         "isDead": false
       },
       "treeIndex": 3,
-      "leftIdx": 6,
-      "rightIdx": 7
+      "leftIndex": 6,
+      "rightIndex": 7
     },
     {
       "data": {
         "birth": null,
         "death": null,
         "firstName": "Sigurd",
-        "middleName": "T.",
+        "middleName": "T",
         "lastName": "Simengard",
         "age": null,
         "isDead": false
       },
       "treeIndex": 4,
-      "leftIdx": null,
-      "rightIdx": null
+      "leftIndex": null,
+      "rightIndex": null
     },
     {
       "data": {
@@ -66,8 +66,8 @@
         "isDead": false
       },
       "treeIndex": 5,
-      "leftIdx": 8,
-      "rightIdx": 9
+      "leftIndex": 8,
+      "rightIndex": 9
     },
     {
       "data": {
@@ -79,8 +79,8 @@
         "isDead": true
       },
       "treeIndex": 6,
-      "leftIdx": null,
-      "rightIdx": null
+      "leftIndex": null,
+      "rightIndex": null
     },
     {
       "data": {
@@ -92,8 +92,8 @@
         "isDead": true
       },
       "treeIndex": 7,
-      "leftIdx": null,
-      "rightIdx": null
+      "leftIndex": null,
+      "rightIndex": null
     },
     {
       "data": {
@@ -105,8 +105,8 @@
         "isDead": true
       },
       "treeIndex": 8,
-      "leftIdx": null,
-      "rightIdx": null
+      "leftIndex": null,
+      "rightIndex": null
     },
     {
       "data": {
@@ -118,8 +118,8 @@
         "isDead": true
       },
       "treeIndex": 9,
-      "leftIdx": null,
-      "rightIdx": null
+      "leftIndex": null,
+      "rightIndex": null
     }
   ],
   "tree": {
