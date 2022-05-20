@@ -186,7 +186,6 @@ template <class T> void JsonParser::fromJson(const json &jsonFile, T &value)
             std::cerr << "Invalid type when trying to parse from json.";
         }
     }
-
 }
 
 template <class T> void JsonParser::fromJson(const json &jsonFile, ATree::Node<T> &node)
@@ -252,7 +251,7 @@ template <class T> void JsonParser::fromJson(const json &jsonFile, ATree::Tree<T
             else
                 childrenIndexes[nodeData["treeIndex"]].right = -1;
         }
-        if(!newTree.getRoot())
+        if (!newTree.getRoot())
             throw std::invalid_argument("Could not find root node among json-nodes");
     }
 
@@ -302,8 +301,8 @@ bool JsonParser::isJson(const std::filesystem::path &file)
 
 void JsonParser::validateJsonNode(const json &jsonFile)
 {
-    if ((jsonFile.contains("treeIndex")) && jsonFile.contains("leftIndex") &&
-         jsonFile.contains("rightIndex") && jsonFile.contains("data"))
+    if ((jsonFile.contains("treeIndex")) && jsonFile.contains("leftIndex") && jsonFile.contains("rightIndex") &&
+        jsonFile.contains("data"))
     {
         return;
     }

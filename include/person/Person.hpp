@@ -7,8 +7,8 @@
 #include <utility>
 #include <variant>
 
-#include "date/Date.hpp"
 #include "Helpers.hpp"
+#include "date/Date.hpp"
 
 
 class Person
@@ -290,7 +290,7 @@ void Person::setDeath(Date death)
     if (!death.isReal() && !death.isNull())
         throw std::invalid_argument("Invalid date passed as argument");
 
-    if(death.isReal() && death < _birth)
+    if (death.isReal() && death < _birth)
         throw std::logic_error("Dead before born, that is impossible");
 
     _death = death;
@@ -335,8 +335,8 @@ bool Person::nameIsValid(const std::string &str)
 {
     std::string validLetters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ ";
 
-    bool checkAllLetters = std::all_of(
-        str.begin(), str.end(), [&validLetters](char c) { return validLetters.find(c) != std::string::npos; });
+    bool checkAllLetters = std::all_of(str.begin(), str.end(),
+                                       [&validLetters](char c) { return validLetters.find(c) != std::string::npos; });
     return checkAllLetters;
 }
 

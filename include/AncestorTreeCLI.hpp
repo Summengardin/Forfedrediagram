@@ -38,7 +38,8 @@ void editPerson(Person &personToEdit, bool newPersonFlag = false)
     auto genderPrompt =
         "Gender(male, female or other): " + (newPersonFlag ? "" : "(" + personToEdit.getGenderString() + ")");
     auto newGender = COM::getString(genderPrompt, true);
-    while (newGender != "male" && newGender != "female" && newGender != "other" && !newGender.empty() && !(!newPersonFlag && newGender != "-"))
+    while (newGender != "male" && newGender != "female" && newGender != "other" && !newGender.empty() &&
+           !(!newPersonFlag && newGender != "-"))
         newGender = COM::getString("That was not a valid gender. \nTry again:");
     if (newGender != "-")
         personToEdit.setGender(newGender);
@@ -47,19 +48,19 @@ void editPerson(Person &personToEdit, bool newPersonFlag = false)
     auto birthPrompt = "When was " + personToEdit.getFirstName() +
                        " born? [DD-MM-YYYY]: " + (newPersonFlag ? "" : "(" + personToEdit.getBirth().toString() + ")");
     auto birthAsString = COM::getString(birthPrompt, true);
-    while(true)
+    while (true)
     {
-        if(birthAsString == "-")
+        if (birthAsString == "-")
             break;
 
         Date newBirth;
-        if(birthAsString.empty())
+        if (birthAsString.empty())
             break;
 
-        if(Date::validateStringFormat(birthAsString))
+        if (Date::validateStringFormat(birthAsString))
             newBirth.setDate(birthAsString);
 
-        if(newBirth.isReal() || newBirth.isFutureDate())
+        if (newBirth.isReal() || newBirth.isFutureDate())
         {
             personToEdit.setBirth(newBirth);
             break;
@@ -79,28 +80,29 @@ void editPerson(Person &personToEdit, bool newPersonFlag = false)
     {
         personToEdit.setAliveFlag(false);
 
-        auto deathPrompt = "When did " + personToEdit.getFirstName() +
-                           " die? [DD-MM-YYYY]: " + (newPersonFlag ? "" : "(" + personToEdit.getDeath().toString() + ")");
+        auto deathPrompt = "When did " + personToEdit.getFirstName() + " die? [DD-MM-YYYY]: " +
+                           (newPersonFlag ? "" : "(" + personToEdit.getDeath().toString() + ")");
         auto deathAsString = COM::getString(deathPrompt, true);
-        while(true)
+        while (true)
         {
-            if(deathAsString == "-")
+            if (deathAsString == "-")
                 break;
 
             Date newDeath;
-            if(deathAsString.empty())
+            if (deathAsString.empty())
                 break;
 
-            if(Date::validateStringFormat(deathAsString))
+            if (Date::validateStringFormat(deathAsString))
                 newDeath.setDate(deathAsString);
 
-            if((newDeath.isReal() || !newDeath.isFutureDate()) && (personToEdit.getBirth() <= newDeath))
+            if ((newDeath.isReal() || !newDeath.isFutureDate()) && (personToEdit.getBirth() <= newDeath))
             {
                 personToEdit.setDeath(newDeath);
                 break;
             }
-            deathAsString = COM::getString(
-                "That was not a valid date, format must be [DD-MM-YYYY], not a future date, and death can of course not come before birth.\nTry again: ", true);
+            deathAsString = COM::getString("That was not a valid date, format must be [DD-MM-YYYY], not a future date, "
+                                           "and death can of course not come before birth.\nTry again: ",
+                                           true);
         }
     }
 }
@@ -115,7 +117,7 @@ void writeOutNode(ATree::Node<Person> *node)
     // Name [index]
     ssPerson << "\n" << person->getFullName() << " [" << node->getIndex() << "]";
     // Age: ##
-    if((birthValid && person->isAlive()) || (birthValid && (!person->isAlive() && deathValid)))
+    if ((birthValid && person->isAlive()) || (birthValid && (!person->isAlive() && deathValid)))
         ssPerson << "\nAge: " << person->getAge();
     // B: Birth
     if (birthValid)
@@ -124,7 +126,7 @@ void writeOutNode(ATree::Node<Person> *node)
     if (!person->isAlive() && deathValid)
         ssPerson << "\nD: " << person->getDeath().toString();
     // Gender:
-    if(person->getGender() != Person::UNKNOWN)
+    if (person->getGender() != Person::UNKNOWN)
         ssPerson << "\nGender is " << person->getGenderString();
     // Parents
     if (node->leftChild() || node->rightChild())
@@ -323,7 +325,7 @@ void editPerson(ATree::Tree<Person> &tree)
     if (COM::isNumber(searchTerm))
     {
         auto match = tree.findNodeByIndex(std::stoi(searchTerm));
-        if(match)
+        if (match)
             matches.emplace_back(match);
     }
     else
@@ -368,42 +370,40 @@ void editPerson(ATree::Tree<Person> &tree)
 
 void loadTreeFromJson(ATree::Tree<Person> &tree)
 {
-    std::filesystem::path demoFile;
+    std::filesystem::path demoFile = std::filesystem::absolute(R"(..\..\test_files\AnonymTestData.json)");
+
+    std::filesystem::path fileToOpen;
 
     Menu fileOptions{
         "For demo purposes we have provided you with an example file,\ndo you want to use that?",
-        {{"Use demo file",
-          [&demoFile]() { demoFile = std::filesystem::absolute(R"(..\..\test_files\hidden\FirstTree.json)"); }},
-         {"Use anonymous file",
-          [&demoFile]() { demoFile = std::filesystem::absolute(R"(..\..\test_files\AnonymTestData.json)"); }},
-         {"Use other file", [&demoFile]() { demoFile = COM::getString("Type in full filepath (.json): "); }}},
+        {{"Use demo file", [&demoFile, &fileToOpen]() { fileToOpen = demoFile; }},
+         {"Use other file", [&fileToOpen]() { fileToOpen = COM::getString("Type in full filepath (.json): "); }}},
         false};
 
     fileOptions.show();
 
-    std::cout << demoFile << std::endl;
+    std::cout << fileToOpen << std::endl;
 
     while (true)
     {
-        if (!exists(demoFile))
+        if (!exists(fileToOpen))
         {
-            demoFile = COM::getString("Sorry, could not find the file\nCheck spelling: ");
+            fileToOpen = COM::getString("Sorry, could not find the file\nCheck spelling: ");
             continue;
         }
 
-        if (!JsonParser::isJson(demoFile))
+        if (!JsonParser::isJson(fileToOpen))
         {
-            demoFile = COM::getString("Filetype must be \".json\", try again:  ");
+            fileToOpen = COM::getString("Filetype must be \".json\", try again:  ");
             continue;
         }
 
         break;
     }
 
-
     try
     {
-        json treeData = JsonParser::jsonFromFile(demoFile);
+        json treeData = JsonParser::jsonFromFile(fileToOpen);
         JsonParser::fromJson(treeData, tree);
         std::cout << "Tree is successfully loaded" << std::endl;
     }

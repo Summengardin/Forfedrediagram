@@ -23,7 +23,10 @@ class UUID
     unsigned int nextFreeIdx = 0;
 
   public:
-    unsigned int operator()() { return ++nextFreeIdx; }
+    unsigned int operator()()
+    {
+        return ++nextFreeIdx;
+    }
 
     void update(unsigned int otherIdx)
     {
@@ -33,7 +36,10 @@ class UUID
         }
     }
 
-    void reset() { nextFreeIdx = 0; }
+    void reset()
+    {
+        nextFreeIdx = 0;
+    }
 };
 
 UUID TreeId;
@@ -304,7 +310,7 @@ template <class T> class Tree
 
 template <class T> void Tree<T>::setRoot(std::shared_ptr<Node<T>> n)
 {
-    if(n == nullptr)
+    if (n == nullptr)
     {
         _root = n;
         return;
