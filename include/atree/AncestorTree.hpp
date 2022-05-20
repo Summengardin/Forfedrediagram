@@ -60,9 +60,9 @@ template <class T> class Node
 
     void setData(const T &data);
 
-    bool addChild(std::shared_ptr<Node> childPtr);
+    void addChild(std::shared_ptr<Node> childPtr);
 
-    bool addChild(const T &childData);
+    void addChild(const T &childData);
 
     void setRootFlag(bool rootFlag);
 
@@ -216,25 +216,22 @@ template <class T> void Node<T>::setData(const T &data)
 }
 
 
-template <class T> bool Node<T>::addChild(std::shared_ptr<Node> childPtr)
+template <class T> void Node<T>::addChild(std::shared_ptr<Node> childPtr)
 {
-    // Returns true if successfully added child, false if not.
-
     if (!_leftChild)
         _leftChild = childPtr;
     else if (!_rightChild)
         _rightChild = childPtr;
     else
-        return false;
-    return true;
+        throw std::range_error("Node already has two children");
 }
 
 
-template <class T> bool Node<T>::addChild(const T &childData)
+template <class T> void Node<T>::addChild(const T &childData)
 {
     // Returns true if successfully added child, false if not.
     auto child = std::make_shared<Node>(Node(childData));
-    return addChild(child);
+    addChild(child);
 }
 
 

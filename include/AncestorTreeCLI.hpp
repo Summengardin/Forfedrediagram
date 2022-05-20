@@ -222,7 +222,6 @@ void addPerson(ATree::Tree<Person> &tree)
     editPerson(newPerson, true);
     std::unique_ptr<ATree::Node<Person>> newNode = std::make_unique<ATree::Node<Person>>(newPerson);
 
-    // Set new node as root if ATree::Tree has no root
     if (tree.isEmpty())
     {
         tree.setRoot(std::move(newNode));
@@ -230,7 +229,7 @@ void addPerson(ATree::Tree<Person> &tree)
     }
 
     // Choose relation of new node
-    auto name = COM::getString("Skriv navnet på barnet til " + newPerson.getFirstName());
+    auto name = COM::getString("Name of child to " + newPerson.getFirstName());
     std::vector<ATree::Node<Person> *> matchingNodes = tree.findNodeByString(name);
 
     int attemptCounter = 0;
@@ -248,13 +247,13 @@ void addPerson(ATree::Tree<Person> &tree)
         }
         else
         {
-            std::cout << "\nFant ingen person med navn \"" << name << "\"\n"
-                      << "Prøv igjen:" << std::endl;
+            std::cout << "\nCould not find anyone with that name \"" << name << "\"\n"
+                      << "Try again:" << std::endl;
 
             attemptCounter++;
         }
 
-        name = COM::getString("Skriv navnet på barnet til " + newPerson.getFirstName());
+        name = COM::getString("Name of child of " + newPerson.getFirstName());
         matchingNodes = tree.findNodeByString(name);
     }
 
@@ -267,17 +266,25 @@ void addPerson(ATree::Tree<Person> &tree)
         // Creates new menu to choose between all matching Nodes with their _data as text
         ATree::Node<Person> *parentNode;
         Menu matchesMenu;
-        matchesMenu.setTitle("Velg person som skal være forelder");
+        matchesMenu.setLoop(false);
+        matchesMenu.setTitle("Choose what person who should be parent");
         for (auto node : tree.findNodeByString(name))
         {
             matchesMenu.append(
                 {node->getData()->getFullName() + " " +
                      (!node->getData()->getBirth().isNull() ? node->getData()->getBirth().toString() : ""),
-                 [&node, &parentNode]() { parentNode = node; }});
+                 [node, &parentNode]() { parentNode = node; }});
         }
         matchesMenu.show();
 
-        parentNode->addChild(std::move(newNode));
+        try
+        {
+            parentNode->addChild(std::move(newNode));
+        }
+        catch (std::range_error &error)
+        {
+            std::cout << "Failed to add parent.\nError message: " << error.what() << std::endl;
+        }
     }
 }
 
@@ -347,14 +354,13 @@ void editPerson(ATree::Tree<Person> &tree)
         // Creates new menu to choose between all people with searchTerm
         Menu matchesSelection;
         matchesSelection.setTitle("Found multiple people containing " + searchTerm + ".\nChoose which one:");
-        matchesSelection.setLoop(false);
 
         for (auto &node : tree.findNodeByString(searchTerm))
         {
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
                                (!currentPerson->getBirth().isNull() ? currentPerson->getBirth().toString() : "");
-            matchesSelection.append({personTitle, [&personToEdit, &currentPerson]() { personToEdit = currentPerson; }});
+            matchesSelection.append({personTitle, [&personToEdit, currentPerson]() { personToEdit = currentPerson; }});
         }
         matchesSelection.show();
     }
@@ -397,7 +403,6 @@ void loadTreeFromJson(ATree::Tree<Person> &tree)
             fileToOpen = COM::getString("Filetype must be \".json\", try again:  ");
             continue;
         }
-
         break;
     }
 

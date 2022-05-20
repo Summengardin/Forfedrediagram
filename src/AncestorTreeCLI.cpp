@@ -26,10 +26,10 @@ int main()
                    {"Save tree to .json-file", [&familyTree]() { saveTreeToJson(familyTree); }}}};
 
     // Main title
-    std::cout << "\n--------------------------------" << std::endl;
-    std::cout << "|   Hello there family tree!   |" << std::endl;
-    std::cout << "--------------------------------\n" << std::endl;
-    std::cout << "\nToday is " << Date::today().toString() << "," << std::endl;
+    std::cout << "\n -------------------------------" << std::endl;
+    std::cout << "|   Hello there family tree!    |" << std::endl;
+    std::cout << " -------------------------------\n" << std::endl;
+    std::cout << "Today is " << Date::today().toString()  << std::endl;
 
     mainMenu.show();
 
