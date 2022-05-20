@@ -142,13 +142,6 @@ class Date
 
     [[nodiscard]] static bool isFutureDate(const Date &date)
     {
-
-      /*  if (date.getYear() > today().getYear() ||
-            (date.getYear() == today().getYear() && date.getMonth() > today().getMonth()) ||
-            (date.getYear() == today().getYear() && date.getMonth() == today().getMonth() &&
-             date.getDay() > today().getDay()))
-            return true;*/
-
         return (date > today());
     }
 

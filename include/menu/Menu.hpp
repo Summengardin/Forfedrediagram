@@ -35,18 +35,35 @@ class Menu
     Menu() = default;
 
     Menu(std::string title, std::vector<MenuItem> menuItems, bool loop = true)
-        : _title(std::move(title)), _menuItems(std::move(menuItems)), _loop(loop)
+        : _title(std::move(title))
+        , _menuItems(std::move(menuItems))
+        , _loop(loop)
     {}
 
-    [[nodiscard]] auto getTitle() const noexcept { return _title; }
+    [[nodiscard]] auto getTitle() const noexcept
+    {
+        return _title;
+    }
 
-    [[nodiscard]] bool isEmpty() const { return _menuItems.empty(); }
+    [[nodiscard]] bool isEmpty() const
+    {
+        return _menuItems.empty();
+    }
 
-    [[nodiscard]] size_t size() const { return _menuItems.size(); }
+    [[nodiscard]] size_t size() const
+    {
+        return _menuItems.size();
+    }
 
-    void setTitle(const std::string &t) { _title = t; }
+    void setTitle(const std::string &t)
+    {
+        _title = t;
+    }
 
-    void setLoop(bool loop) { _loop = loop; }
+    void setLoop(bool loop)
+    {
+        _loop = loop;
+    }
 
     void show()
     {

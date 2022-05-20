@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "atree/AncestorTree.hpp"
 #include "AncestorTreeCLI.hpp"
+#include "atree/AncestorTree.hpp"
 #include "menu/Menu.hpp"
 #include "person/Person.hpp"
 

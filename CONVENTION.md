@@ -25,10 +25,12 @@ Using clang-format base on Microsoft with a few modifications:
 
 ``` .clang-format
 BasedOnStyle: Microsoft
+AllowShortFunctionsOnASingleLine: None
 BreakBeforeBraces: Custom
 BraceWrapping:
   SplitEmptyFunction: false
   SplitEmptyRecord: false
+BreakConstructorInitializers: BeforeComma
 MaxEmptyLinesToKeep: 2
 ```
 
