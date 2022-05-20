@@ -7,7 +7,7 @@
 TEST_CASE("Build up int-tree")
 {
     ATree::Tree<int> integerTree;
-    TreeId.reset(); // Need to reset the indexing for every section
+    ATree::TreeId.reset(); // Need to reset the indexing for every section
 
     int root = 1;
     int parent1 = 11;
@@ -92,7 +92,7 @@ TEST_CASE("Build up int-tree")
 TEST_CASE("Removing")
 {
     ATree::Tree<int> integerTree;
-    TreeId.reset(); // Need to reset the indexing for every section
+    ATree::TreeId.reset(); // Need to reset the indexing for every section
 
     int root = 1;
     int parent1 = 11;
@@ -156,7 +156,7 @@ TEST_CASE("Removing")
 TEST_CASE("Traversal")
 {
     ATree::Tree<int> integerTree;
-    TreeId.reset(); // Need to reset the indexing for every section
+    ATree::TreeId.reset(); // Need to reset the indexing for every section
 
     int root = 1;
     int parent1 = 11;
@@ -227,7 +227,7 @@ TEST_CASE("Traversal")
 TEST_CASE("Basic functions")
 {
     ATree::Tree<int> integerTree;
-    TreeId.reset(); // Need to reset the indexing for every section
+    ATree::TreeId.reset(); // Need to reset the indexing for every section
 
     int root = 1;
     int parent1 = 11;

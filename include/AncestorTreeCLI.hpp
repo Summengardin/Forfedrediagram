@@ -14,41 +14,44 @@ namespace
 void editPerson(Person &personToEdit, bool newPersonFlag = false)
 {
 
-    auto firstNamePrompt = "First name: " + (newPersonFlag ? "" : " (" + personToEdit.getFirstName() + ")");
+    auto firstNamePrompt = "First name: " + (newPersonFlag ? "" : "(" + personToEdit.getFirstName() + ")");
     auto newFirstName = COM::getString(firstNamePrompt);
-    while (!Person::validateName(newFirstName) && (newFirstName != "-"))
+    while (!Person::nameIsValid(newFirstName) && (newFirstName != "-"))
         newFirstName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newFirstName != "-")
         personToEdit.setFirstName(newFirstName);
 
-
-    auto newMiddleName = COM::getString("Middle name: (" + personToEdit.getMiddleName() + ")", true);
-    while (!newMiddleName.empty() && !Person::validateName(newMiddleName) && (newMiddleName != "-"))
+    auto middleNamePrompt = "Middle name: " + (newPersonFlag ? "" : "(" + personToEdit.getMiddleName() + ")");
+    auto newMiddleName = COM::getString(middleNamePrompt, true);
+    while (!newMiddleName.empty() && !Person::nameIsValid(newMiddleName) && (newMiddleName != "-"))
         newMiddleName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newMiddleName != "-")
         personToEdit.setMiddleName(newMiddleName);
 
-
-    auto newLastName = COM::getString("Last name: (" + personToEdit.getLastName() + ")");
-    while (!Person::validateName(newLastName) && (newLastName != "-"))
+    auto lastNamePrompt = "Last name: " + (newPersonFlag ? "" : "(" + personToEdit.getLastName() + ")");
+    auto newLastName = COM::getString(lastNamePrompt);
+    while (!Person::nameIsValid(newLastName) && (newLastName != "-"))
         newLastName = COM::getString("Only letters [a-å] are allowed in names, try again: ");
     if (newLastName != "-")
         personToEdit.setLastName(newLastName);
 
-
-    auto newGender = COM::getString("Gender (male, female, other): (" + personToEdit.getGenderString() + ")", true);
+    auto genderPrompt =
+        "Gender(male, female or other): " + (newPersonFlag ? "" : "(" + personToEdit.getGenderString() + ")");
+    auto newGender = COM::getString(genderPrompt, true);
+    while (newGender != "male" && newGender != "female" && newGender != "other" && newGender != "-")
+        newGender = COM::getString("That was not a valid gender. \nTry again:");
     if (newGender != "-")
         personToEdit.setGender(newGender);
 
-
-    auto birthAsString = COM::getString("When was " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() +
-                                            " born? [DD-MM-YYYY]: (" + personToEdit.getBirth().toString() + ")",
-                                        true);
-    while (!birthAsString.empty() && !Date::validateStringFormat(birthAsString) && (birthAsString != "-"))
-        birthAsString = COM::getString("That was not a valid date, format must be [DD-MM-YYYY].\nTry again: ");
+    auto birthPrompt = "When was " + personToEdit.getFirstName() +
+                       " born? [DD-MM-YYYY]: " + (newPersonFlag ? "" : "(" + personToEdit.getBirth().toString() + ")");
+    auto birthAsString = COM::getString(birthPrompt, true);
+    Date newBirth{birthAsString};
+    while (!((newBirth.isReal() && !newBirth.isFutureDate()) || newBirth.isNull()) && (birthAsString != "-"))
+        birthAsString = COM::getString(
+            "That was not a valid date, format must be [DD-MM-YYYY] and not a future date.\nTry again: ");
     if (birthAsString != "-")
-        personToEdit.setBirth(birthAsString);
-
+        personToEdit.setBirth(newBirth);
 
     auto aliveAnswer =
         COM::getString("Is " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " alive? (y/n)");
@@ -79,11 +82,11 @@ void writeOutNode(ATree::Node<Person> *node)
     // Name [index]
     ssPerson << "\n" << person->getFullName() << " [" << node->getIndex() << "]";
     // B: Birth
-    auto birthValid = person->getBirth().isValid();
+    auto birthValid = !person->getBirth().isNull();
     if (birthValid)
         ssPerson << "\nB: " << person->getBirth().toString();
     // D: Death
-    auto deathValid = person->getDeath().isValid();
+    auto deathValid = !person->getDeath().isNull();
     if (!person->isAlive() && deathValid)
         ssPerson << "\nD: " << person->getDeath().toString();
     // Gender:
@@ -234,7 +237,7 @@ void addPerson(ATree::Tree<Person> &tree)
         {
             matchesMenu.append(
                 {node->getData()->getFullName() + " " +
-                     (node->getData()->getBirth().isValid() ? node->getData()->getBirth().toString() : ""),
+                     (!node->getData()->getBirth().isNull() ? node->getData()->getBirth().toString() : ""),
                  [&node, &parentNode]() { parentNode = node; }});
         }
         matchesMenu.show();
@@ -270,7 +273,7 @@ void removePerson(ATree::Tree<Person> &tree)
             std::cout << node->getIndex();
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
-                               (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
+                               (!currentPerson->getBirth().isNull() ? currentPerson->getBirth().toString() : "");
             matchesSelection.append(
                 {personTitle, [&tree, &node]() { std::cout << tree.removeNode(node->getIndex()); }});
         }
@@ -285,7 +288,11 @@ void editPerson(ATree::Tree<Person> &tree)
     std::vector<ATree::Node<Person> *> matches;
 
     if (COM::isNumber(searchTerm))
-        matches.push_back(tree.findNodeByIndex(std::stoi(searchTerm)));
+    {
+        auto match = tree.findNodeByIndex(std::stoi(searchTerm));
+        if(match)
+            matches.emplace_back(match);
+    }
     else
         matches = tree.findNodeByString(searchTerm);
 
@@ -310,7 +317,7 @@ void editPerson(ATree::Tree<Person> &tree)
         {
             Person *currentPerson = node->getData();
             auto personTitle = currentPerson->getFullName() + " " +
-                               (currentPerson->getBirth().isValid() ? currentPerson->getBirth().toString() : "");
+                               (!currentPerson->getBirth().isNull() ? currentPerson->getBirth().toString() : "");
             matchesSelection.append({personTitle, [&personToEdit, &currentPerson]() { personToEdit = currentPerson; }});
         }
         matchesSelection.show();
@@ -368,7 +375,7 @@ void loadTreeFromJson(ATree::Tree<Person> &tree)
     }
     catch (const std::invalid_argument &error)
     {
-        std::cout << "Woops, seems like that file was invalid.\nError message:" << error.what() << std::endl;
+        std::cout << "Woops, seems like that file was invalid.\nError message: " << error.what() << std::endl;
     }
     catch (...)
     {

@@ -9,7 +9,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Globals.hpp"
 #include "Helpers.hpp"
 
 #include "json/json.hpp"
@@ -18,6 +17,27 @@ using json = nlohmann::json;
 
 namespace ATree
 {
+class UUID
+{
+  private:
+    unsigned int nextFreeIdx = 0;
+
+  public:
+    unsigned int operator()() { return ++nextFreeIdx; }
+
+    void update(unsigned int otherIdx)
+    {
+        if (otherIdx > nextFreeIdx)
+        {
+            nextFreeIdx = otherIdx;
+        }
+    }
+
+    void reset() { nextFreeIdx = 0; }
+};
+
+UUID TreeId;
+
 
 /********************************\
  *                              *

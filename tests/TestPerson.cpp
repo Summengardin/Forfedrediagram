@@ -86,35 +86,29 @@ TEST_CASE("Setters and Getters")
 
     // First name
     aPerson.setFirstName("Simen");
-    bPerson.setFirstName("12Gunnar");
-    cPerson.setFirstName("12Gunna!%%r");
     dPerson.setFirstName("");
-    CHECK("Simen" == aPerson.getFirstName());
-    CHECK("12Gunnar" != bPerson.getFirstName());
-    CHECK("12Gunna!%%r" != cPerson.getFirstName());
-    CHECK("" == dPerson.getFirstName());
+    REQUIRE("Simen" == aPerson.getFirstName());
+    REQUIRE(dPerson.getFirstName().empty());
+    REQUIRE_THROWS(bPerson.setFirstName("12Gunnar"));
+    REQUIRE_THROWS(cPerson.setFirstName("12Gunna!%%r"));
 
 
     // Middle name
     aPerson.setMiddleName("Simmo");
-    bPerson.setMiddleName("13Millo");
-    cPerson.setMiddleName("Gille!%%r");
     dPerson.setMiddleName("");
-    CHECK("Simmo" == aPerson.getMiddleName());
-    CHECK("13Millo" != bPerson.getMiddleName());
-    CHECK("Gille!%%r" != cPerson.getMiddleName());
-    CHECK("" == dPerson.getMiddleName());
+    REQUIRE("Simmo" == aPerson.getMiddleName());
+    REQUIRE(dPerson.getMiddleName().empty());
+    REQUIRE_THROWS(bPerson.setMiddleName("13Millo"));
+    REQUIRE_THROWS(cPerson.setMiddleName("Gille!%%r"));
 
 
     // Last name
     aPerson.setLastName("Simensen");
-    bPerson.setLastName("1400Greroiud");
-    cPerson.setLastName("Gires!%%r");
     dPerson.setLastName("");
-    CHECK("Simensen" == aPerson.getLastName());
-    CHECK("1400Greroiud" != bPerson.getLastName());
-    CHECK("Gires!%%r" != cPerson.getLastName());
-    CHECK("" == dPerson.getLastName());
+    REQUIRE("Simensen" == aPerson.getLastName());
+    REQUIRE(dPerson.getLastName().empty());
+    REQUIRE_THROWS(bPerson.setLastName("1400Greroiud"));
+    REQUIRE_THROWS(cPerson.setLastName("Gires!%%r"));
 
 
     // Gender
@@ -134,24 +128,21 @@ TEST_CASE("Setters and Getters")
 
     // Birth
     aPerson.setBirth("22-06-1999");
-    bPerson.setBirth("22-06-99");
-    cPerson.setBirth(Date{2, 5, 2024});
     dPerson.setBirth(Date{23, 9, 2011});
-    CHECK("22-06-1999" == aPerson.getBirth().toString());
-    CHECK("22-06-99" != bPerson.getBirth().toString());
-    CHECK("02-05-2024" != cPerson.getBirth().toString());
-    CHECK("23-09-2011" == dPerson.getBirth().toString());
+    REQUIRE("22-06-1999" == aPerson.getBirth().toString());
+    REQUIRE("23-09-2011" == dPerson.getBirth().toString());
+    REQUIRE_THROWS(bPerson.setBirth("22-06-99"));
+    REQUIRE_THROWS(cPerson.setBirth(Date{2, 5, 2024}));
 
 
     // Death
-    aPerson.setDeath("22-06-2099");
-    bPerson.setDeath("22-06-99");
-    cPerson.setDeath(Date{2, 5, 2024});
+    aPerson.setDeath("15-08-2015");
     dPerson.setDeath(Date{23, 9, 2019});
-    CHECK(Date{22, 6, 2099} == aPerson.getDeath());
-    CHECK(Date{22, 6, 99} != bPerson.getDeath());
-    CHECK(Date{2, 5, 2024} == cPerson.getDeath());
-    CHECK(Date{23, 9, 2019} == dPerson.getDeath());
+    REQUIRE(Date{15, 8, 2015} == aPerson.getDeath());
+    REQUIRE(Date{23, 9, 2019} == dPerson.getDeath());
+    REQUIRE_THROWS(bPerson.setDeath("22-06-99"));
+    REQUIRE_THROWS(cPerson.setDeath(Date{2, 5, 2024}));
+
 
     // Age
     aPerson.setBirth("22-06-1999");

@@ -206,6 +206,7 @@ template <class T> void JsonParser::fromJson(const json &jsonFile, ATree::Tree<T
     // Then looping through the indexes and assigning children based on their indexes
 
     ATree::Tree<T> newTree;
+    ATree::TreeId.reset();
 
     // Tree settings
     if (jsonFile.contains("tree") && jsonFile["tree"].contains("settings") &&

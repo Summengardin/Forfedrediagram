@@ -83,7 +83,7 @@ class Person
 
     void setGender(GenderType gender);
 
-    static bool validateName(const std::string &str);
+    static bool nameIsValid(const std::string &str);
 
     friend std::ostream &operator<<(std::ostream &os, const Person &p);
 
@@ -199,9 +199,9 @@ const Date &Person::getDeath() const
 
 unsigned int Person::getAge() const
 {
-    if (_death.isValid())
+    if (!_death.isNull())
         return Date::calculateAge(_birth, _death);
-    else if (_birth.isValid())
+    else if (!_birth.isNull())
         return Date::calculateAge(_birth);
 
     return 0;
@@ -238,7 +238,7 @@ bool Person::isAlive() const
 
 void Person::setFirstName(const std::string &firstName)
 {
-    if (validateName(firstName))
+    if (!nameIsValid(firstName))
         throw std::invalid_argument("Invalid name. Names can only contain letters.");
 
     _firstName = firstName;
@@ -247,7 +247,7 @@ void Person::setFirstName(const std::string &firstName)
 
 void Person::setMiddleName(const std::string &middleName)
 {
-    if (validateName(middleName))
+    if (!nameIsValid(middleName))
         throw std::invalid_argument("Invalid name. Names can only contain letters.");
 
     _middleName = middleName;
@@ -256,7 +256,7 @@ void Person::setMiddleName(const std::string &middleName)
 
 void Person::setLastName(const std::string &lastName)
 {
-    if (validateName(lastName))
+    if (!nameIsValid(lastName))
         throw std::invalid_argument("Invalid name. Names can only contain letters.");
 
     _lastName = lastName;
@@ -268,8 +268,8 @@ void Person::setBirth(const Date &birth)
     if (birth.isFutureDate())
         throw std::range_error("Not born yet.. Funny guy");
 
-    if (!birth.isValid())
-        throw std::invalid_argument("Invalid date passed as argument");
+    if (!birth.isReal() && !birth.isNull())
+        throw std::invalid_argument("Invalid date");
 
     _birth = birth;
 }
@@ -285,12 +285,16 @@ void Person::setDeath(Date death)
 {
     if (death.isFutureDate())
         throw std::range_error("This application is not for murders. How would you know the persons day of death when "
-                               "it has not happened...?");
-    if (!death.isValid())
+                               "it has not happened yet...?");
+
+    if (!death.isReal() && !death.isNull())
         throw std::invalid_argument("Invalid date passed as argument");
 
+    if(death.isReal() && death < _birth)
+        throw std::logic_error("Dead before born, that is impossible");
+
     _death = death;
-    setAliveFlag(true);
+    setAliveFlag(_death > Date::today() || _death.isNull());
 }
 
 
@@ -327,7 +331,7 @@ void Person::setGender(Person::GenderType gender)
 }
 
 
-bool Person::validateName(const std::string &str)
+bool Person::nameIsValid(const std::string &str)
 {
     std::string validLetters = "abcdefghijklmnopqrstuvwxyzæøåABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ ";
 

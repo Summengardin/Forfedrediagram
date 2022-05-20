@@ -21,7 +21,7 @@ TEST_CASE("calculateAge")
     CHECK(Date::calculateAge(date2) == date2ActualAge);
 }
 
-TEST_CASE("isfuturDate")
+TEST_CASE("isFutureDate")
 {
 
     Date date1{19, 5, 2000}; // testing one on the test date
@@ -31,5 +31,5 @@ TEST_CASE("isfuturDate")
 
     CHECK_FALSE(Date::isFutureDate(date1));
     CHECK(Date::isFutureDate(date2));
-    CHECK(Date::isFutureDate(date3));
+    CHECK_FALSE(Date::isFutureDate(date3));
 }

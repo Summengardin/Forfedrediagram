@@ -55,7 +55,7 @@ TEST_CASE("Tree and node to/from json")
     SECTION("Tree to json")
     {
         ATree::Tree<int> integerTree;
-        TreeId.reset(); // Need to reset the indexing for every section
+        ATree::TreeId.reset(); // Need to reset the indexing for every section
 
         int root = 1;
         int parent1 = 11;
@@ -89,7 +89,7 @@ TEST_CASE("Tree and node to/from json")
     }
     SECTION("Tree from json")
     {
-        TreeId.reset();
+        ATree::TreeId.reset();
         ATree::Tree<int> jsonTree;
         json jsonExample = json(
             {{"nodes",

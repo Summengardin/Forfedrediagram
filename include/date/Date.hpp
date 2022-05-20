@@ -29,14 +29,14 @@ class Date
         return *this;
     }
 
-    [[nodiscard]] bool isValid() const
+    [[nodiscard]] bool isNull() const
     {
-        return !(_day == 0 || _month == 0 || _year == 0);
+        return (_day == 0 || _month == 0 || _year == 0);
     }
 
     [[nodiscard]] std::string toString() const
     {
-        if (isValid())
+        if (!isNull())
         {
             std::ostringstream ssDate;
 
@@ -68,17 +68,15 @@ class Date
         return _year;
     }
 
-    bool setDate(const std::string &dateAsString)
+    void setDate(const std::string &dateAsString)
     {
-        if (validateStringFormat(dateAsString))
-        {
-            std::vector<std::string> numbers = COM::splitString(dateAsString, '-');
-            _day = std::stoi(numbers[0]);
-            _month = std::stoi(numbers[1]);
-            _year = std::stoi(numbers[2]);
-            return true;
-        }
-        return false;
+        if (!validateStringFormat(dateAsString))
+            throw std::invalid_argument("Invalid date format");
+
+        std::vector<std::string> numbers = COM::splitString(dateAsString, '-');
+        _day = std::stoi(numbers[0]);
+        _month = std::stoi(numbers[1]);
+        _year = std::stoi(numbers[2]);
     }
 
     [[nodiscard]] static bool validateStringFormat(const std::string &dateAsString)
@@ -92,8 +90,13 @@ class Date
 
     [[nodiscard]] static bool dayIsValid(const Date &date)
     {
-        unsigned int monthIndex = date.getMonth() - 1;
-        return date.getDay() <= DAYS_IN_MONTH[monthIndex];
+        if (!date.isNull() && (1 <= date.getMonth() && date.getMonth() <= 12))
+        {
+            unsigned int monthIndex = date.getMonth() - 1;
+            return date.getDay() <= DAYS_IN_MONTH[monthIndex];
+        }
+
+        return false;
     }
 
 
@@ -102,9 +105,15 @@ class Date
         return date.getMonth() <= MONTHS_IN_YEAR;
     }
 
-    [[nodiscard]] static bool dateIsValid(const Date &date)
+    [[nodiscard]] bool isReal() const
     {
-        return dayIsValid(date) && monthIsValid(date);
+        if (!isNull() && (1 <= _month && _month <= 12))
+        {
+            unsigned int monthIndex = _month - 1;
+            return _day <= DAYS_IN_MONTH[monthIndex];
+        }
+
+        return false;
     }
 
     [[nodiscard]] static unsigned int calculateAge(const Date &birth)
@@ -133,14 +142,14 @@ class Date
 
     [[nodiscard]] static bool isFutureDate(const Date &date)
     {
-        if (date.getYear() > today().getYear() ||
+
+      /*  if (date.getYear() > today().getYear() ||
             (date.getYear() == today().getYear() && date.getMonth() > today().getMonth()) ||
             (date.getYear() == today().getYear() && date.getMonth() == today().getMonth() &&
              date.getDay() > today().getDay()))
-        {
-            return true;
-        }
-        return false;
+            return true;*/
+
+        return (date > today());
     }
 
     [[nodiscard]] bool isFutureDate() const
@@ -172,6 +181,37 @@ class Date
         return (other._year != this->_year || other._month != this->_month || other._day != this->_day);
     }
 
+    bool operator<(const Date &other) const
+    {
+        if (_year < other.getYear() || (_year == other.getYear() && _month < other.getMonth()) ||
+            (_year == other.getYear() && _month == other.getMonth() && _day < other.getDay()))
+            return true;
+        return false;
+    }
+
+    bool operator>(const Date &other) const
+    {
+        if (_year > other.getYear() || (_year == other.getYear() && _month > other.getMonth()) ||
+            (_year == other.getYear() && _month == other.getMonth() && _day > other.getDay()))
+            return true;
+        return false;
+    }
+
+    bool operator<=(const Date &other) const
+    {
+        if (_year <= other.getYear() || (_year == other.getYear() && _month <= other.getMonth()) ||
+            (_year == other.getYear() && _month == other.getMonth() && _day <= other.getDay()))
+            return true;
+        return false;
+    }
+
+    bool operator>=(const Date &other) const
+    {
+        if (_year >= other.getYear() || (_year == other.getYear() && _month >= other.getMonth()) ||
+            (_year == other.getYear() && _month == other.getMonth() && _day >= other.getDay()))
+            return true;
+        return false;
+    }
 
   protected:
     unsigned int _day = 0;
