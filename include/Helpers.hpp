@@ -1,6 +1,7 @@
 #pragma once // FORFEDREDIAGRAM_COMMONFUNCTIONS_HPP
 
 #include <chrono>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <optional>
