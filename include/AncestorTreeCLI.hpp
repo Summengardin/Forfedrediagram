@@ -38,20 +38,36 @@ void editPerson(Person &personToEdit, bool newPersonFlag = false)
     auto genderPrompt =
         "Gender(male, female or other): " + (newPersonFlag ? "" : "(" + personToEdit.getGenderString() + ")");
     auto newGender = COM::getString(genderPrompt, true);
-    while (newGender != "male" && newGender != "female" && newGender != "other" && newGender != "-")
+    while (newGender != "male" && newGender != "female" && newGender != "other" && !newGender.empty() && !(!newPersonFlag && newGender != "-"))
         newGender = COM::getString("That was not a valid gender. \nTry again:");
     if (newGender != "-")
         personToEdit.setGender(newGender);
 
+
     auto birthPrompt = "When was " + personToEdit.getFirstName() +
                        " born? [DD-MM-YYYY]: " + (newPersonFlag ? "" : "(" + personToEdit.getBirth().toString() + ")");
     auto birthAsString = COM::getString(birthPrompt, true);
-    Date newBirth{birthAsString};
-    while (!((newBirth.isReal() && !newBirth.isFutureDate()) || newBirth.isNull()) && (birthAsString != "-"))
+    while(true)
+    {
+        if(birthAsString == "-")
+            break;
+
+        Date newBirth;
+        if(birthAsString.empty())
+            break;
+
+        if(Date::validateStringFormat(birthAsString))
+            newBirth.setDate(birthAsString);
+
+        if(newBirth.isReal() || newBirth.isFutureDate())
+        {
+            personToEdit.setBirth(newBirth);
+            break;
+        }
         birthAsString = COM::getString(
-            "That was not a valid date, format must be [DD-MM-YYYY] and not a future date.\nTry again: ");
-    if (birthAsString != "-")
-        personToEdit.setBirth(newBirth);
+            "That was not a valid date, format must be [DD-MM-YYYY] and not a future date.\nTry again: ", true);
+    }
+
 
     auto aliveAnswer =
         COM::getString("Is " + personToEdit.getFirstName() + " " + personToEdit.getMiddleName() + " alive? (y/n)");
@@ -63,14 +79,29 @@ void editPerson(Person &personToEdit, bool newPersonFlag = false)
     {
         personToEdit.setAliveFlag(false);
 
-        auto deathAsString = COM::getString("When did " + personToEdit.getFirstName() + " " +
-                                            personToEdit.getMiddleName() + " pass away? [DD-MM-YYYY]: ");
-        while (!deathAsString.empty() && !Date::validateStringFormat(deathAsString) && (deathAsString != "-"))
+        auto deathPrompt = "When did " + personToEdit.getFirstName() +
+                           " die? [DD-MM-YYYY]: " + (newPersonFlag ? "" : "(" + personToEdit.getDeath().toString() + ")");
+        auto deathAsString = COM::getString(deathPrompt, true);
+        while(true)
         {
-            deathAsString = COM::getString("That was not a valid date [DD-MM-YYYY].\nTry again: ");
+            if(deathAsString == "-")
+                break;
+
+            Date newDeath;
+            if(deathAsString.empty())
+                break;
+
+            if(Date::validateStringFormat(deathAsString))
+                newDeath.setDate(deathAsString);
+
+            if((newDeath.isReal() || !newDeath.isFutureDate()) && (personToEdit.getBirth() <= newDeath))
+            {
+                personToEdit.setDeath(newDeath);
+                break;
+            }
+            deathAsString = COM::getString(
+                "That was not a valid date, format must be [DD-MM-YYYY], not a future date, and death can of course not come before birth.\nTry again: ", true);
         }
-        if (deathAsString != "-")
-            personToEdit.setDeath(deathAsString);
     }
 }
 
@@ -78,20 +109,23 @@ void writeOutNode(ATree::Node<Person> *node)
 {
     std::stringstream ssPerson;
     auto person = node->getData();
+    auto birthValid = person->getBirth().isReal();
+    auto deathValid = person->getDeath().isReal();
 
     // Name [index]
     ssPerson << "\n" << person->getFullName() << " [" << node->getIndex() << "]";
+    // Age: ##
+    if((birthValid && person->isAlive()) || (birthValid && (!person->isAlive() && deathValid)))
+        ssPerson << "\nAge: " << person->getAge();
     // B: Birth
-    auto birthValid = !person->getBirth().isNull();
     if (birthValid)
         ssPerson << "\nB: " << person->getBirth().toString();
     // D: Death
-    auto deathValid = !person->getDeath().isNull();
     if (!person->isAlive() && deathValid)
         ssPerson << "\nD: " << person->getDeath().toString();
     // Gender:
-    ssPerson << "\nGender is " << person->getGenderString();
-
+    if(person->getGender() != Person::UNKNOWN)
+        ssPerson << "\nGender is " << person->getGenderString();
     // Parents
     if (node->leftChild() || node->rightChild())
     {
@@ -103,7 +137,6 @@ void writeOutNode(ATree::Node<Person> *node)
             ssPerson << "   " << node->rightChild()->getData()->getFullName() << " [" << node->rightChild()->getIndex()
                      << "]";
     }
-
 
     std::cout << ssPerson.str() << "\n";
 }
@@ -312,6 +345,7 @@ void editPerson(ATree::Tree<Person> &tree)
         // Creates new menu to choose between all people with searchTerm
         Menu matchesSelection;
         matchesSelection.setTitle("Found multiple people containing " + searchTerm + ".\nChoose which one:");
+        matchesSelection.setLoop(false);
 
         for (auto &node : tree.findNodeByString(searchTerm))
         {
