@@ -23,12 +23,13 @@ build up from scratch or load an existing tree stored in a .JSON-file. <br>
 * This tree only allows for two parents, this is by purpose and as of given terms in the assignment
 * The tree can save to file but as for now, json is the supported format. Feel free to contribute by making support for
   other file-types
-* The date-class is a very simple one and has some major limitations. It does not handle leap year, which reduces
+* The date-class is a simple one and has some major limitations. It does not handle leap year, which reduces
   possibilities like calculating days between dates and accounting for 29th of february.
+* In the CLI, once you have set a root, you are not change which node is root. You can edit the data of the root node, or remove the node, but not set a new root
 
 ## User instructions
 
-Provided in the "src"-folder is a console application provding an example of usage of this tree-library.  
+Provided in the "src"-folder is a console application providing an example of usage of this tree-library.  
 Starting this application you will be presented with a welcome message and the main menu with the following options:
 
 1. **Show full tree**
@@ -69,28 +70,25 @@ which are: First name, Middle name, Last name, Gender, Birth, Death. Some keypoi
 * Neither Birth og Death may be future dates, and you will get a warning if you try to set Death to be before Birth
 
 If the person you are creating is the first person in the tree it will automatically be set as the root person. If not,
-you will get to options:
+the new person has to be parent to existing person in the tree
 
-* Either you add your new person as parent to another person
-* or, you decide that this new person is meant to be the new root node. This will make the current root a parent to the
-  new root
 
 4. **Remove person**
 
 To remove a person from the tree, you will first need to enter a search-term to find the person you want to remove. If
 your search-term is found on among multiple people you will encounter a sub-menu to choose between all the matching
 people. If the person you are removing is a leaf-person (has no registered parents) the person will be removed from the
-tree together with its placeholde (node). If the person has at least one parent, det person will be replaced by a
+tree together with its placeholder (node). If the person has at least one parent, det person will be replaced by a
 Dummy-person (empty person). This will leave people further down that branch intact. Here is an example of this
 
 ```cpp  
  Mor Morsen [2]
-	    [5]
-			 Oldemor Oldemorsen [8]
-		     Oldefar Oldingen Oldefarsen [9] 
+    [5]
+        Oldemor Oldemorsen [8]
+        Oldefar Oldingen Oldefarsen [9] 
 ```  
 
-Here, the person with index 5 have been remove, and are only left as an empyt person. Therefore, "Oldemor Oldemorsen"
+Here, the person with index 5 have been removed , and are only left as an empty person. Therefore, "Oldemor Oldemorsen"
 and "Oldefar Oldingen Oldefarsen" are still reachable.
 
 5. **Edit person**

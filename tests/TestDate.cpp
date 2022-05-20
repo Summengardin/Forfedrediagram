@@ -33,3 +33,17 @@ TEST_CASE("isFutureDate")
     CHECK(Date::isFutureDate(date2));
     CHECK_FALSE(Date::isFutureDate(date3));
 }
+
+TEST_CASE("isReal")
+{
+        Date date1{35,5,1999};
+        Date date2{15,13,1999};
+        Date date3{43,20,1999};
+        Date date4{15,5,1999};
+
+
+        CHECK_FALSE(date1.isReal());
+        CHECK_FALSE(date2.isReal());
+        CHECK_FALSE(date3.isReal());
+        CHECK(date4.isReal());
+}
